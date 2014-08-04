@@ -28,11 +28,11 @@ def new_msg(word, word_eol, userdata):
 			else:
 				url = "'Accept: application/vnd.twitchtv.v2+json' 'https://api.twitch.tv/kraken/channels/" + chan + "'"
 				Twitch_Info = json.loads(url)
-				'''
-				Line 30 ends the program with:
-				  raise ValueError(errmsg("Expecting value", s, err.value)) from None
-          ValueError: Expecting value: line 1 column 1 (char 0)
-        '''
+			'''
+			Line 30 ends the program with:
+			 raise ValueError(errmsg("Expecting value", s, err.value)) from None
+          		 ValueError: Expecting value: line 1 column 1 (char 0)
+        		'''
 				Twitch_Info = str(Twitch_Info).split(',')
 				Game = Twitch_Info[5]
 				Game = Game.split("'")
