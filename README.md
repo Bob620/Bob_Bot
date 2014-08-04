@@ -1,2 +1,1 @@
-Bob_bot
-=======
+This repository is for Bob_Bot files that are mostly unfinished. If you are wating the finished files, or help with a Python bot, please contact Bob620 on Twitch.tv/Bob620. Please do not edit or create any new files unless you have been asked to by Bob620.
