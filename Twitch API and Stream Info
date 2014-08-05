@@ -30,8 +30,9 @@ def new_msg(word, word_eol, userdata):
 				Twitch_Info = json.loads(url)
 			'''
 			Line 30 ends the program with:
-			 raise ValueError(errmsg("Expecting value", s, err.value)) from None
-          		 ValueError: Expecting value: line 1 column 1 (char 0)
+			  raise ValueError(errmsg("Expecting value", s, err.value)) from None
+          		  ValueError: Expecting value: line 1 column 1 (char 0)
+          		It should be reading off the site https://api.twitch.tv/kraken/channels/bob620 and uses the twitch API here: https://github.com/justintv/Twitch-API
         		'''
 				Twitch_Info = str(Twitch_Info).split(',')
 				Game = Twitch_Info[5]
