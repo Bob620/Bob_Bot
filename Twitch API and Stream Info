@@ -3,6 +3,7 @@ import os
 import codecs
 import json
 
+# Everything that needs to be imported ^
 
 __module_name__ = "Stream Info Gathering"
 __module_version__ = "1.0"
@@ -14,18 +15,27 @@ HC.prnt("======LOADING BOB_BOT 2.0======")
 HC.prnt("==========STREAM INFO==========")
 HC.prnt("===============================")
 
+# Everything above is technical stuff for my end to look nice :P
+
 def new_msg(word, word_eol, userdata):
 	HC.get_context
 	name = HC.strip(word[0], -1, 3)
 	if name == "jtv":
 		pass
 	else:
+	
+		# the above code simply retrives the name of the person who triggered it, strips it of all HexChat colors and the such and detirmines if it is not twitch's IRC server(jtv)
+		# word[0] = name   word[1] = entire sentence
+	
 		if word[1].startswith('!game'):
 			channel = HC.get_info("channel")
 			chan = channel.strip('#')
 			if chan.startswith('_'):
 				pass
 			else:
+				# The above portion retrives the channel's name, adn removes the '#' from it to then use in the link for json
+				# Below should be getting the json file, and put it into a variable that I can then manipulate, this works if I use a file, but not a link
+				
 				url = "'Accept: application/vnd.twitchtv.v2+json' 'https://api.twitch.tv/kraken/channels/" + chan + "'"
 				Twitch_Info = json.loads(url)
 			'''
@@ -34,13 +44,15 @@ def new_msg(word, word_eol, userdata):
           		  ValueError: Expecting value: line 1 column 1 (char 0)
           		It should be reading off the site https://api.twitch.tv/kraken/channels/bob620 and uses the twitch API here: https://github.com/justintv/Twitch-API
         		'''
+        			# After retriveing and dumping the twitch API, it then splits and finds the specific information in the file, and prints that to the IRC channel
+        			
 				Twitch_Info = str(Twitch_Info).split(',')
 				Game = Twitch_Info[5]
 				Game = Game.split("'")
 				return HC.command("say " + Game[3])
 
 
-
+# Everything down here triggers the code to run if someone says something
 HC.hook_print("Channel Message", new_msg)
 HC.hook_print('Channel Msg Hilight', new_msg)
 HC.hook_print('Channel Action', new_msg)
