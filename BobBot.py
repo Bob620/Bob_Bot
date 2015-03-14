@@ -19,11 +19,15 @@ class Namespace(BaseNamespace):
 	
 	def on_connect(self):
 		print('[Connected]')
-		Connect(['j9YTF02CGcQ'], 'WaifuBot', self)
+		Info = Bobbot.readfile('info', 'json')
+		for Channel in Info['autoconnect']:
+			Connect(Channel, Info['name'], self)
 	
 	def on_disconnect(self):
 		print('[Disconnected]')
-		Disconnect(['j9YTF02CGcQ'], 'WaifuBot', self)
+		Info = Bobbot.readfile('info', 'json')
+		for Channel in Info['autoconnect']:
+			Disconnect(Channel, Info['name'], self)
 	
 	def on_history(self, History):
 		print('[History]')
@@ -33,7 +37,9 @@ class Namespace(BaseNamespace):
 	
 	def on_receiveMessage(self, Message):
 		if Message['data']['username'].lower() != 'waifubot':
-			self.emit("sendMessage", {"username": "WafuBot", "chatroomID": "j9YTF02CGcQ", "text": Bobbot.input(Message)})
+			Info = Bobbot.readfile('info', 'json')
+			self.emit("sendMessage", {"username": Info['name'], "chatroomID": Message['chatroomID'], "text": Bobbot.input(Message)})
+
 
 
 
@@ -308,26 +314,23 @@ class Bobbot():
 
 
 
-def Connect(Channels, Username, Chat):
+def Connect(Channel, Username, Chat):
 	try:
-		for Channel in Channels:
-			Chat.emit('join', {'username': Username, 'chatroomID': Channel})
-			print('Joined Channel '+Channel)
+		Chat.emit('join', {'username': Username, 'chatroomID': Channel})
+		print('Joined Channel '+Channel)
 	except:
 		pass
 
-def Disconnect(Channels, Username, Chat):
+def Disconnect(Channel, Username, Chat):
 	try:
-		for Channel in Channels:
-			Chat.emit('join', {'username': Username, 'chatroomID': Channel})
-			print('Joined Channel '+Channel)
+		Chat.emit('join', {'username': Username, 'chatroomID': Channel})
+		print('Joined Channel '+Channel)
 	except:
 		return Connect(Channels, Username, Chat)
 
 
 
 
-ChatUsername = 'WaifuBot'
-ChatChannels = ['j9YTF02CGcQ']
+
 Chata = SocketIO('https://www.toka.io', 1337, Namespace, verify=True)
 Chata.wait()
