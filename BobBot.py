@@ -70,6 +70,12 @@ class Bobbot():
 	def command(Command, Text, User, Channel):
 		# Read the file containing everything there is to know about chat
 		PossibleCommands = Bobbot.readfile('Commands', 'json')
+		# Build up PossibleCommands for use on this channel
+		try:
+			Useless = PossibleCommands['channels'][Channel]
+		except:
+			PossibleCommands['channels'][Channel] = {"ops":[],"commands":{}}
+			Bobbot.writefile('commands', 'json', PossibleCommands)
 		# First check for universal bot edit commands
 		for ChanCommands in PossibleCommands['botedit']:
 			try:
@@ -251,6 +257,8 @@ class Bobbot():
 	def modlist(Channel, Text):
 		try:
 			PossibleCommands = Bobbot.readfile('Commands', 'json')
+			if len(PossibleCommands['channels'][Channel]['ops']) == 0:
+				return 'There are no mods on this channel'
 			if len(PossibleCommands['channels'][Channel]['ops']) == 1:
 				return ', '.join(PossibleCommands['channels'][Channel]['ops']) + ' is the mod on this channel'
 			return ', '.join(PossibleCommands['channels'][Channel]['ops']) + ' are mods on this channel'
