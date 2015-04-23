@@ -7,7 +7,7 @@ print('----------------------------')
 print('--Loading: fileInteraction--')
 print('----------------------------')
 
-def fileInteraction():
+class fileInteraction():
 	def readfile(FileName, Type):
 		try:
 			Type = Type.lower()

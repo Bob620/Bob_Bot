@@ -34,7 +34,6 @@ def Importation(module):
 		exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/fileInteraction.py').read().decode('utf8'), Running_Modules.__dict__)
 		modules['required'].append('fileInteraction')
 		modules['all'].append('fileInteraction')
-	print(str(Running_Modules.fileInteraction))
 
 	if module == 'required':
 		Required_Modules = Running_Modules.fileInteraction.readfile('info', 'json')['modules']['required']
