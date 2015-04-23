@@ -5,7 +5,7 @@
 
 print('Loading: fileInteraction')
 
-class fileInteraction():
+def fileInteraction():
 	def readfile(FileName, Type):
 		try:
 			Type = Type.lower()
