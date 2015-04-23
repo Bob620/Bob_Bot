@@ -47,4 +47,4 @@ def writefile(FileName, Type, Info):
 		return
 ##### ///// #####
 
-print('--LOADED--'')
+print('--LOADED--')

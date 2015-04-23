@@ -18,9 +18,8 @@ import urllib.request
 import imp
 
 fileInteraction = imp.new_module('fileInteraction')
-exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/fileInteraction.py').read().decode('utf8'), Test1.__dict__)
+exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/fileInteraction.py').read().decode('utf8'), fileInteraction.__dict__)
 
-fileInteraction.
 
 __module_name__ = "WaifuBot for Toka"
 __module_version__ = "1.0"
