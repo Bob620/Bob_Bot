@@ -3,7 +3,9 @@
 # Only edits and reads the Info found locally for specifics such as 'personal' info and just about anything else
 # Can read any data file that is given to it
 
-print('Loading: fileInteraction')
+print('----------------------------')
+print('--Loading: fileInteraction--')
+print('----------------------------')
 
 def fileInteraction():
 	def readfile(FileName, Type):
