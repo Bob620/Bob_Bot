@@ -7,6 +7,10 @@ print('----------------------------')
 print('--Loading: fileInteraction--')
 print('----------------------------')
 
+import os
+import codecs
+import json
+
 class fileInteraction():
 	def readfile(FileName, Type):
 		try:
