@@ -3,16 +3,16 @@
 # Only edits and reads the Info found locally for specifics such as 'personal' info and just about anything else
 # Can read any data file that is given to it
 
-print('----------------------------')
-print('--Loading: fileInteraction--')
-print('----------------------------')
+print('----------------------------------')
+print('-----Loading: fileInteraction-----')
+print('----------------------------------')
 
 import os
 import codecs
 import json
 
 class fileInteraction():
-	
+
 	def readfile(FileName, Type):
 		try:
 			Type = Type.lower()
@@ -55,6 +55,6 @@ class fileInteraction():
 			print(inf)
 			return
 
-print('-----------LOADED-----------')
+print('--------------LOADED--------------')
 
 ##### ///// #####

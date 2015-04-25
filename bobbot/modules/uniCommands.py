@@ -3,9 +3,9 @@
 # It'll contain adduni, edituni, and deluni to allow universal mods to
 # create, edit, and delete universal commands.
 
-print('--------------------------------')
-print('------Loading: uniCommands------')
-print('--------------------------------')
+print('----------------------------------')
+print('-------Loading: uniCommands-------')
+print('----------------------------------')
 
 class uniCommands():
 
@@ -60,6 +60,6 @@ class uniCommands():
 			return 'An error returned during command deletion! -Command most likely not deleted-'
 
 
-print('-------------LOADED-------------')
+print('--------------LOADED--------------')
 
 ##### ///// #####

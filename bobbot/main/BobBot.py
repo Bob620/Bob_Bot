@@ -36,7 +36,7 @@ try:
 	Running_Modules = imp.new_module('Running_Modules')
 except Exception as inf:
 	print(inf)
-	print('----------------------------')
+	print('----------------------------------')
 	sys.exit('001 - Unable to set global variables "modules" and "Running_Modules"')
 
 def Importation(module):
@@ -49,9 +49,9 @@ def Importation(module):
 
 		if module == 'fileInteraction':
 			print('')
-			print('------------LOAD------------')
+			print('---------------LOAD---------------')
 			pprint.PrettyPrinter(indent=2).pprint(modules)
-			print('----------------------------')
+			print('----------------------------------')
 			print('')
 			return
 
@@ -83,9 +83,9 @@ def Importation(module):
 
 	try:
 		print('')
-		print('------------LOAD------------')
+		print('---------------LOAD---------------')
 		pprint.PrettyPrinter(indent=2).pprint(modules)
-		print('----------------------------')
+		print('----------------------------------')
 		print('')
 	except Exception as inf:
 		print(str(inf))
@@ -100,21 +100,21 @@ def Deimportation(module):
 		Modules_List = Running_Modules.fileInteraction.readfile('info', 'json')['modules']
 
 		if module == 'all':
-			print('-----------------------------')
+			print('----------------------------------')
 			for ModuleName in Modules_List['all']:
 				print('--Unloading '+ModuleName+'--')
 				del Running_Modules.__dict__[ModuleName]
 				modules['all'].remove(ModuleName)
 				if Modules_List['required'].count(module) < 1:
 					modules['required'].remove(ModuleName)
-			print('-----------------------------')
+			print('----------------------------------')
 
 
 		else:
 			if modules['all'].count(module) >= 1:
-				print('-----------------------------')
+				print('----------------------------------')
 				print('--Unloading '+module+'--')
-				print('-----------------------------')
+				print('----------------------------------')
 				del Running_Modules.__dict__[module]
 				modules['all'].remove(module)
 				if Modules_List['required'].count(module) < 1:
@@ -125,9 +125,9 @@ def Deimportation(module):
 
 	try:
 		print('')
-		print('-----------UNLOAD-----------')
+		print('--------------UNLOAD--------------')
 		pprint.PrettyPrinter(indent=2).pprint(modules)
-		print('----------------------------')
+		print('----------------------------------')
 		print('')
 	except Exception as inf:
 		print(str(inf))

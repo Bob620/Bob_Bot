@@ -1,9 +1,9 @@
 ##### MODDING #####
 # Allows a mod to add more mods(Temp)
 
-print('----------------------------')
-print('--------Loading: mod--------')
-print('----------------------------')
+print('----------------------------------')
+print('-----------Loading: mod-----------')
+print('----------------------------------')
 
 class mod():
 
@@ -50,6 +50,6 @@ class mod():
 		except:
 			return "Unable to return channel's mod list!"
 
-print('-----------LOADED-----------')
+print('--------------LOADED--------------')
 
 ##### ///// #####
