@@ -12,6 +12,7 @@ import codecs
 import json
 
 class fileInteraction():
+	
 	def readfile(FileName, Type):
 		try:
 			Type = Type.lower()
@@ -54,6 +55,6 @@ class fileInteraction():
 			print(inf)
 			return
 
-print('--LOADED--')
+print('-----------LOADED-----------')
 
 ##### ///// #####

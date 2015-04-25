@@ -1,5 +1,9 @@
-##### Moding #####
+##### MODDING #####
 # Allows a mod to add more mods(Temp)
+
+print('----------------------------')
+print('--------Loading: mod--------')
+print('----------------------------')
 
 class mod():
 
@@ -45,3 +49,7 @@ class mod():
 			return ', '.join(PossibleCommands['channels'][Channel]['ops']) + ' are mods on this channel'
 		except:
 			return "Unable to return channel's mod list!"
+
+print('-----------LOADED-----------')
+
+##### ///// #####
