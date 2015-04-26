@@ -67,7 +67,7 @@ def Importation(module):
 			for ModuleName in Modules_List['all']:
 				exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/'+ModuleName+'.py').read().decode('utf8'), Running_Modules.__dict__)
 				modules['all'].append(ModuleName)
-				if Modules_List['required'].count(module) < 1:
+				if Modules_List['required'].count(module) > 1:
 					modules['required'].append(ModuleName)
 
 		else:
@@ -75,7 +75,7 @@ def Importation(module):
 			if Modules_List['all'].count(module) < 1:
 				exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/'+module+'.py').read().decode('utf8'), Running_Modules.__dict__)
 				modules['all'].append(ModuleName)
-				if Modules_List['required'].count(module) < 1:
+				if Modules_List['required'].count(module) > 1:
 					modules['required'].append(ModuleName)
 
 	except Exception as inf:
@@ -102,10 +102,10 @@ def Deimportation(module):
 		if module == 'all':
 			print('----------------------------------')
 			for ModuleName in Modules_List['all']:
-				print('--Unloading '+ModuleName+'--')
+				print('----Unloading: '+ModuleName+'----')
 				del Running_Modules.__dict__[ModuleName]
 				modules['all'].remove(ModuleName)
-				if Modules_List['required'].count(module) < 1:
+				if Modules_List['required'].count(module) > 1:
 					modules['required'].remove(ModuleName)
 			print('----------------------------------')
 
@@ -113,7 +113,7 @@ def Deimportation(module):
 		else:
 			if modules['all'].count(module) >= 1:
 				print('----------------------------------')
-				print('--Unloading '+module+'--')
+				print('----Unloading: '+module+'----')
 				print('----------------------------------')
 				del Running_Modules.__dict__[module]
 				modules['all'].remove(module)
@@ -140,3 +140,12 @@ Deimportation('fileInteraction')
 Importation('fileInteraction')
 
 ##### ///// #####
+
+#Chata = SocketIO('http://www.bobco.moe', 1337, Namespace, verify=True)
+Chata = SocketIO('https://chata.toka.io', 1337, Running_Modules.tokaNamespace.tokaNamespace, verify=True)
+Chata.wait()
+
+
+
+
+
