@@ -142,7 +142,7 @@ Importation('fileInteraction')
 ##### ///// #####
 
 #Chata = SocketIO('http://www.bobco.moe', 1337, Namespace, verify=True)
-Chata = SocketIO('https://chata.toka.io', 1337, Running_Modules.tokaNamespace.tokaNamespace, verify=True)
+Chata = SocketIO('https://chata.toka.io', 1337, Running_Modules.tokaNamespace, verify=True)
 Chata.wait()
 
 

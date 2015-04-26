@@ -4,6 +4,7 @@ from socketIO_client import SocketIO, BaseNamespace
 
 class tokaNamespace(BaseNamespace):
 	
+	global Running_Modules
 	BobBot = ''
 	CurrentMoodType = ''
 	
