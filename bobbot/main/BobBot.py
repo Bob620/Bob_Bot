@@ -141,7 +141,7 @@ Importation('fileInteraction')
 
 ##### ///// #####
 
-Running_Modules.config.Running_Modules = Running_Modules
+Running_Modules.Running_Modules = Running_Modules
 #Chata = SocketIO('http://www.bobco.moe', 1337, Namespace, verify=True)
 Chata = SocketIO('https://chata.toka.io', 1337, Running_Modules.tokaNamespace, verify=True)
 Chata.wait()
