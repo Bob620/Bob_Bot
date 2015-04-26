@@ -33,5 +33,5 @@ class tokaNamespace(BaseNamespace):
 	
 	def on_receiveMessage(self, Message):
 		if Message['data']['username'].lower() != 'waifubot':
-			Info = Runnign_Modules.fileInteraction.readfile('info', 'json')
+			Info = Running_Modules.fileInteraction.readfile('info', 'json')
 			self.emit("sendMessage", {"username": Info['name'], "chatroomID": Message['chatroomID'], "text": Running_Modules.input.input(Message, self)})
