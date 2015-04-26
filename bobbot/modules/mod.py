@@ -1,5 +1,6 @@
 ##### MODDING #####
 # Allows a mod to add more mods(Temp)
+import imp
 
 print('----------------------------------')
 print('-----------Loading: mod-----------')

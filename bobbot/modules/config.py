@@ -1,3 +1,4 @@
 ##### CONFIG #####
 
-Running_Modules = {"all":[], "required":[] "extra":[]
+class config():
+	Running_Modules = {"all":[], "required":[] "extra":[]

@@ -2,6 +2,7 @@
 # This file'll be home to the commands to interact with universal commands.
 # It'll contain adduni, edituni, and deluni to allow universal mods to
 # create, edit, and delete universal commands.
+import imp
 
 print('----------------------------------')
 print('-------Loading: uniCommands-------')

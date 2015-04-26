@@ -2,6 +2,7 @@
 # So, what I did in 300 lines can be done with json and 30 lines, Im ok with that!
 # Only edits and reads the Info found locally for specifics such as 'personal' info and just about anything else
 # Can read any data file that is given to it
+import imp
 
 print('----------------------------------')
 print('-----Loading: fileInteraction-----')

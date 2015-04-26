@@ -2,6 +2,7 @@
 # Like the other ___Commands files, this will have the commands addtimer, edittimer, and deltimer.
 # However the other commands timers and testtimer will be located with the commands command found
 # in the commands.py file.
+import imp
 
 print('----------------------------------')
 print('------Loading: timerCommands------')

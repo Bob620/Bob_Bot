@@ -1,4 +1,5 @@
 ##### TEXT PARSER #####
+import imp
 
 # This is going to be a ride for those of you who understand it
 

@@ -2,6 +2,7 @@
 # This file'll be home to everything that will directly interact with basic commands.
 # That means that this will include Addcom, Delcom, and Editcom for the sake of 
 # making fewer files, if the commands need to be I can seperate them later but that may break module stuff...
+import imp
 
 print('----------------------------------')
 print('------Loading: basicCommands------')
