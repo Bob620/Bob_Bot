@@ -1,6 +1,7 @@
 ##### MODDING #####
 # Allows a mod to add more mods(Temp)
 import imp
+import urllib.request
 
 print('----------------------------------')
 print('-----------Loading: mod-----------')

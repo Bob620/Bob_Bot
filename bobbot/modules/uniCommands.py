@@ -3,6 +3,7 @@
 # It'll contain adduni, edituni, and deluni to allow universal mods to
 # create, edit, and delete universal commands.
 import imp
+import urllib.request
 
 print('----------------------------------')
 print('-------Loading: uniCommands-------')

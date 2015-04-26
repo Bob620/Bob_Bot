@@ -3,6 +3,7 @@
 # Only edits and reads the Info found locally for specifics such as 'personal' info and just about anything else
 # Can read any data file that is given to it
 import imp
+import urllib.request
 
 print('----------------------------------')
 print('-----Loading: fileInteraction-----')

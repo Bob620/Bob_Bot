@@ -3,6 +3,7 @@
 # However the other commands timers and testtimer will be located with the commands command found
 # in the commands.py file.
 import imp
+import urllib.request
 
 print('----------------------------------')
 print('------Loading: timerCommands------')

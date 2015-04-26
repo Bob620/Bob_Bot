@@ -1,5 +1,6 @@
 ##### TEXT PARSER #####
 import imp
+import urllib.request
 
 # This is going to be a ride for those of you who understand it
 

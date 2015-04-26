@@ -1,5 +1,6 @@
 ##### INPUT #####
 import imp
+import urllib.request
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)

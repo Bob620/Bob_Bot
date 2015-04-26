@@ -3,6 +3,7 @@
 # That means that this will include Addcom, Delcom, and Editcom for the sake of 
 # making fewer files, if the commands need to be I can seperate them later but that may break module stuff...
 import imp
+import urllib.request
 
 print('----------------------------------')
 print('------Loading: basicCommands------')
