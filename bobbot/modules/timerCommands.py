@@ -7,9 +7,11 @@ print('----------------------------------')
 print('------Loading: timerCommands------')
 print('----------------------------------')
 
-class timerCommands():
+config = imp.new_module('config')
+exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)
+Running_Modules = config.Running_Modules
 
-	Running_Modules = config.Running_Modules
+class timerCommands():
 
 	# Add a Channel specific Timer
 	def addtimer(Channel, Text):
