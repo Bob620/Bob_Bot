@@ -1,7 +1,9 @@
 ##### COMMANDS #####
 
 class commands():
-	
+
+	Running_Modules = config.Running_Modules
+
 	def timers(Channel, Text):
 		try:
 			PossibleCommands = Running_Modules.fileInteration.readfile('Commands', 'json')

@@ -9,6 +9,8 @@ print('----------------------------------')
 
 class timerCommands():
 
+	Running_Modules = config.Running_Modules
+
 	# Add a Channel specific Timer
 	def addtimer(Channel, Text):
 		try:

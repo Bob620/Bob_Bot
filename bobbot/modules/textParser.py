@@ -4,6 +4,8 @@
 
 class textParser():
 
+	Running_Modules = config.Running_Modules
+
 	def textparse(User, Channel, Text, self):
 		Info = Running_Modules.fileInteraction.readfile('info', 'json')
 		OwnName = Info['name']

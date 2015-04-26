@@ -7,6 +7,8 @@ print('----------------------------------')
 
 class mod():
 
+	Running_Modules = config.Running_Modules
+
 	def mod(Channel, Text):
 		try:
 			if len(Text) < 1:

@@ -3,8 +3,8 @@
 from socketIO_client import SocketIO, BaseNamespace
 
 class tokaNamespace(BaseNamespace):
-	
-	global Running_Modules
+
+	Running_Modules = config.Running_Modules
 	BobBot = ''
 	CurrentMoodType = ''
 	

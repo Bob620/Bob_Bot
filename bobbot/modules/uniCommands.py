@@ -9,6 +9,8 @@ print('----------------------------------')
 
 class uniCommands():
 
+	Running_Modules = config.Running_Modules
+
 	# Add a Universal Command
 	def adduni(Channel, Text):
 		try:

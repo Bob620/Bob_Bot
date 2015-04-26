@@ -9,6 +9,8 @@ print('----------------------------------')
 
 class basicCommands():
 
+	Running_Modules = config.Running_Modules
+
 	# Add a Command on a specified Channel
 	def addcom(Channel, Text):
 		try:

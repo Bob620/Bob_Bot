@@ -2,6 +2,8 @@
 
 class input():
 
+	Running_Modules = config.Running_Modules
+
 	def input(Message, self):
 		User = str(Message['data']['username'].lower())
 		Channel = str(Message['chatroomID'])

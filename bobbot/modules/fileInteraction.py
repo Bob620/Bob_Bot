@@ -13,6 +13,8 @@ import json
 
 class fileInteraction():
 
+	Running_Modules = config.Running_Modules
+
 	def readfile(FileName, Type):
 		try:
 			Type = Type.lower()
