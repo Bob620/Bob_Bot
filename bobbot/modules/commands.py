@@ -1,4 +1,9 @@
 ##### COMMANDS #####
+
+print('----------------------------------')
+print('--------Loading: commands---------')
+print('----------------------------------')
+
 import imp
 import urllib.request
 
@@ -45,4 +50,5 @@ class commands():
 		except:
 			return "An Error Occured while retrieving commands, please try again later!"
 
+print('--------------LOADED--------------')
 ##### ///// #####

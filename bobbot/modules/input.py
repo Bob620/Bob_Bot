@@ -1,4 +1,9 @@
 ##### INPUT #####
+
+print('----------------------------------')
+print('---------Loading: input-----------')
+print('----------------------------------')
+
 import imp
 import urllib.request
 
@@ -70,4 +75,5 @@ class input():
 		# If it's not a command, well screw them but don't return anything
 		return ''
 
+print('--------------LOADED--------------')
 ##### ///// #####

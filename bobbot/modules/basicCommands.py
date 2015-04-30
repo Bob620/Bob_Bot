@@ -2,12 +2,13 @@
 # This file'll be home to everything that will directly interact with basic commands.
 # That means that this will include Addcom, Delcom, and Editcom for the sake of 
 # making fewer files, if the commands need to be I can seperate them later but that may break module stuff...
-import imp
-import urllib.request
 
 print('----------------------------------')
 print('------Loading: basicCommands------')
 print('----------------------------------')
+
+import imp
+import urllib.request
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)

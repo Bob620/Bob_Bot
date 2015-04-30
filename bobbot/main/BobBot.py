@@ -13,7 +13,6 @@ import importlib
 import sys
 import re
 import collections
-import irc
 import urllib.request
 import imp
 import pprint
@@ -143,6 +142,7 @@ Importation('fileInteraction')
 
 Running_Modules.Running_Modules = Running_Modules
 #Chata = SocketIO('http://www.bobco.moe', 1337, Namespace, verify=True)
+#Chata = SocketIO('https://dev.toka.io', 1337, Running_Modules.tokaNamespace, verify=True)
 Chata = SocketIO('https://chata.toka.io', 1337, Running_Modules.tokaNamespace, verify=True)
 Chata.wait()
 

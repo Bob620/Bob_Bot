@@ -2,12 +2,13 @@
 # Like the other ___Commands files, this will have the commands addtimer, edittimer, and deltimer.
 # However the other commands timers and testtimer will be located with the commands command found
 # in the commands.py file.
-import imp
-import urllib.request
 
 print('----------------------------------')
 print('------Loading: timerCommands------')
 print('----------------------------------')
+
+import imp
+import urllib.request
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)
@@ -86,5 +87,4 @@ class timerCommands():
 			return 'An error returned during timer deletion! -Timer most likely not deleted-'
 
 print('--------------LOADED--------------')
-
 ##### ///// #####

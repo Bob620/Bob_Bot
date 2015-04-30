@@ -1,5 +1,9 @@
 ##### TOKANAMESPACE #####
 
+print('----------------------------------')
+print('------Loading: tokaNamespace------')
+print('----------------------------------')
+
 from socketIO_client import SocketIO, BaseNamespace
 import imp
 import urllib.request
@@ -35,3 +39,6 @@ class tokaNamespace(BaseNamespace):
 		if Message['data']['username'].lower() != 'waifubot':
 			Info = Running_Modules.fileInteraction.readfile('info', 'json')
 			self.emit("sendMessage", {"username": Info['name'], "chatroomID": Message['chatroomID'], "text": Running_Modules.input.input(Message, self)})
+
+print('--------------LOADED--------------')
+##### ///// #####

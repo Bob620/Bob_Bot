@@ -1,11 +1,12 @@
 ##### MODDING #####
 # Allows a mod to add more mods(Temp)
-import imp
-import urllib.request
 
 print('----------------------------------')
 print('-----------Loading: mod-----------')
 print('----------------------------------')
+
+import urllib.request
+import imp
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)
@@ -57,5 +58,4 @@ class mod():
 			return "Unable to return channel's mod list!"
 
 print('--------------LOADED--------------')
-
 ##### ///// #####

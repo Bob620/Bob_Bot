@@ -2,12 +2,13 @@
 # This file'll be home to the commands to interact with universal commands.
 # It'll contain adduni, edituni, and deluni to allow universal mods to
 # create, edit, and delete universal commands.
-import imp
-import urllib.request
 
 print('----------------------------------')
 print('-------Loading: uniCommands-------')
 print('----------------------------------')
+
+import imp
+import urllib.request
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)
@@ -67,5 +68,4 @@ class uniCommands():
 
 
 print('--------------LOADED--------------')
-
 ##### ///// #####

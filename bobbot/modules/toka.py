@@ -1,5 +1,9 @@
 ##### TOKA #####
 
+print('----------------------------------')
+print('----------Loading: toka-----------')
+print('----------------------------------')
+
 from socketIO_client import SocketIO, BaseNamespace
 import imp
 import urllib.request
@@ -24,4 +28,5 @@ class toka():
 		except:
 			return Connect(Channels, Username, Chat)
 
+print('--------------LOADED--------------')
 ##### ///// #####

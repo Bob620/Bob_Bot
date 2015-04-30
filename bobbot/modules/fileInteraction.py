@@ -2,8 +2,6 @@
 # So, what I did in 300 lines can be done with json and 30 lines, Im ok with that!
 # Only edits and reads the Info found locally for specifics such as 'personal' info and just about anything else
 # Can read any data file that is given to it
-import imp
-import urllib.request
 
 print('----------------------------------')
 print('-----Loading: fileInteraction-----')
@@ -12,6 +10,8 @@ print('----------------------------------')
 import os
 import codecs
 import json
+import imp
+import urllib.request
 
 config = imp.new_module('config')
 exec(urllib.request.urlopen('https://raw.githubusercontent.com/Bob620/Bob_Bot/master/bobbot/modules/config.py').read().decode('utf8'), config.__dict__)
@@ -62,5 +62,4 @@ class fileInteraction():
 			return
 
 print('--------------LOADED--------------')
-
 ##### ///// #####
