@@ -36,7 +36,7 @@ class input():
 				if ChanCommands == Command:
 					for Users in PossibleCommands['ops']:
 						if Users == User:
-							return getattr(Running_Modules+"."+PossibleCommands['botedit'][Command].split(".")[0], PossibleCommands['botedit'][Command].split(".")[1])(Channel, Text)
+							return getattr("Running_Modules."+PossibleCommands['botedit'][Command].split(".")[0], PossibleCommands['botedit'][Command].split(".")[1])(Channel, Text)
 			except:
 				pass
 		# Look see if the command matches an edit command, then check for permission(Mod or bobbot uni mod)
@@ -45,17 +45,17 @@ class input():
 				if ChanCommands == Command:
 					for Users in PossibleCommands['ops']:
 						if Users == User:
-							return getattr(Running_Modules+"."+PossibleCommands['channeledit'][Command].split(".")[0], PossibleCommands['channeledit'][Command].split(".")[1])(Channel, Text)
+							return getattr("Running_Modules."+PossibleCommands['channeledit'][Command].split(".")[0], PossibleCommands['channeledit'][Command].split(".")[1])(Channel, Text)
 					for Users in PossibleCommands['channels'][Channel]['ops']:
 						if Users == User:
-							return getattr(Running_Modules+"."+PossibleCommands['channeledit'][Command].split(".")[0], PossibleCommands['channeledit'][Command].split(".")[1])(Channel, Text)
+							return getattr("Running_Modules."+PossibleCommands['channeledit'][Command].split(".")[0], PossibleCommands['channeledit'][Command].split(".")[1])(Channel, Text)
 			except:
 				pass
 		# If it's not an edit command, or an error was thrown, check for a channel command
 		for Commands in PossibleCommands['channelcommands']:
 			try:
 				if Command == Commands:
-					return getattr(Running_Modules+"."+PossibleCommands['channelcommands'][Command].split(".")[0], PossibleCommands['channelcommands'][Command].split(".")[1])(Channel, Text)
+					return getattr("Running_Modules."+PossibleCommands['channelcommands'][Command].split(".")[0], PossibleCommands['channelcommands'][Command].split(".")[1])(Channel, Text)
 			except:
 				pass
 		# If it's not a edit command, or an error was thrown, check to see if it's a channel command
