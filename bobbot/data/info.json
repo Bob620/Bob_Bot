@@ -1,1 +1,1 @@
-{"name":"Bob_bot","autoconnect":["j9YTF02CGcQ"]}
+{"name":"WaifuBot","autoconnect":["j9YTF02CGcQ", "toka"],"modules":{"all":["mod", "basicCommands", "uniCommands", "timerCommands", "textParser", "input", "commands", "toka", "tokaNamespace", "config", "extraCommands"],"required":["basicCommands", "uniCommands", "timerCommands"],"extra":["mod", "extraCommands"]},"dev":["j9YTF02CGcQ"]}
