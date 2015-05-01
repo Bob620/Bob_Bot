@@ -29,7 +29,7 @@ class input():
 			Useless = PossibleCommands['channels'][Channel]
 		except:
 			PossibleCommands['channels'][Channel] = {"ops":[],"commands":{},"timers":{}}
-			Running_Modules.fileInteration.writefile('commands', 'json', PossibleCommands)
+			Running_Modules.fileInteraction.writefile('commands', 'json', PossibleCommands)
 		# First check for universal bot edit commands
 		for ChanCommands in PossibleCommands['botedit']:
 			try:
