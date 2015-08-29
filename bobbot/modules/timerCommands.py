@@ -39,7 +39,7 @@ class timerCommands():
 				Running_Modules.fileInteraction.writefile('commands', 'json', PossibleCommands)
 				return 'Created '+CommandName
 		except Exception as inf:
-			print(str(inf))
+			print("[timerCommands.addtimer] "+str(inf))
 			return 'An error returned during timer creation! -Timer most likely not created-'
 
 	# Edit a Channel specific Timer
@@ -67,7 +67,8 @@ class timerCommands():
 				return 'Edited '+CommandName
 			except:
 				return "That timer doesn't exsist!"
-		except:
+		except Exception as inf:
+			print("[timerCommands.edittimers] "+str(inf))
 			return 'An error returned during timer editing! -Timer most likely not edited-'
 
 	# Delete a Channel specific Timer
@@ -83,7 +84,8 @@ class timerCommands():
 				return 'Deleted '+CommandName
 			except:
 				return "That timer doesn't exsist!"
-		except:
+		except Exception as inf:
+			print("[timerCommands.deltimers] "+str(inf))
 			return 'An error returned during timer deletion! -Timer most likely not deleted-'
 
 print('--------------LOADED--------------')

@@ -21,14 +21,15 @@ class mod():
 			PossibleCommands = Running_Modules.fileInteraction.readfile('Commands', 'json')
 			NameList = ''
 			for Name in Text:
-				PossibleCommands['channels'][Channel]['ops'].append(Name.lower())
-				NameList = NameList + Name.lower() + ', '
+				if PossibleCommands['channels'][Channel]['ops'].count(Name) == 0:
+					PossibleCommands['channels'][Channel]['ops'].append(Name.lower())
+					NameList = NameList + Name.lower() + ', '
 			Running_Modules.fileInteraction.writefile('commands', 'json', PossibleCommands)
 			if len(Text) == 1:
 				return NameList.strip(', ')+' has been modded!'
 			return NameList.strip(', ')+' have been modded!'
 		except Exception as inf:
-			print(inf)
+			print("[mod.mod] "+str(inf))
 			return 'An error returned during modding! -Person/People most likely not modded-'
 	
 	# Allows a mod to remove other mods(Temp)
@@ -42,7 +43,8 @@ class mod():
 					PossibleCommands['channels'][Channel]['ops'].pop(i)
 			Running_Modules.fileInteraction.writefile('commands', 'json', PossibleCommands)
 			return Text[0]+' has been unmodded'
-		except:
+		except Exception as inf:
+			print("[mod.unmod] "+str(inf))
 			return 'An error has returned during unmodding! -Person most likely not unmodded-'
 	
 	# Shows the list of mods
@@ -54,7 +56,8 @@ class mod():
 			if len(PossibleCommands['channels'][Channel]['ops']) == 1:
 				return ', '.join(PossibleCommands['channels'][Channel]['ops']) + ' is the mod on this channel'
 			return ', '.join(PossibleCommands['channels'][Channel]['ops']) + ' are mods on this channel'
-		except:
+		except Exception as inf:
+			print("[mod.modlist] "+str(inf))
 			return "Unable to return channel's mod list!"
 
 print('--------------LOADED--------------')

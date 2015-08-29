@@ -38,7 +38,7 @@ class fileInteraction():
 					else:
 						return {}
 		except Exception as inf:
-			print(inf)
+			print("[fileInteraction.readfile] "+str(inf))
 			return ''
 
 	# Can write, create, and overwrite, any data file that is given to it
@@ -58,7 +58,7 @@ class fileInteraction():
 						File_Open.write(json.dumps(Info))
 			return
 		except Exception as inf:
-			print(inf)
+			print("[fileINteraction.writefile] "+str(inf))
 			return
 
 print('--------------LOADED--------------')

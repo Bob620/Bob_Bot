@@ -30,11 +30,12 @@ class basicCommands():
 				PossibleCommands['channels'][Channel]['commands'][CommandName] = ' '.join(Text)
 				Running_Modules.fileInteraction.writefile('commands', 'json', PossibleCommands)
 				return 'Created '+CommandName
-		except:
+		except Exception as inf:
+			print("[basicCommands.addcom] "+str(inf))
 			return 'An error returned during command creation! -Command most likely not created-'
 
 	# Edit a Command on a specified Channel
-	def editcom(Channel, Text):
+	def delcom(Channel, Text):
 		try:
 			if len(Text) < 1:
 				return '!delcommand COMMAND-NAME [COMMAND-NAME-TWO ETC.]'
@@ -47,11 +48,12 @@ class basicCommands():
 				except:
 					return "That command doesn't exsist!"
 			return 'Deleted '+', '.join(Text)
-		except:
+		except Exception as inf:
+			print("[basicCommands.editcom] "+str(inf))
 			return 'An error returned duing command deletion! -Command most likely not deleted-'
 
 	# Delete a Command on a specified Channel
-	def delcom(Channel, Text):
+	def editcom(Channel, Text):
 		try:
 			if len(Text) < 2:
 				return '!editcommand COMMAND-NAME COMMAND OUTPUT'
@@ -64,7 +66,8 @@ class basicCommands():
 				return 'Edited '+CommandName
 			except:
 				return "That command doesn't exsist!"
-		except:
+		except Exception as inf:
+			print("[basicCommands.delcom] "+str(inf))
 			return 'An error returned during command editing! -Command most likely not edited-'
 
 print('--------------LOADED--------------')

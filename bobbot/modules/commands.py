@@ -16,14 +16,18 @@ class commands():
 
 	def timers(Channel, Text):
 		try:
-			PossibleCommands = Running_Modules.fileInteration.readfile('Commands', 'json')
-			return "Timers on this channel are: "+', '.join(list(PossibleCommands['channels'][Channel]['timers']))+'\nUse !testtimer TIMER-NAME to show output and how often it occurs'
-		except:
+			PossibleCommands = Running_Modules.fileInteraction.readfile('Commands', 'json')
+			if len(PossibleCommands['channels'][Channel]['timers']) > 0:
+				return "Timers on this channel are: "+', '.join(list(PossibleCommands['channels'][Channel]['timers']))+'\nUse !testtimer TIMER-NAME to show output and how often it occurs'
+			else:
+				return "There are no timers on this channel, use\n!addtimer TIMER-NAME HOW-OFTEN-SECONDS TIMER OUPUT"
+		except Exception as inf:
+			print("[commands.timers] "+str(inf))
 			return "An error returned while finding the timer list, please try again later!"
 	
 	def testtimer(Channel, Text):
 		try:
-			PossibleCommands = Running_Modules.fileInteration.readfile('Commands', 'json')
+			PossibleCommands = Running_Modules.fileInteraction.readfile('Commands', 'json')
 			Command = Text[0]
 			for Commands in PossibleCommands['channels'][Channel]['timers']:
 				try:
@@ -32,7 +36,8 @@ class commands():
 				except:
 					return "An error returned while running the test, please try again later!"
 			return "Could not find that timer!"
-		except:
+		except Exception as inf:
+			print("[commands.testtimer] "+str(inf))
 			return "An error returned while running the test, please try again later!"
 
 	# Display all possible commands for the channel
@@ -45,11 +50,47 @@ class commands():
 				CommandList.append('!'+Command)
 			for Command in list(PossibleCommands['channels']['universal']['commands']):
 				CommandList.append('!'+Command)
+			for Command in list(PossibleCommands['channelcommands']):
+				if Command != 'commands':
+					CommandList.append('!'+Command)
 			for Command in CommandList:
 				CommandListFinal[Command] += 1
 			return "Commands on this channel are: "+', '.join(list(CommandListFinal))
-		except:
+		except Exception as inf:
+			print("[commands.commands] "+str(inf))
 			return "An Error Occured while retrieving commands, please try again later!"
+
+	# Display all possible commands for the channel
+	def uniCommands(Channel, Text):
+		try:
+			PossibleCommands = Running_Modules.fileInteraction.readfile('Commands', 'json')
+			CommandList = []
+			CommandListFinal = collections.Counter()
+			for Command in list(PossibleCommands['botedit']):
+				CommandList.append('!'+Command)
+			for Command in list(PossibleCommands['channeledit']):
+				CommandList.append('!'+Command)
+			for Command in CommandList:
+				CommandListFinal[Command] += 1
+			return "Universal Mod Commands are: "+', '.join(list(CommandListFinal))
+		except Exception as inf:
+			print("[commands.commands] "+str(inf))
+			return "An Error Occured while retrieving commands, please try again later!"
+
+	# Display all possible commands for the channel
+	def modCommands(Channel, Text):
+		try:
+			PossibleCommands = Running_Modules.fileInteraction.readfile('Commands', 'json')
+			CommandList = []
+			CommandListFinal = collections.Counter()
+			for Command in list(PossibleCommands['channeledit']):
+				CommandList.append('!'+Command)
+			for Command in CommandList:
+				CommandListFinal[Command] += 1
+			return "Mod Commands are: "+', '.join(list(CommandListFinal))
+		except Exception as inf:
+			print("[commands.commands] "+str(inf))
+			return "An Error Occured while retrieving commands, please try again later!"		
 
 print('--------------LOADED--------------')
 ##### ///// #####

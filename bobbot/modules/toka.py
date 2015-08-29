@@ -16,16 +16,18 @@ class toka():
 
 	def Connect(Channel, Username, Chat):
 		try:
-			Chat.emit('join', {'username': Username, 'chatroomID': Channel})
+			Chat.emit('join', {'username': Username, 'chatroomId': Channel})
 			print('Joined Channel '+Channel)
-		except:
+		except Exception as inf:
+			print("[toka.Connect] "+str(inf))
 			pass
 
 	def Disconnect(Channel, Username, Chat):
 		try:
-			Chat.emit('join', {'username': Username, 'chatroomID': Channel})
+			Chat.emit('join', {'username': Username, 'chatroomId': Channel})
 			print('Joined Channel '+Channel)
-		except:
+		except Exception as inf:
+			print("[toka.Disconnect] "+str(inf))
 			return Connect(Channels, Username, Chat)
 
 print('--------------LOADED--------------')
