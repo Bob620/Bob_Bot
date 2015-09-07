@@ -1,0 +1,16 @@
+{
+  "name": "bobbot",
+  "version": "1.0.0",
+  "description": "Version Mewbot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bob620",
+  "license": "ISC",
+  "dependencies": {
+    "irc": "^0.3.12",
+    "mongodb": "^2.0.42",
+    "string.prototype.startswith": "^0.2.0"
+  }
+}
