@@ -1,7 +1,7 @@
 /* Bob_Bot: MewBot V1.0.0
  * 
  * Currently supports connection to MongoDB to store channel stuff
- * Mods are stored, however it can not at this point use the /mod commands. A possible way to fix this is to use the commands that are sent with each message.
+ * Mods are no longer stored anywhere, but rather with the new TAGs bobbot parses each message for mod status(or higher) along with color and a variety of other tags.
  * 
  * All timer commands have been temporarily depercated until I see a reason to have them brought back
  * Chats have been limited to a maximum of 15 per second and all normal messages form bobbot are now handled through a queue system rather then directly sent.
@@ -97,56 +97,103 @@ function Bobbot() {
 	this.maxChatsPerSec = 15;
 	this.chatsThisSecond = 0;
 	this.queuedChats = [];
+	this.connected = false;
 
 	// Primary Functions
 	var self = this;
 
 	this.ini = function() {
-		var channels = [];
-
-		for (var x = 0; x < channels.length; x++) {
-			self.channels[channels[x]] = new Channel(channels[x]);
-			self.channels[channels[x]].pull();
-		}
-		self.channels["global"] = new Channel("global");
-		self.channels["global"].pull();
 
 		// Normal Chat: "irc.twitch.tv"
 		// Group Chat: "192.16.64.180"
-		self.client = new irc.Client("irc.twitch.tv", "BOTNAME", {userName: "BOTNAME", autoRejoin: true, channels: [], sasl: true, password: "oauth:1234567890abcdefghijklmnopqrst"});
+		self.client = new irc.Client("irc.twitch.tv", "BOTNAME", {userName: "BOTNAME", autoRejoin: true, sasl: true, password: "oauth:1234567890abcdefghijklmnopqrst"});
 
-		queueMessage("raw", "CAP REQ :twitch.tv/membership");
-		queueMessage("raw", "CAP REQ :twitch.tv/commands");
-
+		// Add Listeners to the client
 		self.client.addListener('error', function(message) {
 		    console.log('error: ', message);
 		});
 
 		self.client.addListener('message', function (username, channel, message) {
-		    self.message(username, channel, message);
+		    //self.message(username, channel, message);
 		});
 
 		self.client.addListener("raw", function(message) {
-			if (message.rawCommand == "353") {
-				console.log(message.args);
-			}
-			if (message.rawCommand == "MODE") {
-				if (message.args[1] == "+o") {
-					console.log("Added Mod");
-					self.channels[message.args[0]].addMod(message.args[2]);
+			if (message.rawCommand.startsWith("@")) {
+				var type = message.args[0].split(" ");
+				switch (type[1]) {
+					case "PRIVMSG":
+						var user = new User(message);
+						if (user.channel.toLowerCase() == user.username.toLowerCase()) {
+							user.usertype = "owner";
+						}
+						self.message(user);
+						break;
+					case "USERSTATE":
+						break;
+					case "NOTICE":
+						break;
+					case "ROOMSTATE":
+						break;
+					case "CLEARCHAT":
+						break;
+					default:
+						console.log(message.rawCommand+" -> "+message.args);
+						break;
+				}
+			} else {
+				switch (message.rawCommand) {
+					case "001":
+						console.log(message.rawCommand+" -> "+message.args);
+						self.connected = true;
+						break;
+					case "PING":
+						break;
+					case "MODE":
+						break;
+					case "366":
+						break;
+					case "JOIN":
+						break;
+					case "CAP":
+						break;
+					case "353":
+						break;
+					case "HOSTTARGET":
+						break;
+					default:
+						console.log(message.rawCommand+" -> "+message.args);
+						break;
 				}
 			}
 		});
 
+		// Send RAW messages for IRCv3 Twitch Commands
+		self.queueMessage("raw", "CAP REQ :twitch.tv/membership");
+		self.queueMessage("raw", "CAP REQ :twitch.tv/commands");
+		self.queueMessage("raw", "CAP REQ :twitch.tv/tags");
+
+		// Load and Connect to Channels
+		var channels = [];
+
+		for (var x = 0; x < channels.length; x++) {
+			self.channels[channels[x]] = new Channel(channels[x]);
+			self.channels[channels[x]].pull();
+			self.queueMessage("raw", "JOIN "+channels[x]);
+		}
+		self.channels["global"] = new Channel("global");
+		self.channels["global"].pull()
 	}
 
 	// Message Parser
 	// This is the main command that runs everything
-	this.message = function(username, channel, message) {
+	this.message = function(user) {
+		var username = user.username;
+		var message = user.message;
+		var channel = user.channel;
 		if (message.startsWith("!")) {
 			var command = message.split(" ");
 			var commandName = command.shift().replace(/(\!+)/, "").toLowerCase();
-			if (self.channels[channel].testMod(username) || self.channels["global"].testMod(username)) {
+			if (user.usertype == "mod" || user.usertype == "global_mod" || user.usertype == "admin" || user.usertype == "staff" || user.usertype == "owner" || username.toLowerCase() == "bob620") {
 				switch(commandName) {
 					default:
 						break;
@@ -254,16 +301,22 @@ function Bobbot() {
 			self.client.say(channel, output);
 			self.chatsThisSecond++;
 		} else {
-			self.chatsToSend.push({"channel": channel, "output": output});
+			self.queuedChats.push({"channel": channel, "output": output});
 		}
 	}
 
 	this.sendRaw = function(output) {
 		if (self.chatsThisSecond < self.maxChatsPerSec) {
-			self.client.send(output, "", "", "");
-			self.chatsThisSecond++;
+			if (self.connected) {
+				console.log(output);
+				self.client.send(output, "", "", "Waifu__Bot");
+				self.chatsThisSecond++;
+			} else {
+				console.log("FAIL -> "+output)
+				self.queuedChats.push({"channel": "raw", "output": output});
+			}
 		} else {
-			self.chatsToSend.push({"channel": "raw", "output": output});
+			self.queuedChats.push({"channel": "raw", "output": output});
 		}
 		
 	}
@@ -293,10 +346,10 @@ function Bobbot() {
 			for (var x = 0; x < self.queuedChats.length; x++) {
 				if (self.chatsThisSecond < self.maxChatsPerSec) {
 					var chat = self.queuedChats.shift();
-					if (chat.chatroom == "raw") {
+					if (chat.channel == "raw") {
 						self.sendRaw(chat.output);
 					} else {
-						self.sendMessage(chat.chatroom, chat.output);
+						self.sendMessage(chat.channel, chat.output);
 					}
 				}
 			}
@@ -310,31 +363,58 @@ function Bobbot() {
 		if (text == "push\n") {
 			self.pushChannels();
 		}
-		if (text == "mods\n") {
-			self.requestMods();
-		}
 	});
 
-	// THIS DOES NOT WORK!!
-	this.requestMods = function() {
-		self.client.send("NAMES", "", "", "");
-	}
-
 	this.queueMessage = function(channel, output) {
-		if (self.queuedChats = []) {
+		if (self.queuedChats == []) {
 			if (self.chatsThisSecond < self.maxChatsPerSec) {
 				if (channel == "raw") {
 					self.sendRaw(output);
 				} else {
-					self.sendMessage(channel, output);
+					self.queuedChats.push({"channel": channel, "output": output});
 				}
 			} else {
-				self.queuedChats.push({"channel": channel, "output": output});
+				self.sendMessage(channel, output);
 			}
 		} else {
 			self.queuedChats.push({"channel": channel, "output": output});
 		}
 	}
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ////          ///           ///           //////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ///   ///////////  ////////////  ///////  //////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ///  ////////////  ////////////  ///////  //////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ///   ///////////  ////////////  ///////  //////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ////         ////         /////           //////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ///////////   ///  ////////////  ////  /////////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ////////////  ///  ////////////  /////  ////////////////////////////////////////////////////////////////////////////////////////////////
+///  ///////  ///////////   ///  ////////////  //////  ///////////////////////////////////////////////////////////////////////////////////////////////
+///           ///          ////           ///  ///////  //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function User(irc) {
+	var ircargs = irc.args[0].split(" ");
+	this.message = ircargs[3].replace(/(\:)/, "");
+	this.channel = ircargs[2];
+
+	var irc3 = irc.rawCommand.replace(/(\@)/, "").split(";");
+
+	this.username = irc3[1].split("=");
+	this.color = irc3[0].split("=");
+	this.sub = irc3[3].split("=");
+	this.turbo = irc3[4].split("=");
+	this.usertype = irc3[5].split("=");
+
+	var self = this;
+
+	self.username = self.username[1];
+	self.color = self.color[1];
+	self.sub = self.sub[1];
+	self.turbo = self.turbo[1];
+	self.usertype = self.usertype[1];
 
 }
 
@@ -351,12 +431,11 @@ function Bobbot() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Channel Object
-function Channel(channelName, mods, commands) {
+function Channel(channelName, commands) {
 	// Variables
 	this.channelName = channelName;
-	this.mods = [];
 	this.commands = {};
-	this.uri = "MongoDB";
+	this.uri = "mongodb";
 	var self = this;
 
 	/* Add a Command
@@ -368,19 +447,6 @@ function Channel(channelName, mods, commands) {
 	this.addCommand = function(name, output) {
 		if (!self.commands.hasOwnProperty(name)) {
 			self.commands[name] = output;
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/* Add a Mod
-	 * Requires name
-	 * name = string
-	 */
-	this.addMod = function(name) {
-		if (self.mods.indexOf(name) == -1) {
-			self.mods.push(name);
 			return true;
 		} else {
 			return false;
@@ -408,19 +474,6 @@ function Channel(channelName, mods, commands) {
 	this.deleteCommand = function(name) {
 		if (self.commands.hasOwnProperty(name)) {
 			delete self.commands[name];
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/* Delete a Mod
-	 * Requires name
-	 * name = string
-	 */
-	this.deleteMod = function(name) {
-		if (self.mods.indexOf(name) != -1) {
-			self.mods.pop(self.mods.indexOf(name));
 			return true;
 		} else {
 			return false;
@@ -466,20 +519,7 @@ function Channel(channelName, mods, commands) {
 		}
 	}
 
-	/* Test if name is a mod
-	 * Requires name
-	 * name = string
-	 */
-	this.testMod = function(name) {
-		for (var x = 0; x < self.mods.length; x++) {
-			if (self.mods[x] == name) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/* Push mods and commands to Mongo
+	/* Push commands to Mongo
 	 * Requires nothing
 	 */
 	this.push = function() {
@@ -491,13 +531,12 @@ function Channel(channelName, mods, commands) {
 				{"name": self.channelName},
 				{$set: {
 					"commands": self.commands,
-					"mods": self.mods
 				}}
 			);
 		});
 	}
 
-	/* Pull mods and Commands from Mongo
+	/* Pull Commands from Mongo
 	 * Requires nothing
 	 */
 	this.pull = function() {
@@ -509,25 +548,16 @@ function Channel(channelName, mods, commands) {
 			db.collection('channels').find({"name": self.channelName}).toArray(function(err, doc) {
 				if (err) throw err;
 				try {
-					self.updateMods(doc[0].mods);
 					self.updateCommand(doc[0].commands);
-					console.log(self.channelName);
-					console.log(doc[0]);
+					console.log("UPDATED CHANNEL: "+self.channelName);
 				} catch (err) {
 					db.collection('channels').insert([
-						{"mods" : [], "commands": {}, "name": self.channelName}
+						{"commands": {}, "name": self.channelName}
 					], function() {
 					});
 				}
 			});
 		});
-	}
-
-	this.updateMods = function(mods) {
-		if (self.mods = []) {
-			self.mods = mods;
-			console.log(self.mods);
-		}
 	}
 
 	this.updateCommand = function(commands) {
@@ -537,7 +567,6 @@ function Channel(channelName, mods, commands) {
 				self.commands[keys[x]] = commands[keys[x]];
 			}
 		}
-		console.log(self.commands);
 	}
 }
 
