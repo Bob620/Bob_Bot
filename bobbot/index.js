@@ -113,10 +113,7 @@ function Bobbot() {
 		    console.log('error: ', message);
 		});
 
-		self.client.addListener('message', function (username, channel, message) {
-		    //self.message(username, channel, message);
-		});
-
+        // Main listener for 99% of everything sent from the server
 		self.client.addListener("raw", function(message) {
 			if (message.rawCommand.startsWith("@")) {
 				var type = message.args[0].split(" ");
@@ -131,10 +128,35 @@ function Bobbot() {
 					case "USERSTATE":
 						break;
 					case "NOTICE":
+                        // NOTICE OF ALL OTHER STUFFS AS THEY CHANGE
 						break;
 					case "ROOMSTATE":
+                        var args = message.rawCommand.replace(/(\@)/, "").split(";");
+                        var channel = message.args[0].split(" ");
+                        channel = channel[2];
+                        for (var x = 0; x < args.length; x++) {
+                            var arg = args[x].split("=");
+                            switch(arg[0]) {
+                                case "rk9":
+                                	self.channels[channel].updateRk9 = arg[1];
+                                    break;
+                                case "subs-only":
+                                    self.channels[channel].updateSubs_only = arg[1];
+                                    break;
+                                case "slow":
+                                    self.channels[channel].updateSlow = arg[1];
+                                    break;
+                                case "broadcaster-lang":
+                                    self.channels[channel].updateLang = arg[1];
+                                    break;
+                                default:
+                                    console.log("UNKNOWN ROOMSTATE: "+arg[0]+" -> "+arg[1]);
+                                    break;
+                            }
+                        }
 						break;
 					case "CLEARCHAT":
+                        // PICKNIC, CHAT WAS CLEARED!
 						break;
 					default:
 						console.log(message.rawCommand+" -> "+message.args);
@@ -147,18 +169,28 @@ function Bobbot() {
 						self.connected = true;
 						break;
 					case "PING":
+                        // PONG
 						break;
 					case "MODE":
-						break;
-					case "366":
+                        // OPERATOR
 						break;
 					case "JOIN":
+                        // SOMEONE JOINED
 						break;
+                    case "PART":
+                        // SOMEONE LEFT
+                        break;
 					case "CAP":
+                        // CAP REQ
 						break;
 					case "353":
+                        // NAMES
+						break;
+					case "366":
+                        // END OF NAMES
 						break;
 					case "HOSTTARGET":
+                        // HOSTING
 						break;
 					default:
 						console.log(message.rawCommand+" -> "+message.args);
@@ -192,15 +224,18 @@ function Bobbot() {
 		var channel = user.channel;
 		if (message.startsWith("!")) {
 			var command = message.split(" ");
-			var commandName = command.shift().replace(/(\!+)/, "").toLowerCase();
+			var commandName = command.shift().replace(/(\!)/, "").toLowerCase();
 			if (user.usertype == "mod" || user.usertype == "global_mod" || user.usertype == "admin" || user.usertype == "staff" || user.usertype == "owner" || username.toLowerCase() == "bob620") {
 				switch(commandName) {
 					default:
 						break;
 					case "addcommand":
-						var name = command.shift()
+						var name = command.shift();
+                        if (name.startsWith("!")) {
+                            name = name.replace(/(\!)/, "").toLowerCase();
+                        }
 						if (!self.channels[channel].testCommand(name)) {
-							self.channels[channel].addCommand(name, command)
+							self.channels[channel].addCommand(name, command); // DOES THIS WORK WITH "
 							self.queueMessage(channel, "Command "+name+" Created!");
 						} else {
 							self.queueMessage(channel, "The specified command exists!");
@@ -208,6 +243,9 @@ function Bobbot() {
 						break;
 					case "delcommand":
 						var name = command.shift();
+                        if (name.startsWith("!")) {
+                            name = name.replace(/(\!)/, "").toLowerCase();
+                        }
 						if (self.channels[channel].testCommand(name)) {
 							self.channels[channel].deleteCommand(name);
 							self.queueMessage(channel, "Command "+name+" Deleted!");
@@ -216,10 +254,13 @@ function Bobbot() {
 						}
 						break;
 					case "deletecommand":
-						self.queueMessage("This command has been depercated!/nPlease use !delcommand");
+						self.queueMessage(channel, "Please use !delcommand");
 						break;
 					case "editcommand":
 						var name = command.shift();
+                        if (name.startsWith("!")) {
+                            name = name.replace(/(\!)/, "").toLowerCase();
+                        }
 						if (self.channels[channel].testCommand(name)) {
 							self.channels[channel].modifyCommand(name, command);
 							self.queueMessage(channel, "Command "+name+" Edited!");
@@ -245,6 +286,15 @@ function Bobbot() {
 					case "caster":
 						self.queueMessage(channel, "Follow this fabulous person! www.twitch.tv/"+command[0]);
 						break;
+                    case "addquote":
+                        self.queueMessage(channel, "This command will be added soon!");
+                        break;
+                    case "delquote":
+                        self.queueMessage(channel, "This command will be added soon!");
+                        break;
+                    case "listquote":
+                        self.queueMessage(channel, "This command will be added soon!");
+                        break;
 				}
 			}
 			switch(commandName) {
@@ -285,6 +335,9 @@ function Bobbot() {
 						self.queueMessage(channel, self.channels["global"].callCommand(commandName));
 					}
 					break;
+                case "quote":
+                    self.queueMessage(channel, "This command will be added soon!");
+                    break;
 			}
 		}
 	}
@@ -436,6 +489,10 @@ function Channel(channelName, commands) {
 	this.channelName = channelName;
 	this.commands = {};
 	this.uri = "mongodb";
+    this.rk9 = 0;
+    this.subs_only = 0;
+    this.slow = 0;
+    this.lang = "en";
 	var self = this;
 
 	/* Add a Command
@@ -559,7 +616,11 @@ function Channel(channelName, commands) {
 			});
 		});
 	}
-
+    
+    /* Update Commands given MongoDB refrence
+     * Requires commands
+     * commands = MongoDB Refrence
+     */
 	this.updateCommand = function(commands) {
 		var keys = Object.keys(commands);
 		for (var x = 0; x < keys.length; x++) {
@@ -568,6 +629,38 @@ function Channel(channelName, commands) {
 			}
 		}
 	}
+    
+    /* Update RK9 mode
+     * Requires value 
+     * value = boolen or equivalent
+     */
+    this.updateRk9 = function(value) {
+        self.rk9 = value;
+    }
+    
+    /* Update Sub_only mode
+     * Requires value 
+     * value = boolen or equivalent
+     */
+    this.updateSubs_only = function(value) {
+        self.subs_only = value;
+    }
+    
+    /* Update Slowmode
+     * Requires value 
+     * value = boolen or equivalent
+     */
+    this.updateSlow = function(value) {
+        self.slow = value
+    }
+    
+    /* Update Language
+     * Requires value 
+     * value = boolen or equivalent
+     */
+    this.updateLang = function(value) {
+        self.lang = value;
+    }
 }
 
 // do something when app is closing
