@@ -84,6 +84,7 @@
 var irc = require("irc");
 var mongodb = require('mongodb');
 require('String.prototype.startsWith');
+var request = require('request');
 
 process.title = "Bobbot";
 
@@ -156,7 +157,7 @@ function Bobbot() {
                         }
 						break;
 					case "CLEARCHAT":
-                        // PICKNIC, CHAT WAS CLEARED!
+                        self.queueMessage(channel, "PICNIC!!!");
 						break;
 					default:
 						console.log(message.rawCommand+" -> "+message.args);
@@ -284,7 +285,9 @@ function Bobbot() {
 						self.queueMessage(channel, "Command is depercated, please ask Bob620 if you want it added back. Sorry for any inconveniences!");
 						break;
 					case "caster":
-						self.queueMessage(channel, "Follow this fabulous person! www.twitch.tv/"+command[0]);
+                        if (self.queryChannelAPI(channelInfo)) {
+    						self.queueMessage(channel, "Follow this fabulous person! www.twitch.tv/"+command[0]+" They were last seen playing "+self.info[channel].game);
+                        }
 						break;
                     case "addquote":
                         self.queueMessage(channel, "This command will be added soon!");
@@ -433,7 +436,26 @@ function Bobbot() {
 			self.queuedChats.push({"channel": channel, "output": output});
 		}
 	}
-
+    
+    // Query API check with request
+    // Uses API Callback
+    this.queryChannelAPI = function(channel) {
+        return request({
+            "url": "https://api.twitch.tv/kraken/channels/"+channel,
+            "headers": {
+                "Accept": "application/vnd.twitchtv.v3+json"
+            }
+        }, self.APICallback);
+    }
+    
+    // API Callback
+    // Requires request callback
+    this.APICallback = function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var info = JSON.parse(body);
+            self.info[info.name] = info;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
