@@ -11,6 +11,7 @@
   "dependencies": {
     "irc": "^0.3.12",
     "mongodb": "^2.0.42",
-    "string.prototype.startswith": "^0.2.0"
+    "string.prototype.startswith": "^0.2.0",
+    "request": "2.61.0"
   }
 }
