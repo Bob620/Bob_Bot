@@ -5,8 +5,10 @@ Bob_Bot will be a public bot in the future, however since it is still under heav
 If you would like to help develop the bot or run it on your own server go ahead.
 
 Create a new file named "login.json", in it:
+``` json
 {
 	"guildInfo": {"username": "", "password": ""},
 	"commands": {"username": "", "password": ""},
 	"clientId": ""
 }
+```
