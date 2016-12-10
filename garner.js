@@ -41,12 +41,7 @@ Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes) {
 			.then(function(response) {
 				switch (response.code) {
 					case 200:
-						var data = response.data;
-						if (data != []) {
-							resolve(response.data);
-						} else {
-							reject('Empty return value');
-						}
+						resolve(response.data);
 						break;
 					case 630:
 						self.getSession()
@@ -57,12 +52,7 @@ Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes) {
 							.then(function(response) {
 								switch (response.code) {
 									case 200:
-										var data = response.data;
-										if (data != []) {
-											resolve(response.data);
-										} else {
-											reject('Empty return value');
-										}
+										resolve(response.data);
 										break;
 									case 630:
 										reject('Failed to log in to Garner');

@@ -67,6 +67,9 @@ function Bobbot(clientID, loginData) {
 		console.log('guildBanRemove');
 		console.log(info);
 	});
+	self.client.on('guildCreate', function(guild) {
+		console.log("Joined "+guild.name);
+	});
 	self.client.on('guildMemberAdd', function(info) {
 		//console.log('guildMemberAdd');
 		//console.log(info);
@@ -127,15 +130,15 @@ Bobbot.prototype.parseMessage = function(message) {
 
 											if (requestedChannel && message.member.roles.find('name', 'Bobbot Admin')) {
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var filter = guildInfo[0].filter;
+												function(guildObject) {
+													var filter = guildObject.filter;
 													var channelIndex = filter.channelIds.indexOf(requestedChannel.id);
 
 													if (channelIndex == -1) {
 														filter.channelIds.push(requestedChannel.id);
 
 														self.updateGuildFilter(guildId, filter, messageChannel,
-														function(guildInfo) {
+														function(guildObject) {
 															messageChannel.sendMessage('I will monitor that channel.');
 														});
 													} else {
@@ -149,15 +152,15 @@ Bobbot.prototype.parseMessage = function(message) {
 
 											if (requestedChannel && message.member.roles.find('name', 'Bobbot Admin')) {
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var filter = guildInfo[0].filter;
+												function(guildObject) {
+													var filter = guildObject.filter;
 													var channelIndex = filter.channelIds.indexOf(requestedChannel.id);
 
 													if (channelIndex != -1) {
 														filter.channelIds.splice(channelIndex, 1);
 
 														self.updateGuildFilter(guildId, filter, messageChannel,
-														function(guildInfo) {
+														function(guildObject) {
 															messageChannel.sendMessage('I will not monitor that channel.');
 														});
 													} else {
@@ -171,14 +174,14 @@ Bobbot.prototype.parseMessage = function(message) {
 												var word = content[2].toLowerCase();
 												
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var filter = guildInfo[0].filter;
+												function(guildObject) {
+													var filter = guildObject.filter;
 
 													if (filter.words.indexOf(word) == -1) {
 														filter.words.push(word);
 
 														self.updateGuildFilter(guildId, filter, messageChannel,
-														function(guildInfo) {
+														function(guildObject) {
 															messageChannel.sendMessage('That word will be filtered.');
 														});
 													} else {
@@ -192,8 +195,8 @@ Bobbot.prototype.parseMessage = function(message) {
 												var word = content[2].toLowerCase();
 												
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var filter = guildInfo[0].filter;
+												function(guildObject) {
+													var filter = guildObject.filter;
 
 													var wordIndex = filter.words.indexOf(word);
 
@@ -201,7 +204,7 @@ Bobbot.prototype.parseMessage = function(message) {
 														filter.words.splice(wordIndex, 1);
 
 														self.updateGuildFilter(guildId, filter, messageChannel,
-														function(guildInfo) {
+														function(guildObject) {
 															messageChannel.sendMessage('That word will not be filtered.');
 														});
 													} else {
@@ -212,19 +215,14 @@ Bobbot.prototype.parseMessage = function(message) {
 											break;
 										case "list":
 											self.getGuild(guildId, messageChannel,
-											function(guildInfo) {
-												var filter = guildInfo[0].filter;
+											function(guildObject) {
+												var filter = guildObject.filter;
 
-												var output = message.guild.name+"\n\nFiltered Channels:\n"
+												var output = message.guild.name+"\n\nFiltered Channels:"
 
-												for (var i = 0; i < filter.channelIds.length; i++) {
-													var channel = message.guild.channels.find('id', filter.channelIds[i]);
-													if (channel && channel.name) {
-														output += "- #"+channel.name+"\n";
-													}
-												}
+												filter.channelIds.join('\n- #');
 
-												output += "\nFiltered Words:\n- "+filter.words.join('\n- ');
+												output += "\n\nFiltered Words:\n- "+filter.words.join('\n- ');
 
 												message.author.sendCode('diff', output);
 											});
@@ -280,18 +278,13 @@ Bobbot.prototype.parseMessage = function(message) {
 									switch (content[1].toLowerCase()) {
 										case "list":
 											self.getGuild(guildId, messageChannel,
-											function(guildInfo) {
-												var givemeKeys = Object.keys(guildInfo[0].giveme);
+											function(guildObject) {
+												var givemeNames = guildObject.giveme.getAll('name');
 
-												if (givemeKeys.length == 0) {
+												if (givemeNames.length == 0) {
 													messageChannel.sendMessage('There are no roles that I can give.');
 												} else {
-													var output = "";
-													for (var i = 0; i < givemeKeys.length; i++) {
-														var roleName = givemeKeys[i];
-														output += roleName+'\n';
-													}
-													messageChannel.sendMessage(output);
+													messageChannel.sendMessage(givemeNames.join('\n'));
 													// Check for existance in the guild
 												}
 											});
@@ -299,19 +292,21 @@ Bobbot.prototype.parseMessage = function(message) {
 										case "set":
 											if (content[3] && message.member.roles.find('name', 'Bobbot Admin')) {
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
+												function(guildObject) {
 													var roleAbb = content[2].toLowerCase();
 													var roleName = content.slice(3).join(' ').toLowerCase();
-													var giveme = guildInfo[0].giveme;
+													var giveme = guildObject.giveme;
 
-
-													var roleId = giveme[roleAbb];
-													if (!roleId) {
+													var role = giveme.find('name', roleAbb);
+													if (!role) {
 														var role = message.guild.roles.find(function(item) { return (item.name.toLowerCase() === roleName); });
 														if (role) {
-															giveme[roleAbb] = role.id;
+															giveme.add({
+																'name': roleAbb,
+																'id': role.id
+															});
 
-															self.updateGuildGiveme(guildId, giveme, messageChannel,
+															self.updateGuildGiveme(guildId, giveme.array, messageChannel,
 															function(newItem) {
 																messageChannel.sendMessage('I can now provide that role.');
 															});
@@ -329,19 +324,21 @@ Bobbot.prototype.parseMessage = function(message) {
 										case "remove":
 											if (content[2] && message.member.roles.find('name', 'Bobbot Admin')) {
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var roleName = content[2].toLowerCase();
-													var giveme = guildInfo[0].giveme;
+												function(guildObject) {
+													var roleAbb = content[2].toLowerCase();
+													var giveme = guildObject.giveme;
 
-													if (giveme[roleName]) {
-														delete giveme[roleName];
+													var role = giveme.find('name', roleAbb);
 
-														self.updateGuildGiveme(guildId, giveme, messageChannel,
+													if (role) {
+														giveme.delete(role);
+
+														self.updateGuildGiveme(guildId, giveme.array, messageChannel,
 														function(newItem) {
 															messageChannel.sendMessage('I can no longer provide that role.');
 														});
 													} else {
-														messageChannel.sendMessage('I don\'t have that role.');
+														messageChannel.sendMessage('I can no longer provide that role.');
 													}
 												});
 											} else {
@@ -351,12 +348,13 @@ Bobbot.prototype.parseMessage = function(message) {
 										default:
 											if (content[1]) {
 												self.getGuild(guildId, messageChannel,
-												function(guildInfo) {
-													var roleName = content.slice(1);
+												function(guildObject) {
+													var roleAbb = content.slice(1);
 
-													var roleId = guildInfo[0].giveme[roleName];
-													if (roleId) {
-														message.member.addRole(roleId)
+													var role = guildObject.giveme.exists('name', roleAbb);
+
+													if (role) {
+														message.member.addRole(role.id)
 														.then(function() {
 															message.delete();
 														})
@@ -426,7 +424,7 @@ Bobbot.prototype.parseMessage = function(message) {
 
 				self.garner.guildInfo.searchFor('guildId', message.guild.id,
 				function(guildInfo) {
-					var filter = guildInfo[0].filter;
+					var filter = guildInfo.filter;
 
 					if (filter.channelIds.indexOf(message.channel.id) != -1) {
 
@@ -496,6 +494,7 @@ Bobbot.prototype.updateGuildFilter = function(guildId, replaceItem, messageChann
 	var self = this;
 
 	return self.garner.guildInfo.updateItem('guildId', guildId, 'filter', replaceItem)
+	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Filter.updateGuild', messageChannel);
@@ -506,6 +505,7 @@ Bobbot.prototype.updateGuildMusic = function(guildId, replaceItem, messageChanne
 	var self = this;
 
 	return self.garner.guildInfo.updateItem('guildId', guildId, 'music', replaceItem)
+	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Music.updateGuild', messageChannel);
@@ -515,6 +515,7 @@ Bobbot.prototype.updateGuildTrivia = function(guildId, replaceItem, messageChann
 	var self = this;
 
 	return self.garner.guildInfo.updateItem('guildId', guildId, 'trivia', replaceItem)
+	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Trivia.updateGuild', messageChannel);
@@ -524,6 +525,7 @@ Bobbot.prototype.updateGuildGiveme = function(guildId, replaceItem, messageChann
 	var self = this;
 
 	return self.garner.guildInfo.updateItem('guildId', guildId, 'giveme', replaceItem)
+	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Giveme.updateGuild', messageChannel);
@@ -533,11 +535,225 @@ Bobbot.prototype.getGuild = function(guildId, messageChannel, thenFunction) {
 	var self = this;
 
 	return self.garner.guildInfo.searchFor('guildId', guildId, 1)
+	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'GetGuild', messageChannel);
 	});
 };
+
+function createGuildObject(guildInfo) {
+	if (guildInfo != []) {
+		guildInfo = guildInfo[0];
+		var guildObject = {};
+
+		// GuildId
+		guildObject.guildId = guildInfo.guildId;
+
+		// Giveme
+		if (guildInfo.giveme) {
+			var giveme = guildInfo.giveme;
+		} else {
+			var giveme = [];
+		}
+		guildObject.giveme = new Collection(giveme);
+
+		// Music
+		if (guildInfo.music) {
+			var music = guildInfo.music;
+		} else {
+			var music = {
+				"currentSong": false,
+				"playlist": [],
+				"cuurentTime": 0,
+				"channelId": false
+			}
+		}
+		guildObject.music = music;
+		guildObject.music.playlist = new Collection(music.playlist);
+
+		// Filter
+		if (guildInfo.filter) {
+			var filter = guildInfo.filter;
+		} else {
+			var filter = {
+				"words": [],
+				"channelId": []
+			}
+		}
+		guildObject.filter = filter;
+//		guildObject.filter.words = new Collection(filter.words);
+//		guildObject.filter.channelIds = new Collection(filter.channelIds);
+
+		// Trivia
+		if (guildInfo.trivia) {
+			var trivia = guildInfo.trivia;
+		} else {
+			var trivia = {
+				"points": [],
+				"questions": [],
+				"difficulty": []
+			}
+		}
+		guildObject.trivia = trivia;
+		guildObject.trivia.points = new Collection(trivia.points);
+		guildObject.trivia.questions = new Collection(trivia.questions);
+		guildObject.trivia.difficulty = new Collection(trivia.difficulty);
+		
+		return guildObject;
+	} else {
+		return false;
+	}
+}
+
+function Collection(innerArray) {
+	var self = this;
+
+	if (innerArray) {
+		this.array = innerArray;
+	} else {
+		this.array = [];
+	}
+	this.add = function(object) {
+		self.array.push(object);
+	}
+	this.delete = function(object) {
+		var index = self.array.indexOf(object);
+		if (index) {
+			self.array.splice(index, 1);
+		}
+	}
+	this.exists = function(prop, value) {
+		var array = self.array;
+		if (propOrFn) {
+			for (var i = 0; i < array.length; i++) {
+				var object = array[i];
+				if (object.hasOwnProperty(propOrFn)) {
+					if (value) {
+						if (object[propOrFn] == value) {
+							return true;
+						}
+					} else {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	this.find = function(propOrFn, value) {
+		var array = self.array;
+		if (propOrFn) {
+			for (var i = 0; i < array.length; i++) {
+				var object = array[i];
+				if (object.hasOwnProperty(propOrFn)) {
+					if (value) {
+						if (typeof value === "function") {
+							if (value(object[propOrFn])) {
+								return object;
+							}
+						} else {
+							if (object[propOrFn] == value) {
+								return object;
+							}
+						}
+					} else {
+						return object;
+					}
+				}
+			}
+		}
+		return [];
+	}
+	this.findAll = function(propOrFn, value) {
+		var array = self.array;
+		var returnCollection = new Collection();
+		if (propOrFn) {
+			for (var i = 0; i < array.length; i++) {
+				var object = array[i];
+				if (object.hasOwnProperty(propOrFn)) {
+					if (value) {
+						if (typeof value === "function") {
+							if (value(object[propOrFn])) {
+								returnCollection.add(object);;
+							}
+						} else {
+							if (object[propOrFn] == value) {
+								returnCollection.add(object);
+							}
+						}
+					} else {
+						returnCollection.add(object);
+					}
+				}
+			}
+		} else {
+			return returnCollection;
+		}
+	}
+	this.first = function() {
+		return self.array[0];
+	}
+	this.getAll = function(prop) {
+		var array = self.array;
+		var keys = [];
+		for (i = 0; i < array.length; i++) {
+			var key = array[i][prop];
+			if (key) {
+				keys.push(key);
+			}
+		}
+		return keys;
+	}
+	this.some = function(func) {
+		if (func) {
+			return self.array.some(func);
+		}
+	}
+}
+
+function SongMeta() {
+	return {
+		"title": "",
+		"length": 0,
+		"author": "",
+		"url": "",
+		"loudness": 0
+	}
+}
+
+function TriviaQuestion() {
+	return {
+		"id": "",
+		"difficulty": "default",
+		"question": "",
+		"answer": "",
+		"category": "default"
+	}
+}
+
+function TriviaUser() {
+	return {
+		"id": "",
+		"points": 0,
+		"correct": 0,
+		"incorrect": 0
+	}
+}
+
+function TriviaDifficulty() {
+	return {
+		"difficulty": "default",
+		"multiplier": 1
+	}
+}
+
+function GivemeRole() {
+	return {
+		"name": "",
+		"id": ""
+	}
+}
 
 
 
