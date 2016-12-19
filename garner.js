@@ -25,15 +25,12 @@ Garner.prototype.getSession = function() {
 		});
 	});
 }
-Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes) {
+Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes = false) {
 	var self = this;
 
 	if (searchURL) {
 		if (!max || max < 0) {
 			max = 10;
-		}
-		if (!excludes) {
-			excludes = false;
 		}
 
 		return new Promise(function(resolve, reject) {

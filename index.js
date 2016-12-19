@@ -493,7 +493,7 @@ Bobbot.prototype.infoRotation = function() {
 Bobbot.prototype.updateGuildFilter = function(guildId, replaceItem, messageChannel, thenFunction) {
 	var self = this;
 
-	return self.garner.guildInfo.updateItem('guildId', guildId, 'filter', replaceItem)
+	return self.garner.guildInfo.updateItem('guildId', guildId+'test', 'filter', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -504,7 +504,7 @@ Bobbot.prototype.updateGuildFilter = function(guildId, replaceItem, messageChann
 Bobbot.prototype.updateGuildMusic = function(guildId, replaceItem, messageChannel, thenFunction) {
 	var self = this;
 
-	return self.garner.guildInfo.updateItem('guildId', guildId, 'music', replaceItem)
+	return self.garner.guildInfo.updateItem('guildId', guildId+'test', 'music', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -514,7 +514,7 @@ Bobbot.prototype.updateGuildMusic = function(guildId, replaceItem, messageChanne
 Bobbot.prototype.updateGuildTrivia = function(guildId, replaceItem, messageChannel, thenFunction) {
 	var self = this;
 
-	return self.garner.guildInfo.updateItem('guildId', guildId, 'trivia', replaceItem)
+	return self.garner.guildInfo.updateItem('guildId', guildId+'test', 'trivia', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -524,7 +524,7 @@ Bobbot.prototype.updateGuildTrivia = function(guildId, replaceItem, messageChann
 Bobbot.prototype.updateGuildGiveme = function(guildId, replaceItem, messageChannel, thenFunction) {
 	var self = this;
 
-	return self.garner.guildInfo.updateItem('guildId', guildId, 'giveme', replaceItem)
+	return self.garner.guildInfo.updateItem('guildId', guildId+'test', 'giveme', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -534,7 +534,7 @@ Bobbot.prototype.updateGuildGiveme = function(guildId, replaceItem, messageChann
 Bobbot.prototype.getGuild = function(guildId, messageChannel, thenFunction) {
 	var self = this;
 
-	return self.garner.guildInfo.searchFor('guildId', guildId, 1)
+	return self.garner.guildInfo.searchFor('guildId', guildId+'test', 1)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -606,14 +606,10 @@ function createGuildObject(guildInfo) {
 	}
 }
 
-function Collection(innerArray) {
+function Collection(innerArray = []) {
 	var self = this;
 
-	if (innerArray) {
-		this.array = innerArray;
-	} else {
-		this.array = [];
-	}
+	this.array = innerArray;
 	this.add = function(object) {
 		self.array.push(object);
 	}
