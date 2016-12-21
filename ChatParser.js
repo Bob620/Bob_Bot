@@ -1,5 +1,6 @@
 const login = require('./login.json');
 const Collection = require('./collection.js');
+const Garner = require('./garner.js');
 const guildInfo = new Garner(login.guildInfo.username, 'guildinfo', 'client', login.guildInfo.password);
 
 class TextParser {
@@ -10,88 +11,110 @@ class TextParser {
 	static parse(message) {
 		let text = message.content.split(' ');
 		getGuild(message.guild.id, message.channel, (guildObject) => {
-			if (text[0].startswith(guildObject.symbol)) {
+			if (text[0][0] == guildObject.symbol) {
 				switch(text.shift().substr(1).toLowerCase()) {
 					case "filter":
-						this.filter(text, message, guildObject);
+						TextParser.filter(text, message, guildObject);
 						break;
 					case "giveme":
-						this.giveme(text, message, guildObject);
+						TextParser.giveme(text, message, guildObject);
 						break;
 					case "help":
-						this.help(text, message);
+						TextParser.help(text, message);
 						break;
 					case "music":
-						this.music(text, message, guildObject);
+						TextParser.music(text, message, guildObject);
+						break;
+					case "roles":
+						TextParser.roles(text, message, guildObject);
+						break;
 					default:
 						break;
 				}
 			} else {
-				this.filterMessage(message, guildObject);
+				TextParser.filterMessage(message, guildObject);
 			}
 		});
 	}
 
 	static filter(text, message, guildObject) {
+		let channel;
+		let word;
 		switch(text[0].toLowerCase()) {
 			case "on":
-				const channel = message.mentions.channels.first();
-				if (channel && findRole(2, message.member.roles, guildObject.roles.admin)) {
+				channel = message.mentions.channels.first();
+				if (channel && findRole(2, message.member.roles, guildObject.roles)) {
 					let filterIds = guildObject.filter.channelIds;
-					if (filterIds.indexof(channel.id) == -1) {
+					if (filterIds.indexOf(channel.id) == -1) {
 						filterIds.push(channel.id);
 						updateGuildFilter(guildObject.guildId, guildObject.filter, message.channel, (guildObject) => {
 							message.channel.sendMessage('That channel is now being monitored.');
 						});
+					} else {
+						message.channel.sendMessage('That channel is now being monitored.');
 					}
-					message.channel.sendMessage('That channel is now being monitored.');
 				}
 				break;
 			case "off":
-				const channel = message.mentions.channels.first();
-				if (channel && findRole(2, message.member.roles, guildObject.roles.admin)) {
+				channel = message.mentions.channels.first();
+				if (channel && findRole(2, message.member.roles, guildObject.roles)) {
 					let filterIds = guildObject.filter.channelIds;
-					const channelIndex = filterIds.indexof(channel.id);
+					const channelIndex = filterIds.indexOf(channel.id);
 					if (channelIndex != -1) {
 						filterIds.splice(channelIndex, 1);
 						updateGuildFilter(guildObject.guildId, guildObject.filter, message.channel, (guildObject) => {
 							message.channel.sendMessage('That channel won\'t be monitored.');
 						});
+					} else {
+						message.channel.sendMessage('That channel is won\'t be monitored.');
 					}
-					message.channel.sendMessage('That channel is won\'t be monitored.');
 				}
 				break;
 			case "set":
-				const word = text[1].toLowerCase();
-				if (channel && findRole(2, message.member.roles, guildObject.roles.admin)) {
+				word = text[1].toLowerCase();
+				if (findRole(2, message.member.roles, guildObject.roles)) {
 					let filterWords = guildObject.filter.words;
-					if (filterWords.indexof(word) == -1) {
-						filterwords.push(word);
+					if (filterWords.indexOf(word) == -1) {
+						filterWords.push(word);
 						updateGuildFilter(guildObject.guildId, guildObject.filter, message.channel, (guildObject) => {
 							message.channel.sendMessage('Messages containing that word will be removed.');
 						});
+					} else {
+						message.channel.sendMessage('Messages containing that word will be removed.');
 					}
-					message.channel.sendMessage('Messages containing that word will be removed.');
 				}
 				break;
 			case "remove":
-				const word = text[1].toLowerCase();
-				if (channel && findRole(2, message.member.roles, guildObject.roles.admin)) {
+				word = text[1].toLowerCase();
+				if (findRole(2, message.member.roles, guildObject.roles)) {
 					let filterWords = guildObject.filter.words;
-					const wordIndex = filterWords.indexof(word);
+					const wordIndex = filterWords.indexOf(word);
 					if (wordIndex != -1) {
-						filterwords.splice(wordIndex, 1);
+						filterWords.splice(wordIndex, 1);
 						updateGuildFilter(guildObject.guildId, guildObject.filter, message.channel, (guildObject) => {
 							message.channel.sendMessage('Messages containing that word will be removed.');
 						});
+					} else {
+						message.channel.sendMessage('Messages containing that word will be removed.');
 					}
-					message.channel.sendMessage('Messages containing that word will be removed.');
 				}
 				break;
 			case "list":
-				const filter = guildObject.filter;
-				let output = message.guild.name+"\n\nFiltered Channels:\n"+filter.channelIds.join('\n- #');
-				output += "\n\nFiltered Words:\n- "+filter.words.join('\n- ');
+				let channelIds = guildObject.filter.channelIds;
+				let output = message.guild.name+"\n\nFiltered Channels:\n";
+
+				
+				for (let i = 0; i < channelIds.length; i++) {
+					let channel = message.guild.channels.find('id', channelIds[i]);
+					if (channel) {
+						output += '\n+ #'+channel.name;
+					} else {
+						output += '\n #'+channelIds[i];
+					}
+				}
+
+
+				output += "\n\nFiltered Words:\n- "+guildObject.filter.words.join('\n- ');
 
 				message.author.sendCode('diff', output);
 				break;
@@ -99,11 +122,11 @@ class TextParser {
 	}
 
 	static filterMessage(message, guildObject) {
-		const text = message.context.split(' ');
+		const text = message.content.split(' ');
 		const filterWords = guildObject.filter.words;
 
 		for (let i = 0; i < filterWords.length; i++) {
-			if (text.indexof(filterWords[i]) != -1) {
+			if (text.indexOf(filterWords[i]) != -1) {
 				message.delete()
 				.then(() => {
 					message.author.sendMessage('Please refrain from using filtered words in '+message.channel.name+'.\nFor more information on what words are filtered, please use '+guildObject.symbol+'filter list in the guild\'s chat');
@@ -113,22 +136,65 @@ class TextParser {
 		}
 	}
 
+	static roles(text, message, guildObject) {
+		let roles = guildObject.roles
+		if (roles.admin === '' && text[0]) {
+			if (text[0].toLowerCase() === 'set' && text[1].toLowerCase() === 'admin' && text[2]) {
+				let adminName = text.slice(2).join(' ').toLowerCase();
+				let adminRole = message.guild.roles.find((item) => {return (item.name.toLowerCase() === adminName)});
+				if (adminRole) {
+					roles.admin = adminRole.id;
+					updateGuildRoles(guildObject.guildId, roles, message.channel, (guildObject) => {
+						message.channel.sendMessage('That role is now the bot admin.');
+					});
+				} else {
+					message.channel.sendMessage('Unable to make '+adminName+' the admin role.')
+				}
+			} else {
+				message.channel.sendMessage('Please set up an admin role');
+			}
+		} else if (findRole(2, message.member.roles, roles)) {
+			switch(text[0].toLowerCase()) {
+				case "set":
+					if (text[1] === 'admin') {
+
+					} else if (text[1] === 'mod') {
+
+					}
+					break;
+				case "remove":
+                                        if (text[1] === 'admin') {
+
+                                        } else if (text[1] === 'mod') {
+
+                                        }
+
+					break;
+				case "list":
+					break;
+			}
+		}
+	}
+
 	static giveme(text, message, guildObject) {
+		let roleAbb;
+		let giveme;
 		switch(text[0].toLowerCase()) {
 			case "set":
-				const roleAbb = text[1].toLowerCase();
-				const roleName = text.slice(2).join(' ').toLowerCase();
-				const giveme = guildObject.giveme;
+				roleAbb = text[1].toLowerCase();
+				let roleName = text.slice(2).join(' ').toLowerCase();
+				giveme = guildObject.giveme;
 
-				if (findRole(2, message.member.roles, guildObject.roles.admin)) {
+				if (findRole(2, message.member.roles, guildObject.roles)) {
 					if (roleAbb && roleName) {
 						if (!giveme.find('name', roleAbb)) {
-							if ((let role = message.guild.roles.find((item) => {item.name.toLowerCase() == role.Name}))) {
+							let role = message.guild.roles.find((item) => {return (item.name.toLowerCase() == roleName)});
+							if (role) {
 								giveme.add({
 									"name": roleAbb,
 									"id": role.id
 								});
-								updateGuildGiveme(guildObject.guildId, giveme, message.channel, (guildObject) => {
+								updateGuildGiveme(guildObject.guildId, giveme.array, message.channel, (guildObject) => {
 									message.channel.sendMessage('I can now provide that role.');
 								});
 							} else {
@@ -140,18 +206,20 @@ class TextParser {
 					} else {
 						message.channel.sendMessage('Please include both a name for the role and the role\'s name');
 					}
+				} else {
+					message.channel.sendMessage('Admin role not found');
 				}
 				break;
 			case "remove":
-				const roleAbb = text[1].toLowerCase();
-				const giveme = guildObject.giveme;
+				roleAbb = text[1].toLowerCase();
+				giveme = guildObject.giveme;
 
-				if (findRole(2, message.member.roles, guildObject.roles.admin)) {
+				if (findRole(2, message.member.roles, guildObject.roles)) {
 					if (roleAbb) {
 						let role = giveme.find('name', roleAbb);
 						if (role) {
-							giveme.delete(role);
-							updateGuildGiveme(guildObject.guildId, giveme, message.channel, (guildObject) => {
+							giveme.delete('name', roleAbb);
+							updateGuildGiveme(guildObject.guildId, giveme.array, message.channel, (guildObject) => {
 								message.channel.sendMessage('I will no longer provide that role.');
 							});
 						} else {
@@ -163,16 +231,30 @@ class TextParser {
 				}
 				break;
 			case "list":
-				const givemeNames = guildObject.giveme.getAll('name');
+				let givemeNames = guildObject.giveme.getAll('name');
 
 				if (givemeNames.length == 0) {
-					messageChannel.sendMessage('There are no roles that I can give.');
+					message.channel.sendMessage('There are no roles that I can give.');
 				} else {
-					messageChannel.sendMessage(givemeNames.join('\n'));
+					message.channel.sendMessage(givemeNames.join('\n'));
 					// Check for existance in the guild
 				}
 				break;
 			default:
+				roleAbb = text[0].toLowerCase();
+				giveme = guildObject.giveme;
+				if (roleAbb) {
+					let givemeRole = giveme.find('name', roleAbb);
+					if (givemeRole) {
+						let role = message.guild.roles.find('id', givemeRole.id);
+						if (role) {
+							message.member.addRole(role);
+							message.delete()
+							.then(() => {})
+							.catch(() => {});
+						}
+					}
+				}
 				break;
 		}
 	}
@@ -206,6 +288,8 @@ class GroupParser {
 	}
 }
 
+module.exports = function() {};
+
 module.exports.TextParser = TextParser;
 module.exports.DMParser = DMParser;
 module.exports.GroupParser = GroupParser;
@@ -225,32 +309,40 @@ function findRole(roleMin, userRoles, roles) {
 
 }
 
-Bobbot.prototype.updateGuildFilter = function(guildId, replaceItem, messageChannel, thenFunction) {
-	return guildInfo.updateItem('guildId', guildId+'test', 'filter', replaceItem)
+updateGuildRoles = function(guildId, replaceItem, messageChannel, thenFunction) {
+        return guildInfo.updateItem('guildId', guildId, 'roles', replaceItem)
+        .then(createGuildObject)
+        .then(thenFunction)
+        .catch(function(err) {
+                catchError(err, 'Roles.updateGuild', messageChannel);
+        });	
+}
+updateGuildFilter = function(guildId, replaceItem, messageChannel, thenFunction) {
+	return guildInfo.updateItem('guildId', guildId, 'filter', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Filter.updateGuild', messageChannel);
 	});
 }
-Bobbot.prototype.updateGuildMusic = function(guildId, replaceItem, messageChannel, thenFunction) {
-	return guildInfo.updateItem('guildId', guildId+'test', 'music', replaceItem)
+updateGuildMusic = function(guildId, replaceItem, messageChannel, thenFunction) {
+	return guildInfo.updateItem('guildId', guildId, 'music', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Music.updateGuild', messageChannel);
 	});
 }
-Bobbot.prototype.updateGuildTrivia = function(guildId, replaceItem, messageChannel, thenFunction) {
-	return guildInfo.updateItem('guildId', guildId+'test', 'trivia', replaceItem)
+updateGuildTrivia = function(guildId, replaceItem, messageChannel, thenFunction) {
+	return guildInfo.updateItem('guildId', guildId, 'trivia', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
 		catchError(err, 'Trivia.updateGuild', messageChannel);
 	});
 }
-Bobbot.prototype.updateGuildGiveme = function(guildId, replaceItem, messageChannel, thenFunction) {
-	return guildInfo.updateItem('guildId', guildId+'test', 'giveme', replaceItem)
+updateGuildGiveme = function(guildId, replaceItem, messageChannel, thenFunction) {
+	return guildInfo.updateItem('guildId', guildId, 'giveme', replaceItem)
 	.then(createGuildObject)
 	.then(thenFunction)
 	.catch(function(err) {
@@ -286,8 +378,8 @@ function createGuildObject(guildInfo) {
 			guildObject.roles = guildInfo.roles;
 		} else {
 			guildObject.roles = {
-				"admin": false,
-				"mod": false
+				"admin": '',
+				"mod": ''
 			}
 		}
 

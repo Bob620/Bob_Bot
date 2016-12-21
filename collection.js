@@ -1,21 +1,37 @@
-class Collection {
-	constructor(innerArray = []) {
-		this.array = innerArray;
-	}
-	static add(object) {
+function Collection(innerArray) {
+	this.array = innerArray;
+	
+	this.add = function(object) {
+		console.log(this.array);
 		if (object) {
 			this.array.push(object);
 		}
 	}
-	static delete(object) {
-		if (object) {
-			let index = this.array.indexOf(object);
-			if (index) {
-				this.array.splice(index, 1);
-			}
+	this.delete = function(propOrFn, value) {
+		const array = this.array;
+		if (propOrFn && value) {
+                        for (let i = 0; i < array.length; i++) {
+                                const object = array[i];
+                                if (object.hasOwnProperty(propOrFn)) {
+                                        if (value) {
+                                                if (typeof value === "function") {
+                                                        if (value(object[propOrFn])) {
+                                                                array.splice(i, 1);
+								return true;
+                                                        }
+                                                } else {
+                                                        if (object[propOrFn] == value) {
+                                                                array.splice(i, 1);
+								return true;
+                                                        }
+                                                }
+                                       }
+                                }
+                        }
 		}
+		return false;
 	}
-	static exists(prop, value) {
+	this.exists = function(prop, value) {
 		const array = this.array;
 		if (propOrFn) {
 			for (let i = 0; i < array.length; i++) {
@@ -33,7 +49,7 @@ class Collection {
 		}
 		return false;
 	}
-	static find(propOrFn, value) {
+	this.find = function(propOrFn, value) {
 		const array = this.array;
 		if (propOrFn) {
 			for (let i = 0; i < array.length; i++) {
@@ -57,7 +73,7 @@ class Collection {
 		}
 		return false;
 	}
-	static findAll(propOrFn, value) {
+	this.findAll = function(propOrFn, value) {
 		const array = this.array;
 		const returnCollection = new Collection();
 		if (propOrFn) {
@@ -82,12 +98,12 @@ class Collection {
 		}
 		return returnCollection;
 	}
-	static first() {
+	this.first = function() {
 		if (this.array[0]) {
 			return this.array[0];
 		}
 	}
-	static getAll(prop) {
+	this.getAll = function(prop) {
 		if (prop) {
 			const array = this.array;
 			let keys = [];
@@ -101,7 +117,7 @@ class Collection {
 		}
 		return [];
 	}
-	static some(func) {
+	this.some = function(func) {
 		if (func) {
 			return this.array.some(func);
 		}

@@ -1,21 +1,20 @@
 "use strict"
 
 var Discord = require('discord.js');
-var ChatParser = require('ChatParser.js');
+var ChatParser = require('./ChatParser.js');
 
 class BobBot {
 	constructor(clientID) {
 		this.client = new Discord.Client();
-		this.client.on('message', this.messageParser);
-		this.textParser = new ChatParser.TextParser();
+		this.client.on('message', BobBot.messageParser.bind(this));
 		this.client.login(clientID);
 	}
 
 	static messageParser(message) {
-		if (!message.system && !message.pinned && message.member.id !== this.client.user.id) {
+		if (!message.system && !message.pinned && message.author.id !== this.client.user.id) {
 			switch(message.channel.type) {
 				case "text":
-					this.textParser.parse(message);
+					ChatParser.TextParser.parse(message);
 					break;
 				case "dm":
 					break;
@@ -26,3 +25,4 @@ class BobBot {
 	}
 }
 
+module.exports = BobBot
