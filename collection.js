@@ -1,8 +1,7 @@
-function Collection(innerArray) {
+module.exports = function Collection(innerArray = []) {
 	this.array = innerArray;
 	
 	this.add = function(object) {
-		console.log(this.array);
 		if (object) {
 			this.array.push(object);
 		}
@@ -10,89 +9,59 @@ function Collection(innerArray) {
 	this.delete = function(propOrFn, value) {
 		const array = this.array;
 		if (propOrFn && value) {
-                        for (let i = 0; i < array.length; i++) {
-                                const object = array[i];
-                                if (object.hasOwnProperty(propOrFn)) {
-                                        if (value) {
-                                                if (typeof value === "function") {
-                                                        if (value(object[propOrFn])) {
-                                                                array.splice(i, 1);
+            for (let i = 0; i < array.length; i++) {
+                const object = array[i];
+                if (object.hasOwnProperty(propOrFn)) {
+                    if (value) {
+                        if (typeof value === "function") {
+                            if (value(object[propOrFn])) {
+                                array.splice(i, 1);
 								return true;
-                                                        }
-                                                } else {
-                                                        if (object[propOrFn] == value) {
-                                                                array.splice(i, 1);
+                            }
+                        } else {
+                            if (object[propOrFn] == value) {
+                            	array.splice(i, 1);
 								return true;
-                                                        }
-                                                }
-                                       }
-                                }
+                            }
                         }
+                    }
+                }
+            }
 		}
 		return false;
 	}
-	this.exists = function(prop, value) {
-		const array = this.array;
-		if (propOrFn) {
+	this.exists = function(propOrFn, value) {
+		if (prop) {
+			const array = this.array;
 			for (let i = 0; i < array.length; i++) {
-				const object = array[i];
-				if (object.hasOwnProperty(propOrFn)) {
-					if (value) {
-						if (object[propOrFn] == value) {
-							return true;
-						}
-					} else {
-						return true;
-					}
+				const item = search(propOrFn, value, array[i]);
+				if (item) {
+					return true;
 				}
 			}
 		}
 		return false;
 	}
 	this.find = function(propOrFn, value) {
-		const array = this.array;
 		if (propOrFn) {
+			const array = this.array;
 			for (let i = 0; i < array.length; i++) {
-				const object = array[i];
-				if (object.hasOwnProperty(propOrFn)) {
-					if (value) {
-						if (typeof value === "function") {
-							if (value(object[propOrFn])) {
-								return object;
-							}
-						} else {
-							if (object[propOrFn] == value) {
-								return object;
-							}
-						}
-					} else {
-						return object;
-					}
+				const item = search(propOrFn, value, array[i]);
+				if (item) {
+					return item;
 				}
 			}
 		}
 		return false;
 	}
 	this.findAll = function(propOrFn, value) {
-		const array = this.array;
 		const returnCollection = new Collection();
 		if (propOrFn) {
+			const array = this.array;
 			for (let i = 0; i < array.length; i++) {
-				const object = array[i];
-				if (object.hasOwnProperty(propOrFn)) {
-					if (value) {
-						if (typeof value === "function") {
-							if (value(object[propOrFn])) {
-								returnCollection.add(object);;
-							}
-						} else {
-							if (object[propOrFn] == value) {
-								returnCollection.add(object);
-							}
-						}
-					} else {
-						returnCollection.add(object);
-					}
+				const item = search(propOrFn, value, array[i]);
+				if (item) {
+					returnCollection.add(item);
 				}
 			}
 		}
@@ -102,6 +71,7 @@ function Collection(innerArray) {
 		if (this.array[0]) {
 			return this.array[0];
 		}
+		return false;
 	}
 	this.getAll = function(prop) {
 		if (prop) {
@@ -125,4 +95,21 @@ function Collection(innerArray) {
 	}
 }
 
-module.exports = Collection;
+function search(propOrFn = true, value = true, item = {}) {
+	if (item.hasOwnProperty(propOrFn)) {
+		if (value) {
+			if (typeof value === "function") {
+				if (value(item[propOrFn])) {
+					return item;
+				}
+			} else {
+				if (item[propOrFn] == value) {
+					return item;
+				}
+			}
+		} else {
+			return item;
+		}
+	}
+	return false;
+}
