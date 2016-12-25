@@ -1,6 +1,6 @@
-var bakajax = require('bakajax');
+const bakajax = require('bakajax');
 
-function Garner(databaseId, albumId, username, password) {
+function Garner(databaseId = false, albumId = false, username = false, password = false) {
     this.sessionKey = false;
     this.databaseId = databaseId;
     this.albumId = albumId;
@@ -9,52 +9,50 @@ function Garner(databaseId, albumId, username, password) {
     this.password = password;
 }
 Garner.prototype.getSession = function() {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-        bakajax.post(self.url+'/login/'+self.databaseId+'/'+self.username, {'key': self.password})
-        .then(function(response) {
+    return new Promise((resolve, reject) => {
+        bakajax.post(this.url+'/login/'+this.databaseId+'/'+this.username, {'key': this.password})
+        .then((response) => {
             if (response.code == 200) {
                 resolve(response.sessionKey);
             } else {
                 reject(false);
             }
         })
-        .catch(function(err) {
+        .catch((err) => {
             reject(err);
         });
     });
 }
-Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes = false) {
-    var self = this;
+Garner.prototype.searchFor = function(searchURL = false, compareValue = false, max = 10, excludes = false) {
     if (searchURL) {
         if (!max || max < 0) {
             max = 10;
         }
-        return new Promise(function(resolve, reject) {
-            bakajax.post(self.url+'/get/'+self.databaseId+'/'+self.albumId+'/'+self.username, {
-                'sessionKey': self.sessionKey,
+        return new Promise((resolve, reject) => {
+            bakajax.post(this.url+'/get/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                'sessionKey': this.sessionKey,
                 'searchURL': searchURL,
                 'compareValue': compareValue,
                 'max': max,
                 'excludes': excludes
             })
-            .then(function(response) {
+            .then((response) => {
                 switch (response.code) {
                     case 200:
                         resolve(response.data);
                         break;
                     case 630:
-                        self.getSession()
-                        .then(function(sessionKey) {
-                            self.sessionKey = sessionKey;
-                            bakajax.post(self.url+'/get/'+self.databaseId+'/'+self.albumId+'/'+self.username, {
-                                'sessionKey': self.sessionKey,
+                        this.getSession()
+                        .then((sessionKey) => {
+                            this.sessionKey = sessionKey;
+                            bakajax.post(this.url+'/get/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                                'sessionKey': this.sessionKey,
                                 'searchURL': searchURL,
                                 'compareValue': compareValue,
                                 'max': max,
                                 'excludes': excludes
                             })
-                            .then(function(response) {
+                            .then((response) => {
                                 switch (response.code) {
                                     case 200:
                                         resolve(response.data);
@@ -67,11 +65,11 @@ Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes = f
                                         break;
                                 }
                             })
-                            .catch(function(err) {
+                            .catch((err) =. {
                                 reject(err);
                             });
                         })
-                        .catch(function(err) {
+                        .catch((err) => {
                             self.sessionKey = false;
                         });
                         break;
@@ -80,41 +78,40 @@ Garner.prototype.searchFor = function(searchURL, compareValue, max, excludes = f
                         break;
                 }
             })
-            .catch(function(err) {
+            .catch((err) => {
                 console.log(err);
                 reject(err);
             });
         });
     }
 }
-Garner.prototype.updateItem = function(searchURL, compareValue, replacementURL, replacementItem) {
-    var self = this;
+Garner.prototype.updateItem = function(searchURL = false, compareValue = false, replacementURL = false, replacementItem = false) {
     if (searchURL && (compareValue || compareValue == '') && replacementURL && (replacementItem || replacementItem == '')) {
-        return new Promise(function(resolve, reject) {
-            bakajax.put(self.url+'/'+self.databaseId+'/'+self.albumId+'/'+self.username, {
-                'sessionKey': self.sessionKey,
+        return new Promise((resolve, reject) => {
+            bakajax.put(this.url+'/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                'sessionKey': this.sessionKey,
                 'searchURL': searchURL,
                 'compareValue': compareValue,
                 'replacementURL': replacementURL,
                 'replacementItem': replacementItem
             })
-            .then(function(response) {
+            .then((response) => {
                 switch (response.code) {
                     case 200:
                         resolve(response.data);
                         break;
                     case 630:
-                        self.getSession()
-                        .then(function(sessionKey) {
-                            self.sessionKey = sessionKey;
-                            bakajax.put(self.url+'/'+self.databaseId+'/'+self.albumId+'/'+self.username, {
-                                'sessionKey': self.sessionKey,
+                        this.getSession()
+                        .then((sessionKey) => {
+                            this.sessionKey = sessionKey;
+                            bakajax.put(this.url+'/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                                'sessionKey': this.sessionKey,
                                 'searchURL': searchURL,
                                 'compareValue': compareValue,
                                 'replacementURL': replacementURL,
                                 'replacementItem': replacementItem
                             })
-                            .then(function(response) {
+                            .then((response) => {
                                 switch (response.code) {
                                     case 200;
                                         resolve(response.data);
@@ -127,12 +124,12 @@ Garner.prototype.updateItem = function(searchURL, compareValue, replacementURL, 
                                         break;
                                 }
                             })
-                            .catch(function(err) {
+                            .catch((err) => {
                                 reject(err);
                             });
                         })
-                        .catch(function() {
-                            self.sessionKey = false;
+                        .catch(() => {
+                            this.sessionKey = false;
                         });
                         break;
                     default:
@@ -140,7 +137,7 @@ Garner.prototype.updateItem = function(searchURL, compareValue, replacementURL, 
                         break;
                 }
             })
-            .catch(function(err) {
+            .catch((err) => {
                 reject(err);
             });
         });
