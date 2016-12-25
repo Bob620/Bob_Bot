@@ -1,6 +1,6 @@
 module.exports = function Collection(innerArray = []) {
     this.array = innerArray;
-	
+
     this.add = function(object) {
         if (object) {
             this.array.push(object);
@@ -9,27 +9,27 @@ module.exports = function Collection(innerArray = []) {
 
     this.delete = function(propOrFn, value) {
         const array = this.array;
-	    if (propOrFn && value) {
-                for (let i = 0; i < array.length; i++) {
-                    const object = array[i];
-                    if (object.hasOwnProperty(propOrFn)) {
-                        if (value) {
-                            if (typeof value === "function") {
-                                if (value(object[propOrFn])) {
-                                    array.splice(i, 1);
-		                    return true;
-                                }
-                            } else {
-                        	if (object[propOrFn] == value) {
-                         	    array.splice(i, 1);
-				    return true;
-            	                }
+        if (propOrFn && value) {
+            for (let i = 0; i < array.length; i++) {
+                const object = array[i];
+                if (object.hasOwnProperty(propOrFn)) {
+                    if (value) {
+                        if (typeof value === "function") {
+                            if (value(object[propOrFn])) {
+                                array.splice(i, 1);
+                                return true;
+                            }
+                        } else {
+                            if (object[propOrFn] == value) {
+                                array.splice(i, 1);
+                                return true;
             	            }
             	        }
             	    }
             	}
-	    }
-	    return false;
+            }
+        }
+        return false;
     }
 
     this.exists = function(propOrFn, value) {

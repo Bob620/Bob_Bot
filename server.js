@@ -1,6 +1,6 @@
 const Collection = require('./collection.js');
 
-module.exports = function Server(garnerGuild) {
+module.exports = function Server(garnerGuild, garner) {
     const server = {};
     const garnerGuildKeys = Object.keys(garnerGuild);
     for (let i = 0; i < garnerGuildKeys.length; i++) {
@@ -15,6 +15,9 @@ module.exports = function Server(garnerGuild) {
         } else {
             server[key] = item;
         }
+    }
+    server.update = function(key) {
+        garner.update(key, this[key]);
     }
     return server;
 }
