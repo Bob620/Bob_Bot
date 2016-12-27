@@ -85,8 +85,8 @@ Garner.prototype.searchFor = function(searchURL = false, compareValue = false, m
         });
     }
 }
-Garner.prototype.updateItem = function(searchURL = false, compareValue = false, replacementURL = false, replacementItem = false) {
-    if (searchURL && (compareValue || compareValue == '') && replacementURL && (replacementItem || replacementItem == '')) {
+Garner.prototype.updateItem = function(searchURL = false, compareValue = '', replacementURL = false, replacementItem = '') {
+    if (searchURL && (compareValue || compareValue === '') && replacementURL && (replacementItem || replacementItem === '')) {
         return new Promise((resolve, reject) => {
             bakajax.put(this.url+'/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
                 'sessionKey': this.sessionKey,
