@@ -1,6 +1,7 @@
 module.exports = class {
-	constructor(server) {
+	constructor(server, message) {
 		this.server = server;
+		this.message = message;
 	}
 	setMod(name) {
 
@@ -14,13 +15,13 @@ module.exports = class {
 	removeAdmin(name) {
 
 	}
-	list(member) {
+	list() {
 
 	}
 	basicHelp() {
 
 	}
-	help(member) {
+	help() {
 
 	}
 }

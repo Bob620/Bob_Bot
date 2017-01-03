@@ -46,7 +46,7 @@ Garner.prototype.searchFor = function(searchURL = false, compareValue = false, m
                         .then((sessionKey) => {
                             this.sessionKey = sessionKey;
                             bakajax.post(this.url+'/get/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
-                                'sessionKey': this.sessionKey,
+                                'sessionKey': sessionKey,
                                 'searchURL': searchURL,
                                 'compareValue': compareValue,
                                 'max': max,
@@ -84,6 +84,7 @@ Garner.prototype.searchFor = function(searchURL = false, compareValue = false, m
             });
         });
     }
+    return Promise.reject();
 }
 Garner.prototype.updateItem = function(searchURL = false, compareValue = '', replacementURL = false, replacementItem = '') {
     if (searchURL && (compareValue || compareValue === '') && replacementURL && (replacementItem || replacementItem === '')) {
@@ -142,5 +143,59 @@ Garner.prototype.updateItem = function(searchURL = false, compareValue = '', rep
             });
         });
     }
+    return Promise.reject();
+}
+Garner.prototype.upload = function(object = false) {
+    if (object) {
+        return new Promise((resolve, reject) => {
+            bakajax.post(this.url+'/upload/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                'sessionKey': this.sessionKey,
+                'item': object
+            })
+            .then((response) => {
+                switch (response.code) {
+                    case 200:
+                        resolve(response.data);
+                        break;
+                    case 630:
+                        this.getSession()
+                        .then((sessionKey) => {
+                            this.sessionKey = sessionKey;
+                            bakajax.put(this.url+'/upload/'+this.databaseId+'/'+this.albumId+'/'+this.username, {
+                                'sessionKey': this.sessionKey,
+                                'item': object
+                            })
+                            .then((response) => {
+                                switch (response.code) {
+                                    case 200:
+                                        resolve(response.data);
+                                        break;
+                                    case 630:
+                                        reject('Failed to log in to Garner');
+                                        break;
+                                    default:
+                                        reject('Other garner failure');
+                                        break;
+                                }
+                            })
+                            .catch((err) => {
+                                reject(err);
+                            });
+                        })
+                        .catch(() => {
+                            this.sessionKey = false;
+                        });
+                        break;
+                    default:
+                        reject(response.code);
+                        break;
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
+        });
+    }
+    return Promise.reject();
 }
 module.exports = Garner;

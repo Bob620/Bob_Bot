@@ -8,7 +8,7 @@ module.exports = class {
         if (id && garnerObject) {
             this.id = id;
             this.garner = garnerObject;
-            this.prefix = null;
+            this.prefixSymbol = null;
             this.filter = null;
             this.giveme = null;
             this.music = null;
@@ -18,7 +18,9 @@ module.exports = class {
         }
     }
     populate() {
-        garnerObject.searchFor('id', id, 1)
+        const garner = this.garner;
+        const id = this.id;
+        return garner.searchFor('id', id, 1)
         .then((garnerList) => {
             if (garnerList.length > 0) {
                 return garnerList[0];
@@ -27,42 +29,96 @@ module.exports = class {
         })
         .then((garnerStruct) => {
             if (garnerStruct) {
-                this.filter = new Filter(id, garnerObject, garnerStruct.filter);
-                this.giveme = new Giveme(id, garnerObject, garnerStruct.giveme);
-                this.music = new Music(id, garnerObject, garnerStruct.music);
-                this.roles = new Roles(id, garnerObject, garnerStruct.roles);
-                this.prefix = garnerStruct.prefix;
-                return false;
+                this.filter = new Filter(id, garner, garnerStruct.filter);
+                this.giveme = new Giveme(id, garner, garnerStruct.giveme);
+                this.music = new Music(id, garner, garnerStruct.music);
+                this.roles = new Roles(id, garner, garnerStruct.roles);
+                this.prefixSymbol = garnerStruct.prefix;
+                return Promise.resolve(false);
             } else {
-                this.filter = new Filter(id, garnerObject);
-                this.giveme = new Giveme(id, garnerObject);
-                this.music = new Music(id, garnerObject);
-                this.roles = new Roles(id, garnerObject);
-                this.prefix = "!";
-                return true;
+                return new Promise((resolve, reject) => {
+                    this.filter = new Filter(id, garner);
+                    this.giveme = new Giveme(id, garner);
+                    this.music = new Music(id, garner);
+                    this.roles = new Roles(id, garner);
+                    this.prefixSymbol = '!';
+                    this.submit()
+                    .then(() => {
+                        resolve(true);
+                    })
+                    .catch(() => {
+                        reject(true);
+                    });
+                });
             }
         })
         .catch((err) => {
-            this.filter = new Filter(id, garnerObject);
-            this.giveme = new Giveme(id, garnerObject);
-            this.music = new Music(id, garnerObject);
-            this.roles = new Roles(id, garnerObject);
-            this.prefix = "!";
-            return true;
+            return new Promise((resolve, reject) => {
+                this.filter = new Filter(id, garner);
+                this.giveme = new Giveme(id, garner);
+                this.music = new Music(id, garner);
+                this.roles = new Roles(id, garner);
+                this.prefixSymbol = '!';
+                this.submit()
+                .then(() => {
+                    resolve(true);
+                })
+                .catch(() => {
+                    reject(true);
+                });
+            });
         });
     }
+    submit() {
+        return this.garner.upload(this.getGarnerStruct());
+    }
     update() {
-        let garnerStruct = this.getGarnerStruct();
-        let id = this.id;
-        let garner = this.garner;
-        return garner.updateItem('id', id, 'filter', garnerStruct.filter);
-        return garner.updateItem('id', id, 'giveme', garnerStruct.giveme);
-        return garner.updateItem('id', id, 'music', garnerStruct.music);
-        return garner.updateItem('id', id, 'roles', garnerStruct.roles);
-        return garner.updateItem('id', id, 'prefix', garnerStruct.prefix);
+        return new Promise((resolve, reject) => {
+            let garnerStruct = this.getGarnerStruct();
+            let id = this.id;
+            let garner = this.garner;
+
+            garner.updateItem('id', id, 'filter', garnerStruct.filter)
+            .then(() => {
+
+            })
+            .catch(() => {
+
+            });
+            garner.updateItem('id', id, 'giveme', garnerStruct.giveme)
+            .then(() => {
+
+            })
+            .catch(() => {
+
+            });
+            garner.updateItem('id', id, 'music', garnerStruct.music)
+            .then(() => {
+
+            })
+            .catch(() => {
+
+            });
+            garner.updateItem('id', id, 'roles', garnerStruct.roles)
+            .then(() => {
+
+            })
+            .catch(() => {
+
+            });
+            garner.updateItem('id', id, 'prefix', garnerStruct.prefix)
+            .then(() => {
+
+            })
+            .catch(() => {
+
+            });
+            resolve();
+        });
     }
     getGarnerStruct() {
         return {
+            "id": this.id,
             "filter": this.filter.getGarnerStruct(),
             "giveme": this.giveme.getGarnerStruct(),
             "music": this.music.getGarnerStruct(),
@@ -71,14 +127,15 @@ module.exports = class {
         }
     }
     get prefix() {
-        return this.prefix;
+        return this.prefixSymbol;
     }
-    set prefix(prefix = '!') {
+    set prefix(prefix) {
         this.garner.updateItem('id', this.id, 'prefix', prefix)
         .then(() => {
-            this.prefix = prefix;
+            this.prefixSymbol = prefix;
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log(err);
         });
     }
 }

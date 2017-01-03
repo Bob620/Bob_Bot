@@ -1,4 +1,9 @@
 const Server = require('./Server.js');
+const FilterParser = require('./FilterParser.js');
+const GivemeParser = require('./GivemeParser.js');
+const MusicParser = require('./MusicParser.js');
+const RolesParser = require('./RolesParser.js');
+const DefaultParser = require('./DefaultParser.js');
 
 module.exports = function(garnerObject, message) {
     const server = new Server(message.guild.id, garnerObject);
@@ -25,20 +30,13 @@ module.exports = function(garnerObject, message) {
 
     server.populate()
     .then((newServer) => {
-        const filterParser = new FilterParser(server, message);
-        const givemeParser = new GivemeParser(server, message);
-        const musicParser = new MusicParser(server, message);
-        const rolesParser = new RolesParser(server, message);
-        const defaultParser = new DefaultParser(server, message);
-
-        const splitContent = message.content.split(' ');
-        const [primaryCommand = false, secondaryCommand = false, tertiaryCommand = false, quaternaryCommand = false] = splitContent;
+        const [primaryCommand = false, secondaryCommand = false, tertiaryCommand = false, quaternaryCommand = false] = message.content.split(' ');
         const prefix = server.prefix;
-        const sendMessage = message.channel.sendMessage.bind(message.channel);
 
         if (primaryCommand) {
             switch(primaryCommand) {
                 case prefix+"filter":
+                    const filterParser = new FilterParser(server, message);
                     switch(secondaryCommand) {
                         case "set":
                             if (checkForMod(message.member.roles) || checkForAdmin(message.member.roles)) {
@@ -69,6 +67,7 @@ module.exports = function(garnerObject, message) {
                     }
                     break;
                 case prefix+"giveme":
+                    const givemeParser = new GivemeParser(server, message);
                     switch(secondaryCommand) {
                         case "set":
                             if (checkForAdmin(message.member.roles)) {
@@ -93,6 +92,7 @@ module.exports = function(garnerObject, message) {
                     }
                     break;
                 case prefix+"music":
+                    const musicParser = new MusicParser(server, message);
                     switch(secondaryCommand) {
                         case "add":
                             musicParser.add(tertiaryCommand);
@@ -118,6 +118,7 @@ module.exports = function(garnerObject, message) {
                     break;
                 case prefix+"roles":
                     if (checkForAdmin(message.member.roles)) {
+                        const rolesParser = new RolesParser(server, message);
                         switch(secondaryCommand) {
                             case "set":
                                 switch(tertiaryCommand) {
@@ -151,6 +152,7 @@ module.exports = function(garnerObject, message) {
                         break;
                     }
                 default:
+                    const defaultParser = new DefaultParser(server, message);
                     defaultParser.parse();
                     break;
             }
