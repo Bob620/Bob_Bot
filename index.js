@@ -11,7 +11,7 @@ module.exports = class {
             this.ServerGarner = new Garner(serverLogin);
             this.client = new Discord.Client();
 
-            this.client.on((message) => {
+            this.client.on('message', (message) => {
                 this.messageParse(message);
             });
             this.client.login(botToken);

@@ -24,7 +24,7 @@ module.exports = class {
                 return garnerList[0];
             }
             return false;
-        });
+        })
         .then((garnerStruct) => {
             if (garnerStruct) {
                 this.filter = new Filter(id, garnerObject, garnerStruct.filter);

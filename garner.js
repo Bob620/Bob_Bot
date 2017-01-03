@@ -65,7 +65,7 @@ Garner.prototype.searchFor = function(searchURL = false, compareValue = false, m
                                         break;
                                 }
                             })
-                            .catch((err) =. {
+                            .catch((err) => {
                                 reject(err);
                             });
                         })
@@ -113,7 +113,7 @@ Garner.prototype.updateItem = function(searchURL = false, compareValue = '', rep
                             })
                             .then((response) => {
                                 switch (response.code) {
-                                    case 200;
+                                    case 200:
                                         resolve(response.data);
                                         break;
                                     case 630:
