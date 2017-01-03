@@ -1,6 +1,6 @@
 const bakajax = require('bakajax');
 
-function Garner(databaseId = false, albumId = false, username = false, password = false) {
+function Garner({databaseId: databaseId = false, albumId: albumId = false, username: username = false, password: password = false}) {
     this.sessionKey = false;
     this.databaseId = databaseId;
     this.albumId = albumId;
