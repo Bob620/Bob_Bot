@@ -4,7 +4,7 @@ module.exports = class extends ObjectCollection {
     constructor(id, garnerObject, givemeStruct = []) {
         if (id && garnerObject) {
             super(givemeStruct);
-            this.id;
+            this.id = id;
             this.garner = garnerObject;
         } else {
             throw "Giveme must be created with an id and garner";
