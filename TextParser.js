@@ -26,7 +26,7 @@ module.exports = class {
         return false;
     }
 
-    parse(server, message) {
+    static parse(server, message) {
         const [primaryCommand = false, secondaryCommand = false, tertiaryCommand = false, quaternaryCommand = false] = message.content.toLowerCase().split(' ');
         const prefix = server.prefix;
         const checkForAdmin = this.checkForAdmin;

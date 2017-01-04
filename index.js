@@ -13,9 +13,6 @@ module.exports = class {
         if (serverLogin && botToken) {
             this.ServerGarner = new Garner(serverLogin);
             this.client = new Discord.Client();
-            this.textParser = new TextParser();
-            this.dmParser = new DmParser();
-            this.groupParser = new GroupParser();
             this.cache = {
                 "text": {},
                 "dm": {},
@@ -37,7 +34,7 @@ module.exports = class {
                     this.getTextServer(message.guild.id)
                     .then((server) => {
                         if (server) {
-                            this.textParser.parse(server, message);
+                            TextParser.parse(server, message);
                         }
                     })
                     .catch(() => {
