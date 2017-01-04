@@ -1,24 +1,22 @@
 module.exports = class {
-	constructor(server, message) {
-		this.server = server;
-		this.message = message;
+	constructor() {
 	}
-	set(roleName, useName) {
+	static set(server, message, roleName, useName) {
 
 	}
-	remove(name) {
+	static remove(server, message, name) {
 
 	}
-	add(name) {
+	static add(server, message, name) {
 		
 	}
-	list() {
+	static list(server, message) {
 
 	}
-	basicHelp() {
+	static basicHelp(server, message) {
 
 	}
-	help() {
+	static help(server, message) {
 
 	}
 }

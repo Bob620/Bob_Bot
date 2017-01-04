@@ -1,27 +1,25 @@
 module.exports = class {
-	constructor(server, message) {
-		this.server = server;
-		this.message = message;
+	constructor() {
 	}
-	add(link) {
+	static add(server, message, link) {
 
 	}
-	skip() {
+	static skip(server, message) {
 
 	}
-	pause() {
+	static pause(server, message) {
 
 	}
-	stop() {
+	static stop(server, message) {
 
 	}
-	list() {
+	static list(server, message) {
 
 	}
-	basicHelp() {
+	static basicHelp(server, message) {
 
 	}
-	help() {
+	static help(server, message) {
 
 	}
 }

@@ -1,27 +1,25 @@
 module.exports = class {
-	constructor(server, message) {
-		this.server = server;
-		this.message = message;
+	constructor() {
 	}
-	setMod(name) {
+	static setMod(server, message, name) {
 
 	}
-	removeMod(name) {
+	static removeMod(server, message, name) {
 
 	}
-	setAdmin(name) {
+	static setAdmin(server, message, name) {
 
 	}
-	removeAdmin(name) {
+	static removeAdmin(server, message, name) {
 
 	}
-	list() {
+	static list(server, message) {
 
 	}
-	basicHelp() {
+	static basicHelp(server, message) {
 
 	}
-	help() {
+	static help(server, message) {
 
 	}
 }

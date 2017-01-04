@@ -1,9 +1,8 @@
 module.exports = class {
-	constructor(server, message) {
-		this.server = server;
-		this.message = message;
+	constructor() {
 	}
-	parse() {
+	static parse(server, message) {
+		const filter = server.filter;
 
 	}
 }
