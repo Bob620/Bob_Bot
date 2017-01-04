@@ -1,8 +1,8 @@
-const FilterParser = require('./FilterParser.js');
-const GivemeParser = require('./GivemeParser.js');
-const MusicParser = require('./MusicParser.js');
-const RolesParser = require('./RolesParser.js');
-const DefaultParser = require('./DefaultParser.js');
+const FilterCommands = require('./FilterCommands.js');
+const GivemeCommands = require('./GivemeCommands.js');
+const MusicCommands = require('./MusicCommands.js');
+const RolesCommands = require('./RolesCommands.js');
+const DefaultCommands = require('./DefaultCommands.js');
 
 module.exports = class {
     constructor() {
@@ -38,29 +38,29 @@ module.exports = class {
                     switch(secondaryCommand) {
                         case "set":
                             if (checkForMod(server.roles.mod.array, message.member.roles) || checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                FilterParser.set(server, message, tertiaryCommand);
+                                FilterCommands.set(server, message, tertiaryCommand);
                             }
                             break;
                         case "remove":
                             if (checkForMod(server.roles.mod.array, message.member.roles) || checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                FilterParser.remove(server, message, tertiaryCommand);
+                                FilterCommands.remove(server, message, tertiaryCommand);
                             }
                             break;
                         case "watch":
                             if (checkForMod(server.roles.mod.array, message.member.roles) || checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                FilterParser.watch(server, message, tertiaryCommand);
+                                FilterCommands.watch(server, message, tertiaryCommand);
                             }
                             break;
                         case "ignore":
                             if (checkForMod(server.roles.mod.array, message.member.roles) || checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                FilterParser.ignore(server, message, tertiaryCommand);
+                                FilterCommands.ignore(server, message, tertiaryCommand);
                             }
                             break;
                         case "list":
-                            FilterParser.list(server, message);
+                            FilterCommands.list(server, message);
                             break;
                         default:
-                            FilterParser.basicHelp(server, message);
+                            FilterCommands.basicHelp(server, message);
                             break;
                     }
                     break;
@@ -68,22 +68,22 @@ module.exports = class {
                     switch(secondaryCommand) {
                         case "set":
                             if (checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                GivemeParser.set(server, message, tertiaryCommand, quaternaryCommand);
+                                GivemeCommands.set(server, message, tertiaryCommand, quaternaryCommand);
                             }
                             break;
                         case "remove":
                             if (checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                GivemeParser.remove(server, message, tertiaryCommand);
+                                GivemeCommands.remove(server, message, tertiaryCommand);
                             }
                             break;
                         case "list":
-                            GivemeParser.list(server, message);
+                            GivemeCommands.list(server, message);
                             break;
                         default:
                             if (secondaryCommand !== false) {
-                                GivemeParser.add(server, message, secondaryCommand);
+                                GivemeCommands.add(server, message, secondaryCommand);
                             } else {
-                                GivemeParser.basicHelp(server, message);
+                                GivemeCommands.basicHelp(server, message);
                             }
                             break;
                     }
@@ -91,24 +91,24 @@ module.exports = class {
                 case prefix+"music":
                     switch(secondaryCommand) {
                         case "add":
-                            MusicParser.add(server, message, tertiaryCommand);
+                            MusicCommands.add(server, message, tertiaryCommand);
                             break;
                         case "skip":
-                            MusicParser.skip(server, message);
+                            MusicCommands.skip(server, message);
                             break;
                         case "pause":
-                            MusicParser.pause(server, message);
+                            MusicCommands.pause(server, message);
                             break;
                         case "stop":
                             if (checkForMod(server.roles.mod.array, message.member.roles) || checkForAdmin(server.roles.admin.array, message.member.roles)) {
-                                MusicParser.stop(server, message);
+                                MusicCommands.stop(server, message);
                             }
                             break;
                         case "list":
-                            MusicParser.list(server, message);
+                            MusicCommands.list(server, message);
                             break;
                         default:
-                            MusicParser.basicHelp(server, message);
+                            MusicCommands.basicHelp(server, message);
                             break;
                     }
                     break;
@@ -118,36 +118,36 @@ module.exports = class {
                             case "set":
                                 switch(tertiaryCommand) {
                                     case "mod":
-                                        RolesParser.setMod(server, message, quaternaryCommand);
+                                        RolesCommands.setMod(server, message, quaternaryCommand);
                                         break;
                                     case "admin":
-                                        RolesParser.removeMod(server, message, quaternaryCommand);
+                                        RolesCommands.removeMod(server, message, quaternaryCommand);
                                         break;
                                     default:
-                                        RolesParser.basicHelp(server, message);
+                                        RolesCommands.basicHelp(server, message);
                                         break;
                                 }
                                 break;
                             case "remove":
                                 switch(tertiaryCommand) {
                                     case "mod":
-                                        RolesParser.setAdmin(server, message, quaternaryCommand);
+                                        RolesCommands.setAdmin(server, message, quaternaryCommand);
                                         break;
                                     case "admin":
-                                        RolesParser.removeAdmin(server, message, quaternaryCommand);
+                                        RolesCommands.removeAdmin(server, message, quaternaryCommand);
                                         break;
                                     default:
-                                        RolesParser.basicHelp(server, message);
+                                        RolesCommands.basicHelp(server, message);
                                         break;
                                 }
                                 break;
                             case "list":
-                                RolesParser.list(server, message);
+                                RolesCommands.list(server, message);
                         }
                         break;
                     }
                 default:
-                    DefaultParser.parse(server, message);
+                    DefaultCommands.parse(server, message);
                     break;
             }
         }
