@@ -14,7 +14,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             })
             .catch(() => {
@@ -23,7 +23,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             });
         } else {
@@ -32,7 +32,7 @@ module.exports = class {
 
             })
             .catch(() => {
-
+                    console.log("Error sending message");
             });
         }
     }
@@ -47,7 +47,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             })
             .catch(() => {
@@ -56,7 +56,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             });
         } else {
@@ -65,7 +65,7 @@ module.exports = class {
 
             })
             .catch(() => {
-
+                console.log("Error sending message");
             });
         }
     }
@@ -83,7 +83,7 @@ module.exports = class {
 
                         })
                         .catch(() => {
-
+                            console.log("Error sending message");
                         });
                     })
                     .catch(() => {
@@ -92,7 +92,7 @@ module.exports = class {
 
                         })
                         .catch(() => {
-
+                            console.log("Error sending message");
                         });
                     });
             } else {
@@ -101,7 +101,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             }
         } else {
@@ -110,7 +110,7 @@ module.exports = class {
 
             })
             .catch(() => {
-
+                console.log("Error sending message");
             });
         }
     }
@@ -125,7 +125,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             })
             .catch(() => {
@@ -134,7 +134,7 @@ module.exports = class {
 
                 })
                 .catch(() => {
-
+                    console.log("Error sending message");
                 });
             });
         } else {
@@ -143,7 +143,7 @@ module.exports = class {
 
             })
             .catch(() => {
-
+                console.log("Error sending message");
             });
         }
     }
@@ -177,7 +177,7 @@ module.exports = class {
 
         })
         .catch(() => {
-
+            console.log("Error sending message");
         });
     }
     basicHelp() {
@@ -187,7 +187,7 @@ module.exports = class {
 
         })
         .catch(() => {
-
+            console.log("Error sending message");
         });
     }
     help() {
@@ -197,14 +197,14 @@ module.exports = class {
 
         })
         .catch(() => {
-
+            console.log("Error sending message");
         });
         this.message.member.sendCode("diff", this.message.guild.name+"\n\nFilter Help\n\n"+prefix+"filter set [word]\n+ Used to filter specific words\n\n"+prefix+"filter remove [word]\n+ Used to stop filtering a specific word\n\n"+prefix+"filter watch [Channel Name]\n+ Used to monitor a channel for the filtered words\n\n"+prefix+"filter ignore [Channel Name]\n+ Used to stop monitoring a channel for the filtered words\n\n"+prefix+"filter list\n+ Displays currently monitored channels and filtered words")
         .then(() => {
 
         })
         .catch(() => {
-
+            console.log("Error sending message");
         });
     }
 }
