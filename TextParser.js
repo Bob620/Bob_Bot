@@ -147,10 +147,12 @@ module.exports = class {
                             break;
                         case "prefix":
                             DefaultCommands.help(server, message);
+                            break;
                         default:
                             DefaultCommands.help(server, message);
                             break;
                     }
+                    break;
                 case prefix+"prefix":
                     if (secondaryCommand) {
                         PrefixCommands.parse(server, message, secondaryCommand);

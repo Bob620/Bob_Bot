@@ -62,7 +62,7 @@ module.exports = class {
                     "value": "I shouldn't have to tell you.\nIf I do have to tell you, don't just go googling it..."
                 },
                 {
-                    "name": "Commands that will be implemented eventually"
+                    "name": "Commands that will be implemented eventually",
                     "value": ""
                 }
             ],
