@@ -1,3 +1,4 @@
+// DEPERCATED
 const StringCollection = require('./StringCollection.js');
 
 module.exports = class {

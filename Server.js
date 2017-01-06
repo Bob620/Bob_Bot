@@ -1,7 +1,6 @@
 const Filter = require('./Filter.js');
 const Giveme = require('./Giveme.js');
 const Music = require('./Music.js');
-const Roles = require('./Roles.js');
 
 module.exports = class {
     constructor(id = false, garnerObject = false) {
@@ -12,7 +11,6 @@ module.exports = class {
             this.filter = null;
             this.giveme = null;
             this.music = null;
-            this.roles = null;
         } else {
             throw "Filter must be created with an id and garner";
         }
@@ -32,7 +30,6 @@ module.exports = class {
                 this.filter = new Filter(id, garner, garnerStruct.filter);
                 this.giveme = new Giveme(id, garner, garnerStruct.giveme);
                 this.music = new Music(id, garner, garnerStruct.music);
-                this.roles = new Roles(id, garner, garnerStruct.roles);
                 this.prefixSymbol = garnerStruct.prefix;
                 return Promise.resolve(false);
             } else {
@@ -40,7 +37,6 @@ module.exports = class {
                     this.filter = new Filter(id, garner);
                     this.giveme = new Giveme(id, garner);
                     this.music = new Music(id, garner);
-                    this.roles = new Roles(id, garner);
                     this.prefixSymbol = '!';
                     this.submit()
                     .then(() => {
@@ -57,7 +53,6 @@ module.exports = class {
                 this.filter = new Filter(id, garner);
                 this.giveme = new Giveme(id, garner);
                 this.music = new Music(id, garner);
-                this.roles = new Roles(id, garner);
                 this.prefixSymbol = '!';
                 this.submit()
                 .then(() => {
@@ -122,7 +117,6 @@ module.exports = class {
             "filter": this.filter.getGarnerStruct(),
             "giveme": this.giveme.getGarnerStruct(),
             "music": this.music.getGarnerStruct(),
-            "roles": this.roles.getGarnerStruct(),
             "prefix": this.prefix
         }
     }

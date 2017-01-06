@@ -12,7 +12,7 @@ module.exports = class {
         if (element) {
             const index = this.findIndex(element);
             if (index > -1) {
-                array.splice(index, 1);
+                this.array.splice(index, 1);
             }
         }
         return true;
@@ -26,7 +26,8 @@ module.exports = class {
         }
         return false;
     }
-    findIndex(array, element) {
+    findIndex(element) {
+        const array = this.array;
         for (let i = 0; i < array.length; i++) {
             if (element === array[i]) {
                 return i;
