@@ -24,7 +24,7 @@ module.exports = class {
             });
             this.client.login(botToken);
         } else {
-            throw "A Bot Token and Server Login required.";
+            throw "A Bot Token and garner login required.";
         }
     }
     messageParse(message) {
@@ -37,8 +37,9 @@ module.exports = class {
                             TextParser.parse(server, message);
                         }
                     })
-                    .catch(() => {
+                    .catch((err) => {
                         console.log("Fatal message error populating textServer.");
+                        console.log(err);
                     });
                     break;
                 case "dm":
