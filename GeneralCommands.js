@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const fs = require('fs');
 
 module.exports = class {
@@ -43,7 +42,7 @@ module.exports = class {
     }
     static help(server, message) {
         const prefix = server.prefix;
-        message.member.sendEmbed(new Discord.RichEmbed({
+        message.member.sendEmbed({
             "author": {
                 "name": message.guild.name,
                 "url": "https://discordapp.com/channels/"+message.guild.id
@@ -61,12 +60,16 @@ module.exports = class {
                 {
                     "name": prefix+"nsfw",
                     "value": "I shouldn't have to tell you.\nIf I do have to tell you, don't just go googling it..."
+                },
+                {
+                    "name": "Commands that will be implemented eventually"
+                    "value": ""
                 }
             ],
             "color": "656565",
             "description": "----------------------",
             "title": "General Commands"
-        }))
+        })
         .then(() => {
             message.channel.sendMessage("<@"+message.author.id+"> , I've sent you a PM with more info.")
             .then(() => {

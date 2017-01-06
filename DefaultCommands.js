@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const fs = require('fs');
 
 module.exports = class {
@@ -25,7 +24,7 @@ module.exports = class {
     }
     static help(server, message) {
         const prefix = server.prefix;
-        message.member.sendEmbed(new Discord.RichEmbed({
+        message.member.sendEmbed({
             "author": {
                 "name": message.guild.name,
                 "url": "https://discordapp.com/channels/"+message.guild.id
@@ -38,7 +37,7 @@ module.exports = class {
             "fields": [
                 {
                     "name": prefix+"help commands",
-                    "value": "Provides a list of general commands"
+                    "value": "Provides a list of general commands\nSends a PM"
                 },
                 {
                     "name": prefix+"help music",
@@ -72,7 +71,7 @@ module.exports = class {
             "color": "555555",
             "description": "----------------------",
             "title": "General Help"
-        }))
+        })
         .then(() => {
             message.channel.sendMessage("<@"+message.author.id+"> , I've sent you a PM with more info.")
             .then(() => {

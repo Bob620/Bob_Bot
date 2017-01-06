@@ -151,9 +151,6 @@ module.exports = class {
                             DefaultCommands.help(server, message);
                             break;
                     }
-                case prefix+"roles":
-                    RolesCommands.basicHelp(server, message);
-                    break;
                 case prefix+"prefix":
                     if (secondaryCommand) {
                         PrefixCommands.parse(server, message, secondaryCommand);

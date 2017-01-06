@@ -1,14 +1,9 @@
-const Discord = require('discord.js');
-
 module.exports = class {
 	constructor() {
 	}
-	static basicHelp(server, message) {
-
-	}
 	static help(server, message) {
         const prefix = server.prefix;
-        message.member.sendEmbed(new Discord.RichEmbed({
+        message.member.sendEmbed({
             "author": {
                 "name": message.guild.name,
                 "url": "https://discordapp.com/channels/"+message.guild.id
@@ -35,7 +30,7 @@ module.exports = class {
             "color": "454545",
             "description": "----------------------",
             "title": "Roles Help"
-        }))
+        })
         .then(() => {
             message.channel.sendMessage("<@"+message.author.id+"> , I've sent you a PM with more info.")
             .then(() => {

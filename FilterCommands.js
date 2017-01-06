@@ -208,7 +208,7 @@ module.exports = class {
     }
     static help(server, message) {
         const prefix = server.prefix;
-        message.member.sendEmbed(new Discord.RichEmbed({
+        message.member.sendEmbed({
             "author": {
                 "name": message.guild.name,
                 "url": "https://discordapp.com/channels/"+message.guild.id
@@ -243,7 +243,7 @@ module.exports = class {
             "color": "151515",
             "description": "----------------------",
             "title": "Filter Help"
-        }))
+        })
         .then(() => {
             message.channel.sendMessage("<@"+message.author.id+"> , I've sent you a PM with more info.")
             .then(() => {
