@@ -28,6 +28,20 @@ module.exports = class {
         }
         return true;
     }
+    getAll(prop) {
+        if (prop) {
+            const array = this.array;
+            let output = [];
+            for (let i = 0; i < array.length; i++) {
+                const element = array[i];
+                if (element.hasOwnProperty(prop)) {
+                    output.push(element[prop]);
+                }
+            }
+            return output;
+        }
+        return [];
+    }
     search(prop, value = null) {
         if (prop) {
             const array = this.array;

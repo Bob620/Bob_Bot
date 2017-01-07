@@ -63,7 +63,7 @@ module.exports = class {
                 },
                 {
                     "name": "Commands that will be implemented eventually",
-                    "value": ""
+                    "value": prefix+"clean"
                 }
             ],
             "color": "656565",

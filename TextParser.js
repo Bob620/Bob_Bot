@@ -87,7 +87,7 @@ module.exports = class {
                             break;
                         default:
                             if (secondaryCommand !== false) {
-                                GivemeCommands.add(server, message, secondaryCommand);
+                                GivemeCommands.give(server, message, secondaryCommand);
                             } else {
                                 GivemeCommands.basicHelp(server, message);
                             }
@@ -96,8 +96,13 @@ module.exports = class {
                     break;
                 case prefix+"music":
                     switch(secondaryCommand) {
+                        case "current":
+                            MusicCommands.current(server, message);
                         case "add":
                             MusicCommands.add(server, message, tertiaryCommand);
+                            break;
+                        case "playlist":
+                            MusicCommands.playlist(server, message);
                             break;
                         case "skip":
                             MusicCommands.skip(server, message);
@@ -112,16 +117,13 @@ module.exports = class {
                             break;
                         case "join":
                             if (checkForMod(message.member.roles) || checkForAdmin(message.member.roles)) {
-                                MusicCommands.join(server, message, tertiaryCommand);
+                                MusicCommands.join(server, message);
                             }
                             break;
                         case "leave":
                             if (checkForMod(message.member.roles) || checkForAdmin(message.member.roles)) {
                                 MusicCommands.leave(server, message, tertiaryCommand);
                             }
-                            break;
-                        case "playlist":
-                            MusicCommands.playlist(server, message);
                             break;
                         default:
                             MusicCommands.basicHelp(server, message);

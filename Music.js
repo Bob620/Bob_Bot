@@ -1,13 +1,13 @@
 const ObjectCollection = require('./ObjectCollection.js');
 
 module.exports = class {
-    constructor(id = false, garnerObject = false, musicStruct = {"curentSong": null, "playlist": [], "currentType": 0, "channelId": "", "skip": 0}) {
+    constructor(id = false, garnerObject = false, musicStruct = {"curentSong": undefined, "playlist": [], "currentTime": 0, "channelName": undefined, "skip": 0}) {
         if (id && garnerObject) {
             this.id = id;
             this.garner = garnerObject;
             this.currentSong = musicStruct.currentSong;
-            this.currentType = musicStruct.currentType;
-            this.channelId = musicStruct.channelId;
+            this.currentTime = musicStruct.currentTime;
+            this.channelName = musicStruct.channelName;
             this.playlist = new ObjectCollection(musicStruct.playlist);
             this.skip = musicStruct.skip;
         } else {
@@ -20,8 +20,8 @@ module.exports = class {
     getGarnerStruct() {
         return {
             "currentSong": this.currentSong,
-            "currentType": this.currentType,
-            "channelId": this.channelId,
+            "currentTime": this.currentTime,
+            "channelName": this.channelName,
             "playlist": this.playlist.array,
             "skip": this.skip
         }
