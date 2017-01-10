@@ -51,9 +51,15 @@ module.exports = class {
                             TextParser.parse(server, message);
                         }
                     })
-                    .catch((err) => {
+                    .catch((err, server) => {
                         console.log("Fatal message error populating textServer.");
                         console.log(err);
+                        console.log("Using last avalible population.");
+                        if (server) {
+                            TextParser.parse(server, message);
+                        } else {
+                            console.log("Unable to retrive pervious population");
+                        }
                     });
                     break;
                 case "dm":
@@ -68,21 +74,22 @@ module.exports = class {
         if (textServer && textServer.expire > process.uptime()) {
             return Promise.resolve(textServer.server);
         } else {
-            if (this.cache.text[id]) {
-                delete this.cache.text[id];
-            }
             return new Promise((resolve, reject) => {
                 const server = new Server(id, this.ServerGarner);
                 server.populate()
                 .then(() => {
+                    if (this.cache.text[id]) {
+                        delete this.cache.text[id];
+                    }
+                    
                     this.cache.text[id] = {
                         "server": server,
                         "expire": process.uptime()+cacheExpire
                     };
                     resolve(server);
                 })
-                .catch(() => {
-                    reject(false);
+                .catch((err) => {
+                    reject(err, this.cache.text[id].server);
                 });
             });
         }
