@@ -89,7 +89,13 @@ module.exports = class {
                     resolve(server);
                 })
                 .catch((err) => {
-                    reject(err, this.cache.text[id].server);
+                    const server = this.cache.text[id].server;
+                    if (server) {
+                        reject(err, server);
+                    } else {
+                        reject(err, false);
+                    }
+                    
                 });
             });
         }
