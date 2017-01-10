@@ -177,7 +177,7 @@ module.exports = class {
         }
         outputContent += "\n\nFiltered Words:\n";
         if (words.length > 0) {
-            outputContent += "+ "+words.join('\n- ');
+            outputContent += "+ "+words.join('\n+ ');
         } else {
             outputContent += "No words filtered"; 
         }

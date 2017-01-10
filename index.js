@@ -22,6 +22,20 @@ module.exports = class {
             this.client.on('message', (message) => {
                 this.messageParse(message);
             });
+            this.client.on('error', (err) => {
+                console.log("An error occured:");
+                console.log(err);
+            });
+            this.client.on('disconnect', () => {
+               console.log('Disconnected'); 
+            });
+            this.client.on('reconnecting', () => {
+                console.log('Reconnecting...');
+            });
+            this.client.on('ready', () => {
+                console.log('Connected and ready');
+            });
+            
             this.client.login(botToken);
         } else {
             throw "A Bot Token and garner login required.";
