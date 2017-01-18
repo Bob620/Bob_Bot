@@ -1,9 +1,10 @@
 "use strict"
 
-var Bobbot = require('./index.js');
+const Bobbot = require('./index.js');
+let login;
 try {
-    var login = require('./login.json');
-    var bobbot = new Bobbot(login);
+    login = require('./login.json');
 } catch(err) {
-    console.log(err);
+	throw err;
 }
+const  bobbot = new Bobbot(login);

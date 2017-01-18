@@ -7,13 +7,17 @@ const options = {
 }
 
 class Prefix extends Command {
-	constructor() {
-        super(options);
+	constructor(commands) {
+        super(commands, options);
 	}
 
 	execute(message, garnerInfo) {
 
 	}
+
+    help(command) {
+
+    }
 }
 
 module.exports = Prefix;

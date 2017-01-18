@@ -79,10 +79,10 @@ class Text {
         return new Promise((resolve, reject) => {
             fs.readdir("./domains/discord/subdomains/text/commands", (err, files) => {
                 for (let i = 0; i < files.length; i++) {
-                    const commandFile = files[i];
-                    if (commandFile !== "command.js") {
-                        const Command = require("./commands/"+commandFile);
-                        this.commands.push(new Command());
+                    const file = files[i];
+                    if (file !== "command.js") {
+                        const Command = require("./commands/"+file);
+                        this.commands.push(new Command(this.commands));
                     }
                 }
                 resolve(this.commands.length);

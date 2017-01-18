@@ -7,6 +7,12 @@ const rotation = [
 		"game": {
 			"name": "New version near!"
 		}
+	},
+	{
+		"status": "online",
+		"game": {
+			"name": "Added !taka"
+		}
 	}
 ];
 

@@ -7,11 +7,15 @@ const options = {
 }
 
 class Filter extends Command {
-    constructor() {
-        super(options);
+    constructor(commands) {
+        super(commands, options);
     }
 
     execute(message, garnerInfo) {
+
+    }
+
+    help(command) {
 
     }
 }

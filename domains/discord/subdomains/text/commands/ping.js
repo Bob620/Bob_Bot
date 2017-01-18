@@ -7,8 +7,8 @@ const options = {
 }
 
 class Ping extends Command {
-	constructor() {
-        super(options);
+	constructor(commands) {
+        super(commands, options);
 	}
 
 	execute(message, garnerInfo) {
@@ -20,6 +20,10 @@ class Ping extends Command {
 
 		});
 	}
+
+    help(command) {
+
+    }
 }
 
 module.exports = Ping;

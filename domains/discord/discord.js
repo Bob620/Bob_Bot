@@ -62,7 +62,10 @@ class Discord {
     }
 
     set status(status) {
-        console.log("DISCORD|Status| "+this.botStatus+" -> "+status);
+        const date = new Date().toISOString().split('T');
+        const largeDate = date[0];
+        const smallDate = date[1].slice(0, -5);
+        console.log(`${largeDate}|${smallDate}|DISCORD|Status| ${this.botStatus} -> ${status}`);
         this.botStatus = status;
     }
 
@@ -79,8 +82,8 @@ class Discord {
         return new Promise((resolve, reject) => {
             fs.readdir("./domains/discord/subdomains", (err, files) => {
                 for (let i = 0; i < files.length; i++) {
-                    const fileName = files[i];
-                    const SubDomain = require("./subdomains/"+fileName+"/"+fileName+".js");
+                    const file = files[i];
+                    const SubDomain = require("./subdomains/"+file+"/"+file+".js");
                     this.subdomains.push(new SubDomain(this.subdomains, this.garner));
                 }
                 resolve(true);
@@ -93,9 +96,9 @@ class Discord {
         return new Promise((resolve, reject) => {
             fs.readdir("./domains/discord/backgroundtasks", (err, files) => {
                 for (let i = 0; i < files.length; i++) {
-                    const fileName = files[i];
-                    if (fileName !== "backgroundtask.js") {
-                        const BackgroundTask = require("./backgroundtasks/"+fileName);
+                    const file = files[i];
+                    if (file !== "backgroundtask.js") {
+                        const BackgroundTask = require("./backgroundtasks/"+file);
                         this.backgroundTasks.push(new BackgroundTask(this.subdomains, this.backgroundTasks, this.garner, this.discord, this.getStatus.bind(this)));
                     }
                 }

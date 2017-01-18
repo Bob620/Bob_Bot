@@ -78,4 +78,7 @@ module.exports = class {
         }
         return false;
     }
+    empty() {
+        this.array = [];
+    }
 }

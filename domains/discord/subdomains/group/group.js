@@ -71,9 +71,9 @@ class Group {
         // Search ./commands
         fs.readdir("./domains/discord/subdomains/group/commands", (err, files) => {
             for (let i = 0; i < files.length; i++) {
-                const commandFile = files[i];
-                if (commandFile !== "command.js") {
-                    const Command = require("./commands/"+commandFile);
+                const file = files[i];
+                if (file !== "command.js") {
+                    const Command = require("./commands/"+file);
                     this.commands.push(new Command());
                 }
             }

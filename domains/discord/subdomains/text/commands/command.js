@@ -1,5 +1,11 @@
 class Command {
-    constructor({keyword: keyword = undefined, commands: commands = undefined, requires: requires = undefined}) {
+    constructor(otherCommands, {keyword: keyword = undefined, commands: commands = undefined, requires: requires = undefined}) {
+        if (otherCommands) {
+            this.otherCommands = otherCommands;
+        } else {
+            throw "'otherCommands' not defined";
+        }
+
         if (typeof keyword !== "string") {
             throw "keyword must be a valid string";
         } else if (keyword === "") {
@@ -27,13 +33,6 @@ class Command {
         } else {
             console.trace("commands is undefined, using []");
         }
-    }
-
-    requires(dataType) {
-        if (this.requires.includes(dataType)) {
-            return true;
-        }
-        return false;
     }
 
     supports(message, garnerInfo) {
