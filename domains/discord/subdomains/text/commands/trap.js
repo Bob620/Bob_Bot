@@ -13,7 +13,7 @@ class Trap extends Command {
 	}
 
 	execute(message, garnerInfo) {
-/*        fs.readdir('./images/trap', (err, files) => {
+        fs.readdir('./images/trap', (err, files) => {
             if (err) {
             	console.trace(err);
             } else {
@@ -29,7 +29,7 @@ class Trap extends Command {
                 })
             }
         });
-*/	}
+	}
 
     help(command) {
 

@@ -11,9 +11,34 @@ const rotation = [
 	{
 		"status": "online",
 		"game": {
-			"name": "Added !taka"
+			"name": "!taka"
+		}
+	},
+	{
+		"status": "online",
+		"game": {
+			"name": "!megumin"
+		}
+	},
+	{
+		"status": "online",
+		"game": {
+			"name": "!slap"
+		}
+	},
+	{
+		"status": "online",
+		"game": {
+			"name": "!trap"
+		}
+	},
+	{
+		"status": "online",
+		"game": {
+			"name": "Looking for Traps!"
 		}
 	}
+
 ];
 
 class Status extends BackgroundTask {
