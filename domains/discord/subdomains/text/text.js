@@ -38,6 +38,7 @@ class Text {
                 }
             })
             .catch((err) => {
+                console.log("Error returning GarnerInfo");
                 reject(err);
             });
         });

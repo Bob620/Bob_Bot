@@ -34,7 +34,7 @@ class Discord {
                     .then(() => {
                     })
                     .catch((err) => {
-                        console.log("An error occured:");
+                        log("ERROR", "An error occured:");
                         console.trace(err);
                     });
                     break;
@@ -56,16 +56,13 @@ class Discord {
         });
 
         discord.on('error', (err) => {
-            console.log("An error occured");
-            console.log(err);
+            log("ERROR", "Discord error occured:");
+            console.trace(err);
         });
     }
 
     set status(status) {
-        const date = new Date().toISOString().split('T');
-        const largeDate = date[0];
-        const smallDate = date[1].slice(0, -5);
-        console.log(`${largeDate}|${smallDate}|DISCORD|Status| ${this.botStatus} -> ${status}`);
+        log("Status", status, this.botStatus);
         this.botStatus = status;
     }
 
@@ -113,6 +110,18 @@ class Discord {
         for (let i = 0; i < backgroundTasks.length; i++) {
             backgroundTasks[i].start();
         }
+    }
+}
+
+function log(name, newInfo, oldInfo) {
+    const dateObject = new Date().toISOString().split('T');
+    const date = dateObject[0];
+    const time = dateObject[1].slice(0, -5);
+
+    if (oldInfo) {
+        console.log(`${date}|${time}|DISCORD|${name}| ${oldInfo} -> ${newInfo}`);
+    } else {
+        console.log(`${date}|${time}|DISCORD|${name}| ${newInfo}`);
     }
 }
 
