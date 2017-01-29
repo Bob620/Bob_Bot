@@ -15,8 +15,8 @@ class Music extends Command {
     }
 
     execute(message, garnerInfo) {
-        const content = message.content.toLowerCase().split(' ');
-        switch(content[1]) {
+        const content = message.content.split(' ');
+        switch(content[1].toLowerCase()) {
             case "current":
                 this.current(message);
                 break;
@@ -73,23 +73,26 @@ class Music extends Command {
     }
 
     add(message, url) {
+        message.channel.sendMessage(`Adding ${url} to the queue.`)
         const voiceChannel = musicConn[message.guild.id];
         if (voiceChannel) {
-            const song = new Song(url)
+            console.log(`"${url}"`);
+            let song = new Song(url)
             song.populate()
             .then((info) => {
                 console.log(info);
-                const playlist = voiceChannel.songList;
-                playlist.add(song);
-                message.channel.sendMessage(song.title+" was added to the playlist.");
+                if (info) {
+                    message.channel.sendMessage(`${info.title} VS ${song.title}`);
+                    let playlist = voiceChannel.songList;
+                    playlist.add(song);
+                    message.channel.sendMessage(song.title+" was added to the playlist.");
 
-                if (playlist.array.length == 1) {
-                    voiceChannel.next(message);
+                    if (playlist.array.length == 1) {
+                        voiceChannel.next(message);
+                    }
+                } else {
+                    message.channel.sendMessage("I couldn't find that song :/");
                 }
-            })
-            .catch((err) => {
-                console.log(err);
-                message.channel.sendMessage("I couldn't find that song :/");
             });
         }
     }
@@ -229,8 +232,7 @@ class Song {
 
     populate() {
         return new Promise((resolve, reject) => {
-            ytdl.getInfo(this.url, function(err, info) {
-                console.log(info);
+            ytdl.getInfo(this.url, (err, info) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -248,7 +250,8 @@ class Song {
             return info;
         })
         .catch((err) => {
-            return err;
+            console.log(`ERR: ${err}`);
+            return false;
         });
     }
 }
