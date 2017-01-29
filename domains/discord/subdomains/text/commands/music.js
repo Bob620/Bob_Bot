@@ -3,7 +3,7 @@ const ytdl = require('ytdl-core');
 
 const options = {
     "keyword": "music",
-    "commands": ["current", "add", "playlist", "stop", "join", "leave"], // play, pause, skip
+    "commands": ["current", "add", "playlist", "stop", "join", "leave", "skip"], // play, pause
     "requires": []
 }
 
@@ -76,16 +76,14 @@ class Music extends Command {
         message.channel.sendMessage(`Adding ${url} to the queue.`)
         const voiceChannel = musicConn[message.guild.id];
         if (voiceChannel) {
-            console.log(`"${url}"`);
             let song = new Song(url)
             song.populate()
             .then((info) => {
-                console.log(info);
                 if (info) {
                     message.channel.sendMessage(`${info.title} VS ${song.title}`);
                     let playlist = voiceChannel.songList;
                     playlist.add(song);
-                    message.channel.sendMessage(song.title+" was added to the playlist.");
+                    message.channel.sendMessage(`${song.title} was added to the playlist.`);
 
                     if (playlist.array.length == 1) {
                         voiceChannel.next(message);
@@ -108,8 +106,9 @@ class Music extends Command {
     stop(message) {
         const voiceChannel = musicConn[message.guild.id];
         if (voiceChannel) {
+            voiceChannel.empty();
             voiceChannel.stop();
-            message.channel.sendMessage("Stopping Playback");
+            message.channel.sendMessage("Stopping Playback, Emptying Playlist");
         }
     }
 
@@ -145,7 +144,11 @@ class Music extends Command {
     }
 
     skip() {
-
+        const voiceChannel = musicConn[message.guild.id];
+        if (voiceChannel) {
+            voiceChannel.stop();
+            message.channel.sendMessage("Skipping Song");
+        }
     }
 }
 
@@ -193,7 +196,6 @@ class Connection {
     }
 
     next(message, wasPrev) {
-        console.log(this.songList);
         if (this.ready) {
             this.stop();
 
