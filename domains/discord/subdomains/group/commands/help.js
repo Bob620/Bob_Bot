@@ -1,12 +1,12 @@
 const Command = require('./command.js');
 
 const options = {
-    "keyword": "general",
+    "keyword": "help",
     "commands": [],
     "requires": []
 }
 
-class General extends Command {
+class Help extends Command {
     constructor(subdomainInfo) {
         super(subdomainInfo, options);
     }
@@ -20,4 +20,4 @@ class General extends Command {
     }
 }
 
-module.exports = General;
+module.exports = Help;

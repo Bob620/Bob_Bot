@@ -2,23 +2,22 @@ const Command = require('./command.js');
 const fs = require('fs');
 
 const options = {
-	"keyword": "trap",
-	"commands": [],
-	"requires": []
+    "keyword": "trap",
+    "commands": [],
+    "requires": []
 }
 
 class Trap extends Command {
-	constructor(commands) {
-        super(commands, options);
-	}
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
+    }
 
-	execute(message, garnerInfo) {
+    execute(message, garnerInfo) {
         fs.readdir('./images/trap', (err, files) => {
             if (err) {
-            	console.trace(err);
+                console.trace(err);
             } else {
-                const totalFiles = files.length;
-                const name = files[Math.floor(Math.random() * totalFiles)];
+                const name = this.random.pick(files);
 
                 message.channel.sendFile('./images/trap/'+name, name)
                 .then(() => {
@@ -29,7 +28,7 @@ class Trap extends Command {
                 })
             }
         });
-	}
+    }
 
     help(command) {
 

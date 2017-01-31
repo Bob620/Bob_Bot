@@ -1,19 +1,19 @@
 const Command = require('./command.js');
 
 const options = {
-	"keyword": "prefix",
-	"commands": [],
-	"requires": []
+    "keyword": "prefix",
+    "commands": [],
+    "requires": []
 }
 
 class Prefix extends Command {
-	constructor(commands) {
-        super(commands, options);
-	}
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
+    }
 
-	execute(message, garnerInfo) {
+    execute(message, garnerInfo) {
 
-	}
+    }
 
     help(command) {
 

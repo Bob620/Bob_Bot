@@ -7,8 +7,8 @@ const options = {
 }
 
 class Filter extends Command {
-    constructor(commands) {
-        super(commands, options);
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
     }
 
     execute(message, garnerInfo) {

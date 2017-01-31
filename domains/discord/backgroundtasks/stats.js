@@ -1,14 +1,14 @@
 const BackgroundTask = require('./backgroundtask.js');
 
 class Stats extends BackgroundTask {
-	constructor(subdomains, backgroundTasks, garnerObject, discord, botStatus) {
-		super(subdomains, backgroundTasks, garnerObject, discord, botStatus);
+    constructor(domainInfo) {
+        super(domainInfo);
 
-	}
+    }
 
-	start() {
+    start() {
 
-	}
+    }
 }
 
 module.exports = Stats;

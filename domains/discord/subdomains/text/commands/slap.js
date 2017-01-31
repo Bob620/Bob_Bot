@@ -2,23 +2,22 @@ const Command = require('./command.js');
 const fs = require('fs');
 
 const options = {
-	"keyword": "slap",
-	"commands": [],
-	"requires": []
+    "keyword": "slap",
+    "commands": [],
+    "requires": []
 }
 
 class Slap extends Command {
-	constructor(commands) {
-        super(commands, options);
-	}
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
+    }
 
-	execute(message, garnerInfo) {
+    execute(message, garnerInfo) {
         fs.readdir('./images/slap', (err, files) => {
             if (err) {
-            	console.trace(err);
+                console.trace(err);
             } else {
-                const totalFiles = files.length;
-                const name = files[Math.floor(Math.random() * totalFiles)];
+                const name = this.random.pick(files);
 
                 message.channel.sendFile('./images/slap/'+name, name)
                 .then(() => {
@@ -29,7 +28,7 @@ class Slap extends Command {
                 })
             }
         });
-	}
+    }
 
     help(command) {
 

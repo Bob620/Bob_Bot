@@ -2,39 +2,40 @@ const fs = require('fs');
 const GarnerInfo = require('./../../garnerinfo/garnerinfo.js');
 
 class Group {
-	constructor(garnerObject) {
-		this.type = "group";
-		this.garner = garnerObject;
-		this.commands = [];
+    constructor(subdomains, garnerObject, random) {
+        this.type = "group";
+        this.garner = garnerObject;
+        this.random = random;
+        this.commands = [];
         this.cache = {};
 
         this.getCommands();
-	}
+    }
 
-	supports(message) {
-		if (message.guild && message.channel.type === this.type) {
-			return true;
-		}
-		return false;
-	}
+    supports(message) {
+        if (message.guild && message.channel.type === this.type) {
+            return true;
+        }
+        return false;
+    }
 
-	execute(message) {
-		this.getGarnerInfo(message.guild.id)
-		.then((garnerInfo) => {
-			const commands = this.commands;
-			for (let i = 0; i < commands.length; i++) {
-				const command = commands[i];
-				if (command.supports(message, garnerInfo)) {
-					command.execute(message, garnerInfo);
-					break;
-				}
-			}
-		})
-		.catch((err) => {
-			console.log("An error occured:");
-			console.log(err);
-		});
-	}
+    execute(message) {
+        this.getGarnerInfo(message.guild.id)
+        .then((garnerInfo) => {
+            const commands = this.commands;
+            for (let i = 0; i < commands.length; i++) {
+                const command = commands[i];
+                if (command.supports(message, garnerInfo)) {
+                    command.execute(message, garnerInfo);
+                    break;
+                }
+            }
+        })
+        .catch((err) => {
+            console.log("An error occured:");
+            console.log(err);
+        });
+    }
 
     getGarnerInfo(id) {
         // Use cache and/or garner
@@ -74,7 +75,7 @@ class Group {
                 const file = files[i];
                 if (file !== "command.js") {
                     const Command = require("./commands/"+file);
-                    this.commands.push(new Command());
+                    this.commands.push(new Command({commands: this.commands, random: this.random}));
                 }
             }
         });

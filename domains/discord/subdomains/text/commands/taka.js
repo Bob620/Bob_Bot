@@ -2,23 +2,22 @@ const Command = require('./command.js');
 const fs = require('fs');
 
 const options = {
-	"keyword": "taka",
-	"commands": [],
-	"requires": []
+    "keyword": "taka",
+    "commands": [],
+    "requires": []
 }
 
 class Taka extends Command {
-	constructor(commands) {
-        super(commands, options);
-	}
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
+    }
 
-	execute(message, garnerInfo) {
+    execute(message, garnerInfo) {
         fs.readdir('./images/taka', (err, files) => {
             if (err) {
-            	console.trace(err);
+                console.trace(err);
             } else {
-                const totalFiles = files.length;
-                const name = files[Math.floor(Math.random() * totalFiles)];
+                const name = this.random.pick(files);
 
                 message.channel.sendFile('./images/taka/'+name, name)
                 .then(() => {
@@ -29,7 +28,7 @@ class Taka extends Command {
                 })
             }
         });
-	}
+    }
 
     help(command) {
 

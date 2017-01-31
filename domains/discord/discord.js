@@ -1,9 +1,10 @@
 const fs = require('fs');
 
 class Discord {
-    constructor(garner, discord) {
+    constructor(garner, clients, random) {
         this.garner = garner;
-        this.discord = discord;
+        this.discord = clients.discord;
+        this.random = random;
         this.botStatus = "disconnected";
         this.subdomains = [];
         this.backgroundTasks = [];
@@ -25,7 +26,7 @@ class Discord {
         });
 
         // Parse and send message to subdomain w/ garnerInfo
-        discord.on('message', (message) => {
+        this.discord.on('message', (message) => {
             const subdomains = this.subdomains;
             for (let i = 0; i < subdomains.length; i++) {
                 const subdomain = subdomains[i];
@@ -43,19 +44,19 @@ class Discord {
         });
 
         // Status
-        discord.on('ready', () => {
+        this.discord.on('ready', () => {
             this.status = "connected";
         });
 
-        discord.on('disconnect', () => {
+        this.discord.on('disconnect', () => {
             this.status = "disconnected";
         });
 
-        discord.on('reconnecting', () => {
+        this.discord.on('reconnecting', () => {
             this.status = "reconnecting";
         });
 
-        discord.on('error', (err) => {
+        this.discord.on('error', (err) => {
             log("ERROR", "Discord error occured:");
             console.trace(err);
         });
@@ -81,7 +82,7 @@ class Discord {
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const SubDomain = require("./subdomains/"+file+"/"+file+".js");
-                    this.subdomains.push(new SubDomain(this.subdomains, this.garner));
+                    this.subdomains.push(new SubDomain(this.subdomains, this.garner, this.random));
                 }
                 resolve(true);
             });
@@ -96,7 +97,7 @@ class Discord {
                     const file = files[i];
                     if (file !== "backgroundtask.js") {
                         const BackgroundTask = require("./backgroundtasks/"+file);
-                        this.backgroundTasks.push(new BackgroundTask(this.subdomains, this.backgroundTasks, this.garner, this.discord, this.getStatus.bind(this)));
+                        this.backgroundTasks.push(new BackgroundTask({subdomain: this.subdomains, backgroundTasks: this.backgroundTasks, garner: this.garner, discord: this.discord, botStatus: this.getStatus.bind(this), random: this.random}));
                     }
                 }
                 resolve(true);

@@ -1,5 +1,11 @@
 const Command = require('./command.js');
 const ytdl = require('ytdl-core');
+//const OpenJTalk = require('node-openjtalk').OpenJTalk;
+
+// pre-included HTS voice file 
+//var fn_voice = OpenJTalk.voices.mei_normal;
+// instantiate OpenJTalk with an HTS voice 
+//var open_jtalk = new OpenJTalk({voice: fn_voice});
 
 const options = {
     "keyword": "music",
@@ -10,12 +16,12 @@ const options = {
 const musicConn = {};
 
 class Music extends Command {
-    constructor(commands) {
-        super(commands, options);
+    constructor(subdomainInfo) {
+        super(subdomainInfo, options);
     }
 
     execute(message, garnerInfo) {
-        const content = message.content.split(' ');
+/*        const content = message.content.split(' ');
         switch(content[1].toLowerCase()) {
             case "current":
                 this.current(message);
@@ -58,7 +64,7 @@ class Music extends Command {
                 this.skip();
                 break;
         }
-    }
+*/    }
 
     help(command) {
 
@@ -73,14 +79,12 @@ class Music extends Command {
     }
 
     add(message, url) {
-        message.channel.sendMessage(`Adding ${url} to the queue.`)
         const voiceChannel = musicConn[message.guild.id];
         if (voiceChannel) {
             let song = new Song(url)
             song.populate()
             .then((info) => {
                 if (info) {
-                    message.channel.sendMessage(`${info.title} VS ${song.title}`);
                     let playlist = voiceChannel.songList;
                     playlist.add(song);
                     message.channel.sendMessage(`${song.title} was added to the playlist.`);
@@ -118,6 +122,10 @@ class Music extends Command {
         musicConn[message.guild.id].connect()
         .then((test) => {
             message.channel.sendMessage("I have joined the voice channel.");
+            // synthesize a voice buffer from a text 
+//            open_jtalk.synthesize('こんにちは', function(error, buffer) {
+//                musicConn[message.guild.id].voiceChannel.connection.playStream(buffer);
+//            });
         })
         .catch((test) => {
             message.channel.sendMessage("I wasn't able to join.");

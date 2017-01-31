@@ -2,9 +2,10 @@ const fs = require('fs');
 const GarnerInfo = require('./../../garnerinfo/garnerinfo.js');
 
 class Text {
-    constructor(subdomains, garnerObject) {
+    constructor(subdomains, garnerObject, random) {
         this.type = "text";
         this.garner = garnerObject;
+        this.random = random;
         this.commands = [];
         this.cache = {};
 
@@ -83,7 +84,7 @@ class Text {
                     const file = files[i];
                     if (file !== "command.js") {
                         const Command = require("./commands/"+file);
-                        this.commands.push(new Command(this.commands));
+                        this.commands.push(new Command({commands: this.commands, random: this.random}));
                     }
                 }
                 resolve(this.commands.length);
