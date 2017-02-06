@@ -1,23 +1,23 @@
 const Command = require('./command.js');
 
 const options = {
-    "keyword": "ping",
-    "commands": [],
-    "requires": []
+  "keyword": "ping",
+  "commands": [],
+  "requires": []
 }
 
 class Ping extends Command {
-    constructor(subdomainInfo) {
-        super(subdomainInfo, options);
-    }
+  constructor(subdomainInfo) {
+    super(subdomainInfo, options);
+  }
 
-    execute(message, garnerInfo) {
-        this.chata.sendMessage("toka", "Pong!")
-    }
+  execute(message, garnerInfo) {
+    this.chata.sendMessage("toka", "Pong!")
+  }
 
-    help(command) {
+  help(command) {
 
-    }
+  }
 }
 
 module.exports = Ping;

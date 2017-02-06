@@ -1,14 +1,14 @@
 const BackgroundTask = require('./backgroundtask.js');
 
 class Stats extends BackgroundTask {
-    constructor(domainInfo) {
-        super(domainInfo);
+  constructor(domainInfo) {
+    super(domainInfo);
 
-    }
+  }
 
-    start() {
-
-    }
+  start() {
+    
+  }
 }
 
 module.exports = Stats;

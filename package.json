@@ -10,9 +10,12 @@
   "author": "Bob620",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.9.0",
     "bakajax": "0.0.3",
+    "biguint-format": "^1.0.0",
     "chata-client": "^1.0.0",
     "discord.js": "^11.0.0",
+    "flake-idgen": "^1.1.0",
     "node-opus": "^0.2.4",
     "random-js": "^1.0.8",
     "uws": "^0.12.0",

@@ -1,23 +1,23 @@
 const Command = require('./command.js');
 
 const options = {
-    "keyword": "giveme",
-    "commands": [],
-    "requires": []
+  "keyword": "giveme",
+  "commands": [],
+  "requires": []
 }
 
 class Giveme extends Command {
-    constructor(subdomainInfo) {
-        super(subdomainInfo, options);
-    }
+  constructor(subdomainInfo) {
+    super(subdomainInfo, options);
+  }
 
-    execute(message, garnerInfo) {
+  execute(message, garnerInfo) {
 
-    }
+  }
 
-    help(command) {
+  help(command) {
 
-    }
+  }
 }
 
 module.exports = Giveme;

@@ -1,23 +1,23 @@
 const Command = require('./command.js');
 
 const options = {
-    "keyword": "general",
-    "commands": [],
-    "requires": []
+  "keyword": "general",
+  "commands": [],
+  "requires": []
 }
 
 class General extends Command {
-    constructor(subdomainInfo) {
-        super(subdomainInfo, options);
-    }
+  constructor(subdomainInfo) {
+    super(subdomainInfo, options);
+  }
 
-    execute(message, garnerInfo) {
+  execute(message, garnerInfo) {
 
-    }
+  }
 
-    help(command) {
+  help(command) {
 
-    }
+  }
 }
 
 module.exports = General;
