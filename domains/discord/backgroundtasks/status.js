@@ -1,5 +1,9 @@
 const BackgroundTask = require('./backgroundtask.js');
 
+const options = {
+  "keyword": "status"
+}
+
 const rotationSpeed = 10000;
 const rotation = [
   {
@@ -49,7 +53,7 @@ const rotation = [
 
 class Status extends BackgroundTask {
   constructor(domainInfo) {
-    super(domainInfo);
+    super(domainInfo, options);
 
     this.timer = undefined;
     this.currentRotation = 0;

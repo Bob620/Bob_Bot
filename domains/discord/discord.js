@@ -1,13 +1,14 @@
 const fs = require('fs');
 
+// Discord parser
 class Discord {
   constructor(garner, clients, random) {
     this.garner = garner;
     this.discord = clients.discord;
     this.random = random;
     this.botStatus = "disconnected";
-    this.subdomains = [];
-    this.backgroundTasks = [];
+    this.subdomains = new Map();
+    this.backgroundTasks = new Map();
 
     // require all subdomains
     this.populateSubdomains()
@@ -27,9 +28,9 @@ class Discord {
 
     // Parse and send message to subdomain w/ garnerInfo
     this.discord.on('message', (message) => {
-      const subdomains = this.subdomains;
-      for (let i = 0; i < subdomains.length; i++) {
-        const subdomain = subdomains[i];
+      const subdomains = this.subdomains.values();
+
+      for (let subdomain of subdomains) {
         if (subdomain.supports(message)) {
           subdomain.execute(message)
           .then(() => {
@@ -82,7 +83,8 @@ class Discord {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           const SubDomain = require("./subdomains/"+file+"/"+file+".js");
-          this.subdomains.push(new SubDomain(this.subdomains, this.garner, this.random));
+          const subdomain = new SubDomain({subdomains: this.subdomains, garner: this.garner, random: this.random, backgroundTasks: this.backgroundTasks, botStatus: this.getStatus.bind(this)});
+          this.subdomains.set(subdomain.keyword, subdomain);
         }
         resolve(true);
       });
@@ -97,7 +99,8 @@ class Discord {
           const file = files[i];
           if (file !== "backgroundtask.js") {
             const BackgroundTask = require("./backgroundtasks/"+file);
-            this.backgroundTasks.push(new BackgroundTask({subdomain: this.subdomains, backgroundTasks: this.backgroundTasks, garner: this.garner, discord: this.discord, botStatus: this.getStatus.bind(this), random: this.random}));
+            const task = new BackgroundTask({subdomain: this.subdomains, backgroundTasks: this.backgroundTasks, garner: this.garner, discord: this.discord, botStatus: this.getStatus.bind(this), random: this.random});
+            this.backgroundTasks.set(task.keyword, task);
           }
         }
         resolve(true);
@@ -108,9 +111,9 @@ class Discord {
   startBackgroundTasks() {
     // Start all background tasks
     const backgroundTasks = this.backgroundTasks;
-    for (let i = 0; i < backgroundTasks.length; i++) {
-      backgroundTasks[i].start();
-    }
+    backgroundTasks.forEach((task) => {
+      task.start();
+    });
   }
 }
 

@@ -9,7 +9,7 @@ const ytdl = require('ytdl-core');
 
 const options = {
   "keyword": "music",
-  "commands": ["current", "add", "playlist", "stop", "join", "leave", "skip"], // play, pause
+  "commands": ["current", "add", "playlist", "join", "leave", "skip"], // play, pause, stop
   "requires": []
 }
 
@@ -21,6 +21,100 @@ class Music extends Command {
   }
 
   execute(message, garnerInfo) {
+    if (this.backgroundTasks.has("music")) {
+      const musicTask = this.backgroundTasks.get("music")
+      const content = message.content.split(' ').splice(1);
+      switch(content.shift().toLowerCase()) {
+        case "current":
+          let currentSong = musicTask.current(message.guild);
+          message.channel.sendMessage(`Currently playing ${currentSong.title}`)
+          .then(() =>{})
+          .catch((err) => {console.log(err)});
+          break;
+        case "playlist":
+          let playlist = musicTask.playlist(message.guild)
+          console.log(playlist);
+//          message.channel.sendMessage(playlist);
+//          .then(() =>{})
+//          .catch((err) => {console.log(err)});
+          break;
+        case "add":
+          musicTask.add(message.guild, content[0])
+          .then((song) => {
+            message.channel.sendMessage(`I added ${song.title} to the queue`)
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          })
+          .catch((err) => {
+            console.trace(err);
+//            message.channel.sendMessage(err);
+//            .then(() =>{})
+//            .catch((err) => {console.log(err)});
+          });
+          break;
+        case "stop":
+          if (musicTask.stop(message.guild)) {
+            message.channel.sendMessage("Cleared the playlist, Feel free to request songs :3")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          } else {
+            message.channel.sendMessage("I don't think I'm connected to a channel.")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          }
+          break;
+        case "pause":
+          if (musicTask.pause(message.guild)) {
+            message.channel.sendMessage("**Paused**")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          } else {
+            message.channel.sendMessage("I couldn't pause, are you SURE you hear me playing music?")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          }
+          break;
+        case "skip":
+          let song = musicTask.skip(message.guild);
+          if (song) {
+            message.channel.sendMessage(`Starting up ${song.title}`)
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          } else {
+            message.channel.sendMessage("I ran out of songs to play!")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          }
+          break;
+        case "join":
+          musicTask.join(message.guild, message.channel, content.join(' ').toLowerCase())
+          .then(() => {
+            message.channel.sendMessage("I'm ready! Feel free to request songs :3")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          })
+          .catch((err) => {
+            console.trace(err);
+            message.channel.sendMessage("I couldn't join that channel.")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          });
+          break;
+        case "leave":
+          if (musicTask.leave(message.guild)) {
+            message.channel.sendMessage("I have left the channel.")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          } else {
+            message.channel.sendMessage("I don't think I'm connected to a channel.")
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          }
+          break;
+      }
+    } else {
+
+    }
     /*        const content = message.content.split(' ');
     switch(content[1].toLowerCase()) {
     case "current":
@@ -215,7 +309,7 @@ class Connection {
         message.channel.sendMessage("Starting "+this.songList.array[0].title);
 
         const stream = ytdl(this.songList.array[0].url, {filter : 'audioonly'});
-        this.stream = this.voiceChannel.connection.playStream(stream)//{"volume": 0.5+(this.loudness/100)})
+        this.stream = this.voiceChannel.connection.playStream(stream)//, {"volume": 0.5+(this.loudness/100)})
         .on("end", (reason) => {
           message.channel.sendMessage("Ending song.");
           this.stop();

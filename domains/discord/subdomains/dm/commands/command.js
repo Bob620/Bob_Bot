@@ -1,6 +1,8 @@
 class Command {
-  constructor({commands: otherCommands, random: random}, {keyword: keyword = undefined, commands: commands = undefined, requires: requires = undefined}) {
+  constructor({commands: otherCommands, random: random, backgroundTasks: backgroundTasks, botStatus: botStatus}, {keyword: keyword = undefined, commands: commands = undefined, requires: requires = undefined}) {
     this.random = random;
+    this.backgroundTasks = backgroundTasks;
+    this.botStatus = botStatus;
 
     if (otherCommands) {
       this.otherCommands = otherCommands;

@@ -2,12 +2,14 @@ const fs = require('fs');
 const GarnerInfo = require('./../../garnerinfo/garnerinfo.js');
 
 class Group {
-  constructor(subdomains, garnerObject, random) {
-    this.type = "group";
-    this.garner = garnerObject;
+  constructor({subdomains: subdomains, garner: garner, random: random, backgroundTasks: backgroundTasks, botStatus: botStatus}) {
+    this.garner = garner;
     this.random = random;
+    this.backgroundTasks = backgroundTasks;
+    this.botStatus = botStatus;
     this.commands = [];
     this.cache = {};
+    this.type = "group";
 
     this.getCommands();
   }
@@ -75,7 +77,7 @@ class Group {
         const file = files[i];
         if (file !== "command.js") {
           const Command = require("./commands/"+file);
-          this.commands.push(new Command({commands: this.commands, random: this.random}));
+          this.commands.push(new Command({commands: this.commands, random: this.random, backgroundTasks: this.backgroundTasks, botStatus: this.botStatus}));
         }
       }
     });
