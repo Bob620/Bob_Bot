@@ -27,16 +27,34 @@ class Music extends Command {
       switch(content.shift().toLowerCase()) {
         case "current":
           let currentSong = musicTask.current(message.guild);
-          message.channel.sendMessage(`Currently playing ${currentSong.title}`)
-          .then(() =>{})
-          .catch((err) => {console.log(err)});
+          if (currentSong) {
+            message.channel.sendMessage(`Currently playing ${currentSong.title}`)
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          } else {
+            message.channel.sendMessage(`There is no song currently playing.`)
+            .then(() =>{})
+            .catch((err) => {console.log(err)});
+          }
           break;
         case "playlist":
-          let playlist = musicTask.playlist(message.guild)
-          console.log(playlist);
-//          message.channel.sendMessage(playlist);
-//          .then(() =>{})
-//          .catch((err) => {console.log(err)});
+          let playlist = musicTask.playlist(message.guild);
+          let currentsong = musicTask.current(message.guild);
+          let output = "";
+          if (currentsong) {
+            output += `**Current:** ${currentsong.title}\n`;
+            if (playlist.length >= 1) {
+              output += `**Next:** ${playlist[0].title}\n`;
+            }
+            for (let i = 1; i < playlist.length; i++) {
+              output += `**${i+1}:** ${playlist[i].title}\n`;
+            }
+          } else {
+            output += "no songs currently queued.";
+          }
+          message.channel.sendMessage(output)
+          .then(() =>{})
+          .catch((err) => {console.log(err)});
           break;
         case "add":
           musicTask.add(message.guild, content[0])
@@ -77,9 +95,9 @@ class Music extends Command {
         case "skip":
           let song = musicTask.skip(message.guild);
           if (song) {
-            message.channel.sendMessage(`Starting up ${song.title}`)
-            .then(() =>{})
-            .catch((err) => {console.log(err)});
+//            message.channel.sendMessage(`Starting ${song.title}`)
+//            .then(() =>{})
+//            .catch((err) => {console.log(err)});
           } else {
             message.channel.sendMessage("I ran out of songs to play!")
             .then(() =>{})
@@ -89,7 +107,7 @@ class Music extends Command {
         case "join":
           musicTask.join(message.guild, message.channel, content.join(' ').toLowerCase())
           .then(() => {
-            message.channel.sendMessage("I'm ready! Feel free to request songs :3")
+            message.channel.sendMessage(`I'm ready! Feel free to request songs using ***${garnerInfo.prefix}music add [url]***`)
             .then(() =>{})
             .catch((err) => {console.log(err)});
           })

@@ -12,11 +12,13 @@ class Music extends BackgroundTask {
 
     setInterval(() => {
       this.voiceConnections.forEach((voiceConnection) => {
-        if (!voiceConnection.active || !voiceConnection.connected || voiceConnection.activityLevel <= 0) {
-          voiceConnection.leave();
-          this.voiceConnections.delete(voiceConnection.id);
+        if (!voiceConnection.current) {
+          if (!voiceConnection.connected || voiceConnection.activityLevel <= 0) {
+            voiceConnection.leave();
+            this.voiceConnections.delete(voiceConnection.id);
+          }
+          voiceConnection.activityLevel--;
         }
-        voiceConnection.activityLevel--;
       })
     }, 60000);
 
@@ -131,6 +133,8 @@ class Music extends BackgroundTask {
           console.trace(err);
           reject({"error": "An error occured while connecting, please try again later."});
         });
+      } else {
+        reject({"error": "Unable to find that chatroom"});
       }
     });
   }

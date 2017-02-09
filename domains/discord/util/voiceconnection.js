@@ -30,27 +30,23 @@ class VoiceConnection {
     });
 
     this.connection.on("disconnect", () => {
-      this.active = false;
       this.connected = false;
     });
 
     this.connection.on("error", () => {
-      this.active = false;
       this.connected = false;
     });
 
-    this.currentPlayback = undefined;
+    this.currentPlayback = false;
     this.connected = true;
-    this.active = true;
-    this.activityLevel = 10;
     this.playlist = [];
     this.current = false;
+    this.refresh();
   }
 
   refresh() {
     if (this.connected) {
-      this.active = true;
-      this.activityLevel = 10;
+      this.activityLevel = 30;
     }
   }
 
@@ -65,6 +61,9 @@ class VoiceConnection {
         } else {
           const song = new Song(url, info);
           this.playlist.push(song);
+          if (!this.current) {
+            this.play();
+          }
           resolve(song);
         }
       });
@@ -76,6 +75,8 @@ class VoiceConnection {
     this.playlist = [];
     if (this.current) {
       this.currentPlayback.end();
+      this.currentPlayback = false;
+      this.current = false;
     }
     return true;
   }
@@ -83,11 +84,7 @@ class VoiceConnection {
   skip() {
     this.refresh();
     this.currentPlayback.end();
-    const nextSong = this.playlist[0];
-    if (nextSong) {
-      return nextSong;
-    }
-    return {};
+    return this.play();
   }
 
   pause() {
@@ -106,9 +103,17 @@ class VoiceConnection {
       return this.current;
     } else if (this.playlist[0]) {
       this.current = this.playlist.shift();
-      this.currentPlayback = this.connection.playStream(ytdl(this.current.url, {filter : 'audioonly'}), {"volume": 0.3+(this.current.loudness/100)})
+      this.channel.sendMessage(`now playing ${this.current.title}`)
+      .then(() => {})
+      .catch((err) => {console.log(err)});
+      this.currentPlayback = this.connection.playStream(ytdl(this.current.url, {filter : 'audioonly'}), {"volume": 0.6+(this.current.loudness/100)})
       .on("end", () => {
-        this.channel.sendMessage("Ending Playback");
+        this.channel.sendMessage("Ending Playback")
+        .then(() => {})
+        .catch((err) => {console.log(err)});
+        this.currentPlayback = false;
+        this.current = false;
+        this.play();
       });
       return this.current;
     }
