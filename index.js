@@ -8,13 +8,13 @@ module.exports = class {
   constructor({garner: {server: serverLogin = false}, discordToken: discordToken = false, chataToken = false}) {
     if (serverLogin && discordToken && chataToken) {
       this.garner = new Garner(serverLogin);
-      this.discord = new Discord.Client();
+      this.discord = new Discord.Client({apiRequestMethod: "burst"});
       this.chata = new Chata();
       this.domains = [];
       this.random = new Random(Random.engines.mt19937().autoSeed());
 
       this.getDomains();
-      
+
       this.discord.login(discordToken);
       this.chata.login(chataToken);
     } else {

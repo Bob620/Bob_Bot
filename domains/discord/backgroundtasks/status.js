@@ -4,12 +4,12 @@ const options = {
   "keyword": "status"
 }
 
-const rotationSpeed = 10000;
+const rotationSpeed = 15000;
 const rotation = [
   {
     "status": "online",
     "game": {
-      "name": "New version near!"
+      "name": "New version soon(TM)!"
     }
   },
   {
@@ -21,19 +21,13 @@ const rotation = [
   {
     "status": "online",
     "game": {
-      "name": "!megumin"
+      "name": "!tor"
     }
   },
   {
     "status": "online",
     "game": {
-      "name": "!slap"
-    }
-  },
-  {
-    "status": "online",
-    "game": {
-      "name": "!trap"
+      "name": "!help"
     }
   },
   {
