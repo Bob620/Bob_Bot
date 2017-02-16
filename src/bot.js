@@ -65,7 +65,7 @@ class Bot {
       if (this.modules.hasOwnProperty(domainRequirements.serverType)) {
         info.server = this.modules[domainRequirements.serverType];
       } else {
-        throw `Couldn't find the domain server ${domainRequirements.serverType}`;
+        throw `Couldn't find the requested domain server ${domainRequirements.serverType}`;
       }
 
       const requirements = domainRequirements.requirements;
