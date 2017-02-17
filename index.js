@@ -12,7 +12,7 @@ module.exports = class {
     constructor({garner: {server: serverLogin = false}, botToken: botToken = false}) {
         if (serverLogin && botToken) {
             this.ServerGarner = new Garner(serverLogin);
-            this.client = new Discord.Client();
+            this.client = new Discord.Client({apiRequestMethod: "burst"});
             this.cache = {
                 "text": {},
                 "dm": {},
