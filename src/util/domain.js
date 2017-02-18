@@ -1,14 +1,10 @@
+/**
+ * A new domain
+ * @param {string} serverType The type of server to get from the bot and use as the main server
+ * @param {array} [options] The server options
+ */
 class Domain {
-  /**
-   * A new domain
-   * @param {string} serverType The type of server to get from the bot and use as the main server
-   * @param {array} [options] The server options
-   */
   constructor(serverType=false, {requirements: requirements=[], subDomainDirectory: subDomainDirectory="", backgroundTaskDirectory: backgroundTaskDirectory=""}) {
-    if (!server) {
-      throw "Domain requires a server.";
-    }
-
     /**
      * The type of server to get from the bot and use as the main server
      * @type {string}
