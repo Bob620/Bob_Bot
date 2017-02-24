@@ -1,0 +1,37 @@
+const Task = require('./src/util/task.js');
+const fs = require('fs');
+
+const images = "./images/taka/";
+const options = {
+  "id": "taka",
+}
+
+class Taka extends Task {
+  constructor(domain) {
+    super(domain, options);
+  }
+
+  execute(message) {
+    fs.readdir(images, (err, files) => {
+      if (err) {
+        console.trace(err);
+      } else {
+        const name = this.domain.modules.random.pick(files);
+
+        message.channel.sendFile(images+name, name)
+        .then(() => {
+
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+      }
+    });
+  }
+
+  help(text) {
+
+  }
+}
+
+module.exports = Taka;
