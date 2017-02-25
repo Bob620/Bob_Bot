@@ -1,20 +1,10 @@
-const Task = require('./src/util/task.js');
+const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
   "id": "status"
 }
 
 const delay = 16000;
-const rotation = [
-  {
-    {
-      "status": "online",
-      "game": {
-        "name": "Hello :3"
-      }
-    }
-  }
-];
 
 class Status extends Task {
   constructor(domain) {
@@ -22,39 +12,50 @@ class Status extends Task {
     this.interval = null;
     this.currentStatus = 0;
     this.rotation = [
-      () => {
-        return {
-          "status": "online",
-          "game": {
-            "name": this.domain.backgroundTasks.get("statistics").totalOnlineMembers;
-          }
+      {
+        "status": "online",
+        "game": {
+          "name": "People are online"
+        }
+      },
+      {
+        "status": "online",
+        "game": {
+          "name": "2.0.0 bby"
+        }
+      },
+      {
+        "status": "online",
+        "game": {
+          "name": "Markchi baka baka~~"
         }
       }
     ];
-
-    this.user = this.domain.server.user;
   }
 
   execute() {
-    this.user.setStatus("online").then(() => {}).catch(() => {});
-    this.user.setPresence(rotation[this.currentStatus]);
+/*    const user = this.domain.server.connection.user;
+
+    user.setPresence(this.rotation[this.currentStatus]).then(() => {}).catch((err) => {throw err});
 
     this.interval = setInterval(() => {
-      if (this.currentStatus < rotation.length) {
+      if (this.currentStatus < this.rotation.length) {
         this.currentStatus++;
       } else {
         this.currentStatus = 0;
       }
 
-      this.user.setPresence(rotation[this.currentStatus]).then(() => {}).catch(() => {});
-    }, delay);
+      user.setPresence(this.rotation[this.currentStatus]).then(() => {}).catch((err) => {throw err});
+    }, delay);*/
   }
 
   cleanup() {
-    this.user.setStatus("idle").then(() => {}).catch(() => {});
+    this.domain.server.connection.user.setStatus("idle").then(() => {}).catch(() => {});
 
     if (this.interval) {
       clearTimeout(this.interval);
     }
   }
 }
+
+module.exports = Status;

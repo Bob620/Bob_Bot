@@ -33,24 +33,26 @@ class Server extends EventEmitter {
 
     this.events = events;
 
-    connection.on(events.ready), () => {
+    connection.on(events.connect, () => {
       this.currentStatus = "connected";
+      this.isReady = true;
       this.emit("connect");
     });
 
     connection.on(events.disconnect, () => {
       this.currentStatus = "disconnected";
+      this.isReady = false;
       this.emit("disconnect");
     });
 
     connection.on(events.message, (message) => {
       this.emit("message", message);
     });
-
-    this.isReady = true;
   }
 
   get status() {
     return this.currentStatus;
   }
 }
+
+module.exports = Server;

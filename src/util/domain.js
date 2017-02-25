@@ -13,7 +13,8 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "serverType", {
-      value: serverType
+      value: serverType,
+      enumerable: true
     });
 
     /**
@@ -40,51 +41,42 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "requirements", {
-      value: requirements
+      value: requirements,
+      enumerable: true
     });
 
     this.subDomains = new Map();
     this.backgroundTasks = new Map();
 
     if (subDomainDirectory !== "") {
-      fs.readdir(subDomainDirectory, (err, files) => {
-        if (err) {
-          throw "Unable to load subdomains";
-        }
-        const subDomains = this.subDomains;
+      const files = fs.readdirSync(subDomainDirectory);
+      const subDomains = this.subDomains;
 
-        files.forEach((fileName) => {
-          if (fileName.endsWith('.js')) {
-            const SubDomain = require(`${subDomainDirectory}/${filename}`);
-            const subDomain = new SubDomain(this);
-            const subDomainId = subDomain.id;
-            if (subDomains.has(subDomainId)) {
-              console.trace(`WARNING: Domain has more then one SubDomain with the ID ${subDomainId}, Overwriting old SubDomain.`);
-            }
-            subDomains.set(subDomainId, subDomain);
-          }
-        });
+      files.forEach((filename) => {
+        const SubDomain = require(`${subDomainDirectory}/${filename}/${filename}.js`);
+        const subDomain = new SubDomain(this);
+        const subDomainId = subDomain.id;
+        if (subDomains.has(subDomainId)) {
+          console.trace(`WARNING: Domain has more then one SubDomain with the ID ${subDomainId}, Overwriting old SubDomain.`);
+        }
+        subDomains.set(subDomainId, subDomain);
       });
     }
 
     if (backgroundTaskDirectory !== "") {
-      fs.readdir(backgroundTaskDirectory, (err, files) => {
-        if (err) {
-          throw "Unable to load ";
-        }
-        const backgroundTasks = this.backgroundtasks;
+      const files = fs.readdirSync(backgroundTaskDirectory);
+      const backgroundTasks = this.backgroundTasks;
 
-        files.forEach((fileName) => {
-          if (fileName.endsWith('.js')) {
-            const Task = require(`${backgroundTaskDirectory}/${filename}`);
-            const task = new Task(this);
-            const taskId = task.id;
-            if (backgroundTasks.has(moduleName)) {
-              console.trace(`WARNING: Domain has more then one background task with the ID ${taskId}, Overwriting old task.`);
-            }
-            backgroundTasks.set(taskId, task);
+      files.forEach((filename) => {
+        if (filename.endsWith('.js')) {
+          const Task = require(`${backgroundTaskDirectory}/${filename}`);
+          const task = new Task(this);
+          const taskId = task.id;
+          if (backgroundTasks.has(taskId)) {
+            console.trace(`WARNING: Domain has more then one background task with the ID ${taskId}, Overwriting old task.`);
           }
-        });
+          backgroundTasks.set(taskId, task);
+        }
       });
     }
   }
@@ -108,7 +100,8 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "server", {
-      value: info.server
+      value: info.server,
+      enumerable: true
     });
 
     /**
@@ -117,7 +110,8 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "modules", {
-      value: info.requirements
+      value: info.requirements,
+      enumerable: true
     });
 
     /**
@@ -126,23 +120,20 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "getStatus", {
-      value: this.server.status.bind(this.server)
+      value: this.server.status,
+      enumerable: true
     });
 
-    this.startSubDomains();
-    this.startBackgroundTasks();
 
     if (!this.server.isReady) {
-      this.server.once("ready", () => {
+      this.server.on("connect", () => {
+        this.startBackgroundTasks();
         this.ready();
       });
     } else {
+      this.startBackgroundTasks();
       this.ready();
     }
-
-    this.server.on("connect", () => {
-      this.connect();
-    });
 
     this.server.on("disconnect", () => {
       this.disconnect();
@@ -154,27 +145,18 @@ class Domain {
   }
 
   /**
-   * Starts the subDomains that have been loaded
-   */
-  startSubDomains() {
-    this.subDomains.forEach((subDomain) => {
-      subDomain.start();
-    });
-  }
-
-  /**
    * Starts the background tasks that have been loaded
    */
   startBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
-      task.start();
+      task.execute();
     });
   }
 
   /**
    * Cleans up the background tasks that have been loaded
    */
-  startBackgroundTasks() {
+  cleanupBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
       task.cleanup();
     });

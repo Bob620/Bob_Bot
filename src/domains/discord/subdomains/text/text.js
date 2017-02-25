@@ -1,14 +1,32 @@
-const Domain = require('./../../../util/domain.js');
+const SubDomain = require('./../../../../util/subdomain.js');
 
 const options = {
-  "id" = "text",
+  "id": "text",
   "taskDirectory": `${__dirname}/tasks`
 }
 
-class Discord extends Domain {
+class Text extends SubDomain {
   constructor(domain) {
     super(domain, options);
   }
+
+  supports(message) {
+    if (message.channel.type === this.id) {
+      return true;
+    }
+    return false;
+  }
+
+  execute(message) {
+    const tasks = this.tasks.values();
+    for (let i = 0; i < this.tasks.size; i++) {
+      const task = tasks.next().value;
+      if (task.supports(message)) {
+        task.execute(message);
+        break;
+      }
+    }
+  }
 }
 
-module.exports = Discord;
+module.exports = Text;

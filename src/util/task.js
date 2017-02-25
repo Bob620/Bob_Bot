@@ -15,7 +15,8 @@ class Task {
      * @readonly
      */
     Object.defineProperty(this, "domain", {
-      value: domain
+      value: domain,
+      enumerable: true
     });
 
     /**
@@ -24,7 +25,8 @@ class Task {
      * @readonly
      */
     Object.defineProperty(this, "id", {
-      value: id
+      value: id,
+      enumerable: true
     });
   }
 }

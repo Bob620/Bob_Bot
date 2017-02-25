@@ -4,9 +4,10 @@ const Discord = require('discord.js');
 const Chata = require('chata-client');
 const Random = require('random-js');
 const log = require('./util/log.js');
+const Server = require('./util/server.js');
 
 const options = {
-  "domains": "domains"
+  "domains": `${__dirname}/domains`
 }
 
 class Bot {
@@ -17,12 +18,12 @@ class Bot {
 //      this.info["garner"] = new Garner(serverLogin);
 //    }
     if (discordToken) {
-      this.modules["discord"] = new Discord.Client({apiRequestMethod: "burst"});
-      this.modules.discord.login(discordToken);
+      this.modules["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "burst"}));
+      this.modules.discord.connection.login(discordToken);
     }
     if (chataToken) {
-      this.modules["chata"] = new Chata();
-      this.modules.chata.login(chataToken);
+      this.modules["chata"] = new Server("chata", new Chata());
+      this.modules.chata.connection.login(chataToken);
     }
 
     if (Object.keys(this.modules).length > 0) {
@@ -31,6 +32,7 @@ class Bot {
 
       this.domains = [];
       this.createDomains();
+      this.startDomains();
 
     } else {
       throw "A Bot Token required.";
@@ -42,12 +44,11 @@ class Bot {
    */
   createDomains() {
     // Search ./domains
-    fs.readdir(options.domains, (err, files) => {
-      files.forEach((file) => {
-        const Domain = require(`./${options.domains}/${file}/${file}.js`);
+    const files = fs.readdirSync(options.domains);
+    files.forEach((file) => {
+      const Domain = require(`${options.domains}/${file}/${file}.js`);
 
-        this.domains.push(new Domain());
-      });
+      this.domains.push(new Domain());
     });
   }
 
@@ -66,7 +67,7 @@ class Bot {
       }
 
       const requirements = domainRequirements.requirements;
-      for (let i = 0; i > requirements.length; i++) {
+      for (let i = 0; i < requirements.length; i++) {
         const requireName = requirements[i];
 
         if (this.modules.hasOwnProperty(requireName)) {

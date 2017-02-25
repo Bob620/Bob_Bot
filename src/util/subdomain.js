@@ -16,7 +16,8 @@ class SubDomain {
      * @readonly
      */
     Object.defineProperty(this, "domain", {
-      value: domain
+      value: domain,
+      enumerable: true
     });
     /**
      * The identifier of this subdomain
@@ -24,7 +25,8 @@ class SubDomain {
      * @readonly
      */
     Object.defineProperty(this, "id", {
-      value: id
+      value: id,
+      enumerable: true
     });
     /**
      * The subdomains's task directory
@@ -44,10 +46,10 @@ class SubDomain {
         }
         const tasks = this.tasks;
 
-        files.forEach((fileName) => {
-          if (fileName.endsWith('.js')) {
+        files.forEach((filename) => {
+          if (filename.endsWith('.js')) {
             const Task = require(`${taskDirectory}/${filename}`);
-            const task = new Task(this);
+            const task = new Task(this.domain);
             const taskId = task.id;
             if (tasks.has(taskId)) {
               console.trace(`WARNING: SubDomain has more then one task with the ID ${taskId}, Overwriting old task.`);

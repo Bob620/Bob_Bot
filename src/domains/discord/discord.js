@@ -1,4 +1,4 @@
-const Domain = require('./../../util/domain.js');
+const Domain = require(`${__dirname}/../../util/domain.js`);
 
 const serverType = "discord";
 const options = {
@@ -13,19 +13,22 @@ class Discord extends Domain {
   }
 
   ready() {
-
-  }
-
-  connect() {
-
+    //this.modules.log("discord", "Disconnected -> Connected");
   }
 
   disconnect() {
-
+    //this.modules.log("discord", "Connected -> Disconnected");
   }
 
   message(message) {
-
+    const subdomains = this.subDomains.values();
+    for (let i = 0; i < this.subDomains.size; i++) {
+      const subdomain = subdomains.next().value;
+      if (subdomain.supports(message)) {
+        subdomain.execute(message);
+        break;
+      }
+    }
   }
 }
 
