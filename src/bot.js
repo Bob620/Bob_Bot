@@ -3,10 +3,10 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const Chata = require('chata-client');
 const Random = require('random-js');
-const Log = require('./util/log.js');
+const log = require('./util/log.js');
 
 const options = {
-  "domains": "./domains"
+  "domains": "domains"
 }
 
 class Bot {
@@ -25,9 +25,9 @@ class Bot {
       this.modules.chata.login(chataToken);
     }
 
-    if (this.modules.keys().length > 1) {
+    if (Object.keys(this.modules).length > 0) {
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
-      this.modules.log = new Log();
+      this.modules.log = log;
 
       this.domains = [];
       this.createDomains();
@@ -43,14 +43,11 @@ class Bot {
   createDomains() {
     // Search ./domains
     fs.readdir(options.domains, (err, files) => {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const Domain = require(`${options.domains}/${file}/${file}.js`);
+      files.forEach((file) => {
+        const Domain = require(`./${options.domains}/${file}/${file}.js`);
 
-        const domain = new Domain();
-
-        this.domains.push(domain);
-      }
+        this.domains.push(new Domain());
+      });
     });
   }
 

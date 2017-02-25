@@ -1,4 +1,4 @@
-const Domain = require('./../util/domain.js');
+const Domain = require('./../../util/domain.js');
 
 const serverType = "discord";
 const options = {

@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 /**
  * A new domain
  * @param {string} serverType The type of server to get from the bot and use as the main server
@@ -47,19 +49,19 @@ class Domain {
     if (subDomainDirectory !== "") {
       fs.readdir(subDomainDirectory, (err, files) => {
         if (err) {
-          throw "Unable to load ";
+          throw "Unable to load subdomains";
         }
         const subDomains = this.subDomains;
 
         files.forEach((fileName) => {
           if (fileName.endsWith('.js')) {
-            const Module = require(`${subDomainDirectory}/${filename}`);
-            const module = new Module(this);
-            const moduleName = module.name;
-            if (subDomains.has(moduleName)) {
-              console.trace(`WARNING: Domain has more then one module named ${moduleName}, Overwriting old module...`);
+            const SubDomain = require(`${subDomainDirectory}/${filename}`);
+            const subDomain = new SubDomain(this);
+            const subDomainId = subDomain.id;
+            if (subDomains.has(subDomainId)) {
+              console.trace(`WARNING: Domain has more then one SubDomain with the ID ${subDomainId}, Overwriting old SubDomain.`);
             }
-            subDomains.set(moduleName, module);
+            subDomains.set(subDomainId, subDomain);
           }
         });
       });
@@ -76,11 +78,11 @@ class Domain {
           if (fileName.endsWith('.js')) {
             const Task = require(`${backgroundTaskDirectory}/${filename}`);
             const task = new Task(this);
-            const taskName = task.name;
+            const taskId = task.id;
             if (backgroundTasks.has(moduleName)) {
-              console.trace(`WARNING: Domain has more then one background task named ${taskName}, Overwriting old task...`);
+              console.trace(`WARNING: Domain has more then one background task with the ID ${taskId}, Overwriting old task.`);
             }
-            backgroundTasks.set(taskName, task);
+            backgroundTasks.set(taskId, task);
           }
         });
       });
@@ -124,7 +126,7 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "getStatus", {
-      value: this.server.status.bind(this.server);
+      value: this.server.status.bind(this.server)
     });
 
     this.startSubDomains();
@@ -166,6 +168,15 @@ class Domain {
   startBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
       task.start();
+    });
+  }
+
+  /**
+   * Cleans up the background tasks that have been loaded
+   */
+  startBackgroundTasks() {
+    this.backgroundTasks.forEach((task) => {
+      task.cleanup();
     });
   }
 }

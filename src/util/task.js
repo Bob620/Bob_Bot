@@ -6,7 +6,7 @@
 class Task {
   constructor(domain, {id: id=""}) {
     if (id === "") {
-      throw "All tasks must be named";
+      throw "All tasks must have an id";
     }
 
     /**
