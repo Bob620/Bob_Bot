@@ -1,12 +1,12 @@
-const Task = require('./../../../../../util/task.js');
+const Task = require('./../../../util/task.js');
 const fs = require('fs');
 
-const images = "./images/taka/";
+const images = "./images/megumin/";
 const options = {
-  "id": "taka",
+  "id": "megumin",
 }
 
-class Taka extends Task {
+module.exports = class extends Task {
   constructor(domain) {
     super(domain, options);
   }
@@ -21,17 +21,21 @@ class Taka extends Task {
   }
 
   execute(message) {
+    const channel = message.channel;
+
+    channel.startTyping();
     fs.readdir(images, (err, files) => {
       if (err) {
         console.trace(err);
       } else {
         const name = this.domain.modules.random.pick(files);
 
-        message.channel.sendFile(images+name, name)
+        channel.sendFile(images+name, name)
         .then(() => {
-
+          channel.stopTyping();
         })
         .catch((err) => {
+          channel.stopTyping();
           console.log(err);
         })
       }
@@ -42,5 +46,3 @@ class Taka extends Task {
 
   }
 }
-
-module.exports = Taka;

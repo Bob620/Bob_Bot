@@ -4,7 +4,7 @@ const options = {
   "id": "statistics"
 }
 
-const delay = 6000;
+const delay = 60000;
 
 class Statistics extends Task {
   constructor(domain) {
@@ -18,7 +18,8 @@ class Statistics extends Task {
   execute() {
     const guilds = this.domain.server.connection.guilds;
 
-    this.totalGuilds = guilds.length;
+    this.totalGuilds = guilds.size;
+    this.totalOnlineMembers = 0;
 
     guilds.forEach((guild) => {
       guild.presences.forEach((presence) => {
@@ -29,8 +30,9 @@ class Statistics extends Task {
     });
 
     this.interval = setInterval(() => {
-      this.totalGuilds = guilds.length;
-      
+      this.totalGuilds = guilds.size;
+      this.totalOnlineMembers = 0;
+
       guilds.forEach((guild) => {
         guild.presences.forEach((presence) => {
           if (presence.status !== "offline") {
