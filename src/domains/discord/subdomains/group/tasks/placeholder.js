@@ -1,4 +1,4 @@
-const Task = require('./../../../util/task.js');
+const Task = require('./../../../../../util/task.js');
 const fs = require('fs');
 
 const options = {
