@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const images = "./images/nsfw/";
 const options = {
-  "id": "nsfw",
+  "id": ".nsfw",
 }
 
 module.exports = class extends Task {
