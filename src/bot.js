@@ -3,7 +3,15 @@ const fs = require('fs');
 const Discord = require('discord.js');
 const Chata = require('chata-client');
 const Random = require('random-js');
-const log = require('./util/log.js');
+//const log = require('./util/log.js');
+const kitsu = require('node-kitsu');
+const FlakeId = require('flake-idgen');
+const intformat = require('biguint-format')
+const aws = require('aws-sdk');
+const s3 = new aws.S3({apiVersion: '2006-03-01'});
+const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
+const UploadStream = require('s3-stream-upload');
+const request = require('request');
 const Server = require('./util/server.js');
 
 const options = {
@@ -14,9 +22,6 @@ class Bot {
   constructor({garner: {server: serverLogin = false}, discordToken: discordToken = false, chataToken = false}) {
     this.modules = {};
 
-//    if (serverLogin) {
-//      this.info["garner"] = new Garner(serverLogin);
-//    }
     if (discordToken) {
       this.modules["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "burst"}));
       this.modules.discord.connection.login(discordToken);
@@ -28,7 +33,14 @@ class Bot {
 
     if (Object.keys(this.modules).length > 0) {
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
-      this.modules.log = log;
+      this.modules.kitsu = kitsu;
+//      this.modules.log = log;
+      this.modules.flakeId = new FlakeId();
+      this.modules.intformat = intformat;
+      this.modules.s3 = s3;
+      this.modules.dynamodb = dynamodb;
+      this.modules.uploadStream = UploadStream;
+      this.modules.request = request;
 
       this.domains = [];
       this.createDomains();

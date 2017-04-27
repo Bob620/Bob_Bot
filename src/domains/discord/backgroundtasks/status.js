@@ -6,7 +6,7 @@ const options = {
 
 const delay = 15000;
 
-class Status extends Task {
+module.exports = class extends Task {
   constructor(domain) {
     super(domain, options);
     this.interval = null;
@@ -63,5 +63,3 @@ class Status extends Task {
     }
   }
 }
-
-module.exports = Status;

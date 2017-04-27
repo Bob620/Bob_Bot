@@ -1,9 +1,9 @@
 const Task = require('./../../../util/task.js');
 const fs = require('fs');
 
-const images = "./images/nsfw/";
+const images = "./images/explosion/";
 const options = {
-  "id": "nsfw",
+  "id": "explosion",
 }
 
 module.exports = class extends Task {
@@ -14,7 +14,7 @@ module.exports = class extends Task {
   supports(message) {
     const content = message.content.toLowerCase().split(" ");
 
-    if (content[0] === `!${this.id}`) {
+    if (content[0] === `!${this.id}` && (message.author.id == '144670512956702730' || message.author.id == '69096215068811264')) {
       return true;
     }
     return false;

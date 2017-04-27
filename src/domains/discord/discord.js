@@ -2,7 +2,7 @@ const Domain = require(`${__dirname}/../../util/domain.js`);
 
 const serverType = "discord";
 const options = {
-  "requirements": ["random", "log"],
+  "requirements": ["random", "log", "kitsu", "flakeId", "intformat", "dynamodb", "s3", "uploadStream", "request"],
   "subDomainDirectory": `${__dirname}/subdomains`,
   "backgroundTaskDirectory": `${__dirname}/backgroundtasks`
 }

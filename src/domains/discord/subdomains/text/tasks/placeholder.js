@@ -19,8 +19,8 @@ module.exports = class extends Task {
     return false;
   }
 
-  execute(message, garnerInfo) {
-
+  execute(message) {
+    
   }
 
   help(text) {
