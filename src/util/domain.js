@@ -127,10 +127,12 @@ class Domain {
 
     if (!this.server.isReady) {
       this.server.on("connect", () => {
+        console.log('Connected');
         this.startBackgroundTasks();
         this.ready();
       });
     } else {
+      console.log('Connected');
       this.startBackgroundTasks();
       this.ready();
     }
@@ -149,6 +151,7 @@ class Domain {
    */
   startBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
+      console.log(task.id);
       task.execute();
     });
   }

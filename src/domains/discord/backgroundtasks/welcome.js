@@ -10,6 +10,7 @@ module.exports = class extends Task {
   }
 
   execute() {
+    console.log('test - Welcome');
     this.domain.server.connection.on("guildMemberAdd", (guildMember) => {
 //      const guild = guildMember.guild;
 //      guild.defaultChannel.sendMessage(`Welcome to ${guild.name}, <@${guildMember.id}>`);
@@ -17,6 +18,6 @@ module.exports = class extends Task {
   }
 
   cleanup() {
-
+    
   }
 }

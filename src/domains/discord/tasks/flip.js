@@ -25,7 +25,7 @@ module.exports = class extends Task {
 
   execute(message) {
     const textToSend = this.domain.modules.random.pick(results);
-    message.channel.sendMessage(textToSend)
+    message.channel.send(textToSend)
     .then(() => {
     })
     .catch((err) => {

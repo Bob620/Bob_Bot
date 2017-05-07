@@ -22,7 +22,7 @@ module.exports = class extends Task {
   execute(message) {
     const channel = message.channel;
 
-    channel.sendMessage(`I'm currenting in ${this.domain.backgroundTasks.get('statistics').totalGuilds} guilds.\nThere are currently ${this.domain.backgroundTasks.get('statistics').totalOnlineMembers} people online.`)
+    channel.send(`I'm currenting in ${this.domain.backgroundTasks.get('statistics').totalGuilds} guilds.\nThere are currently ${this.domain.backgroundTasks.get('statistics').totalOnlineMembers} people online.`)
     .then(() => {}).catch(() => {});
   }
 

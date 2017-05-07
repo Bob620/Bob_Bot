@@ -40,9 +40,8 @@ module.exports = class extends Task {
       if (err) {
         console.log(err);
       } else {
-        console.log(data);
         const picture = this.domain.modules.random.pick(data.Items);
-        message.channel.sendEmbed({'image': {'url': 'http://i.bobco.moe/'+picture.url.S}})
+        message.channel.send({embed: {'image': {'url': 'http://i.bobco.moe/'+picture.url.S}}})
         .catch((err) => {
           console.log(err);
         })

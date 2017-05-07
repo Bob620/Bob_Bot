@@ -12,6 +12,7 @@ const s3 = new aws.S3({apiVersion: '2006-03-01'});
 const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
 const UploadStream = require('s3-stream-upload');
 const request = require('request');
+const zlib = require('zlib');
 const Server = require('./util/server.js');
 
 const options = {
@@ -41,6 +42,7 @@ class Bot {
       this.modules.dynamodb = dynamodb;
       this.modules.uploadStream = UploadStream;
       this.modules.request = request;
+      this.modules.gzip = zlib.createGzip();
 
       this.domains = [];
       this.createDomains();

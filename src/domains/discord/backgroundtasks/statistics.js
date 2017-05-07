@@ -16,6 +16,7 @@ module.exports = class extends Task {
   }
 
   execute() {
+    console.log('test - Statistics');
     const guilds = this.domain.server.connection.guilds;
 
     this.totalGuilds = guilds.size;

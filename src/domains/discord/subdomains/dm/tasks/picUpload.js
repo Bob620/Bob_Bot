@@ -34,6 +34,7 @@ module.exports = class extends Task {
               const uid = modules.intformat(modules.flakeId.next(), 'dec');
 
               modules.request(content[2].trim())
+              .pipe(modules.gzip)
               .pipe(modules.uploadStream(modules.s3, {Bucket:"i.bobco.moe", Key: `${uid}.${ext}`, ACL: "public-read"}))
               .on("error", (err) => {
                 console.log(err);

@@ -41,6 +41,7 @@ module.exports = class extends Task {
   }
 
   execute() {
+    console.log('test - Status');
     const user = this.domain.server.connection.user;
 
     user.setPresence(this.rotation[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
