@@ -2,7 +2,6 @@ const Domain = require(`${__dirname}/../../util/domain.js`);
 
 const serverType = "discord";
 const options = {
-  "requirements": ["random", "log", "kitsu", "flakeId", "intformat", "dynamodb", "s3", "uploadStream", "request", "gzip"],
   "subDomainDirectory": `${__dirname}/subdomains`,
   "backgroundTaskDirectory": `${__dirname}/backgroundtasks`
 }
@@ -17,9 +16,10 @@ class Discord extends Domain {
     //this.modules.log("discord", "Disconnected -> Connected");
   }
 
-  disconnect() {
+  async disconnect() {
     console.log('Discord | Connected -> Disconnected');
     //this.modules.log("discord", "Connected -> Disconnected");
+    return true;
   }
 
   message(message) {

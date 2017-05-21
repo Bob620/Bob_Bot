@@ -55,7 +55,7 @@ module.exports = class extends Task {
                     "url": {S: `${uid}.${ext}`}
                   }
 
-                  modules.dynamodb.putItem({
+                  modules.dynamodbWestTwo.putItem({
                     Item: item,
                     TableName: "picturebase"
                   }, (err, data) => {

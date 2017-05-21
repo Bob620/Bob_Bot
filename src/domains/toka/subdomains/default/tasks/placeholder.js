@@ -10,7 +10,7 @@ module.exports = class extends Task {
   }
 
   supports(message) {
-    const content = message.content.toLowerCase().split(" ");
+    const content = message.text.toLowerCase().split(" ");
 
     if (content[0] === `!${this.id}`) {
       return true;

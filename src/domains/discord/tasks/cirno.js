@@ -36,7 +36,7 @@ module.exports = class extends Task {
       TableName: "picturebase"
     }
 
-    this.domain.modules.dynamodb.scan(params, (err, data) => {
+    this.domain.modules.dynamodbWestTwo.scan(params, (err, data) => {
       if (err) {
         console.log(err);
       } else {

@@ -59,7 +59,7 @@ module.exports = class extends Task {
       } else {
         const name = this.domain.modules.random.pick(files);
 
-        channel.send(images+name, name)
+        channel.send({file: images+name})
         .then(() => {
           channel.stopTyping();
         })

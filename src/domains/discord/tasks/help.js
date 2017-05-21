@@ -1,7 +1,8 @@
-const Task = require('./../../../../../util/task.js');
+const Task = require('./../../../util/task.js');
+const fs = require('fs');
 
 const options = {
-  "id": "placeholder",
+  "id": "help",
 }
 
 module.exports = class extends Task {
@@ -19,7 +20,7 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-
+    
   }
 
   help(text) {

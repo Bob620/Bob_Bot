@@ -10,19 +10,25 @@ module.exports = class extends Task {
   constructor(domain) {
     super(domain, options);
 
-    this.totalGuilds = 0;
+    this.guilds = [];
     this.totalOnlineMembers = 0;
     this.interval = null;
   }
 
   execute() {
-    console.log('test - Statistics');
+    console.log('Discord - Statistics');
     const guilds = this.domain.server.connection.guilds;
 
-    this.totalGuilds = guilds.size;
+    this.guilds = [];
     this.totalOnlineMembers = 0;
 
     guilds.forEach((guild) => {
+      this.guilds.push({
+        id: guild.id,
+        name: guild.name,
+        icon: guild.icon
+      });
+
       guild.presences.forEach((presence) => {
         if (presence.status !== "offline") {
           this.totalOnlineMembers++;
@@ -31,10 +37,16 @@ module.exports = class extends Task {
     });
 
     this.interval = setInterval(() => {
-      this.totalGuilds = guilds.size;
+      this.guilds = [];
       this.totalOnlineMembers = 0;
 
       guilds.forEach((guild) => {
+        this.guilds.push({
+          id: guild.id,
+          name: guild.name,
+          icon: guild.icon
+        });
+
         guild.presences.forEach((presence) => {
           if (presence.status !== "offline") {
             this.totalOnlineMembers++;

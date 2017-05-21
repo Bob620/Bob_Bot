@@ -25,6 +25,7 @@ module.exports = class extends Task {
 
     channel.send('Searching Kitsu...').then((chatMessage) => {
       this.domain.modules.kitsu.searchAnime(animeTitle, 0).then((result) => {
+        console.log(result);
         if (result.length !== 0) {
           chatMessage.edit(`I found: ${result[0].attributes.titles.en_jp}\nEnglish: ${result[0].attributes.titles.en}`);
         } else {

@@ -1,4 +1,5 @@
 const fs = require('fs');
+//const EventEmitter = require('events');
 
 /**
  * A new domain
@@ -6,7 +7,7 @@ const fs = require('fs');
  * @param {array} [options] The server options
  */
 class Domain {
-  constructor(serverType=false, {requirements: requirements=[], subDomainDirectory: subDomainDirectory="", backgroundTaskDirectory: backgroundTaskDirectory=""}) {
+  constructor(serverType=false, {subDomainDirectory: subDomainDirectory="", backgroundTaskDirectory: backgroundTaskDirectory=""}) {
     /**
      * The type of server to get from the bot and use as the main server
      * @type {string}
@@ -33,16 +34,6 @@ class Domain {
      */
     Object.defineProperty(this, "backgroundTaskDirectory", {
       value: backgroundTaskDirectory
-    });
-
-    /**
-     * The domain's required modules to get from the bot
-     * @type {array}
-     * @readonly
-     */
-    Object.defineProperty(this, "requirements", {
-      value: requirements,
-      enumerable: true
     });
 
     this.subDomains = new Map();
@@ -82,14 +73,6 @@ class Domain {
   }
 
   /**
-   * Returns the requirements and server type
-   * @returns {object}
-   */
-  requires() {
-    return {"serverType": this.serverType, "requirements": this.requirements};
-  }
-
-  /**
    * Starts the server with the requested server and modules
    * @param {object} info The server and modules needed
    */
@@ -110,7 +93,7 @@ class Domain {
      * @readonly
      */
     Object.defineProperty(this, "modules", {
-      value: info.requirements,
+      value: info.modules,
       enumerable: true
     });
 
@@ -138,12 +121,21 @@ class Domain {
     }
 
     this.server.on("disconnect", () => {
-      this.disconnect();
+      this.disconnect()
+      .then(this.cleanup)
     });
 
     this.server.on("message", (message) => {
       this.message(message);
     });
+  }
+
+  /**
+   * Cleans up the domain
+   */
+  cleanup() {
+    this.cleanupBackgroundTasks();
+    this.emit('cleaned');
   }
 
   /**

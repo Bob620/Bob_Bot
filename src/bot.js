@@ -1,45 +1,60 @@
+// Servers and General Modules
 const fs = require('fs');
 //const Garner = require('./garner.js');
 const Discord = require('discord.js');
 const Chata = require('chata-client');
-const Random = require('random-js');
+
+// Modules for Server Use
 //const log = require('./util/log.js');
+const Random = require('random-js');
 const kitsu = require('node-kitsu');
 const FlakeId = require('flake-idgen');
 const intformat = require('biguint-format')
 const aws = require('aws-sdk');
 const s3 = new aws.S3({apiVersion: '2006-03-01'});
-const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
 const UploadStream = require('s3-stream-upload');
 const request = require('request');
 const zlib = require('zlib');
 const Server = require('./util/server.js');
+
+// Waifu Storage
+const dynamodbWestTwo = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
+// nlp Storage
+const dynamodbEastOne = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-east-1'});
+
+// Webserver Imports
+const WebServer = require('./util/webserver.js');
+const express = require('express');
 
 const options = {
   "domains": `${__dirname}/domains`
 }
 
 class Bot {
-  constructor({garner: {server: serverLogin = false}, discordToken: discordToken = false, chataToken = false}) {
+  constructor({webserver: webserverOptions = {active: false, port: 3063}, discordToken: discordToken = false, chataToken: chataToken = false}) {
     this.modules = {};
+    this.servers = {};
+
+    this.modules.webserver = new WebServer(webserverOptions, express());
 
     if (discordToken) {
-      this.modules["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "burst"}));
-      this.modules.discord.connection.login(discordToken);
+      this.servers["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "burst"}));
+      this.servers.discord.connection.login(discordToken);
     }
     if (chataToken) {
-      this.modules["chata"] = new Server("chata", new Chata());
-      this.modules.chata.connection.login(chataToken);
+      this.servers["toka"] = new Server("chata", new Chata());
+      this.servers.toka.connection.login(chataToken);
     }
 
-    if (Object.keys(this.modules).length > 0) {
+    if (Object.keys(this.servers).length > 0) {
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
       this.modules.kitsu = kitsu;
 //      this.modules.log = log;
       this.modules.flakeId = new FlakeId();
       this.modules.intformat = intformat;
       this.modules.s3 = s3;
-      this.modules.dynamodb = dynamodb;
+      this.modules.dynamodbEastOne = dynamodbEastOne;
+      this.modules.dynamodbWestTwo = dynamodbWestTwo;
       this.modules.uploadStream = UploadStream;
       this.modules.request = request;
       this.modules.gzip = zlib.createGzip();
@@ -48,8 +63,10 @@ class Bot {
       this.createDomains();
       this.startDomains();
 
+      this.openWebserver();
+
     } else {
-      throw "A Bot Token required.";
+      throw "A Bot Token is required.";
     }
   }
 
@@ -71,25 +88,23 @@ class Bot {
    */
   startDomains() {
     this.domains.forEach((domain) => {
-      let info = {"server": false, "requirements": {}};
-      const domainRequirements = domain.requires();
+      let info = {"server": false, modules: this.modules};
+      const serverType = domain.serverType;
 
-      if (this.modules.hasOwnProperty(domainRequirements.serverType)) {
-        info.server = this.modules[domainRequirements.serverType];
+      if (this.servers.hasOwnProperty(serverType)) {
+        info.server = this.servers[serverType];
       } else {
-        throw `Couldn't find the requested domain server ${domainRequirements.serverType}`;
+        throw `Couldn't find the requested domain server ${serverType}`;
       }
 
-      const requirements = domainRequirements.requirements;
-      for (let i = 0; i < requirements.length; i++) {
-        const requireName = requirements[i];
-
-        if (this.modules.hasOwnProperty(requireName)) {
-          info.requirements[requireName] = this.modules[requireName];
-        }
-      }
       domain.start(info);
     });
+  }
+
+  openWebserver() {
+    if (this.modules.webserver) {
+      this.modules.webserver.open();
+    }
   }
 }
 
