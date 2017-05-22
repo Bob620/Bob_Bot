@@ -1,4 +1,5 @@
 const Task = require('./../../../util/task.js');
+const Anime = require('./../../../util/anime.js');
 
 const options = {
   "id": "searchanime",
@@ -25,9 +26,10 @@ module.exports = class extends Task {
 
     channel.send('Searching Kitsu...').then((chatMessage) => {
       this.domain.modules.kitsu.searchAnime(animeTitle, 0).then((result) => {
-        console.log(result);
         if (result.length !== 0) {
-          chatMessage.edit(`I found: ${result[0].attributes.titles.en_jp}\nEnglish: ${result[0].attributes.titles.en}`);
+          const anime = new Anime(result[0]);
+
+          chatMessage.edit(`I found: ${anime.title}\nEnglish: ${anime.englishTitle}\nRating: ${anime.rating}\n${anime.ageRating} - ${anime.ageGuide}\n${anime.description}`);
         } else {
           chatMessage.edit('I couldn\'t find an anime with that search, try something easier ;~;');
         }
