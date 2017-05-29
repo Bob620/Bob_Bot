@@ -66,7 +66,7 @@ class SubDomain {
             const task = new Task(this.domain);
             const taskId = task.id;
             if (tasks.has(taskId)) {
-              console.trace(`WARNING: SubDomain has more then one task with the ID ${taskId}, Overwriting old task.`);
+              console.warn(`${this.domain.serverType}.${this.id} has more than one task with the ID ${taskId}, Overwriting old task.`);
             }
             tasks.set(taskId, task);
           }
@@ -87,7 +87,7 @@ class SubDomain {
             const task = new Task(this.domain);
             const taskId = task.id;
             if (tasks.has(taskId)) {
-              console.trace(`WARNING: SubDomain has more then one task with the ID ${taskId}, Overwriting old task.`);
+              console.warn(`${this.domain.serverType}.${this.id} has more than one task with the ID ${taskId}, Overwriting old task.`);
             }
             tasks.set(taskId, task);
           }

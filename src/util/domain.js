@@ -48,7 +48,7 @@ class Domain {
         const subDomain = new SubDomain(this);
         const subDomainId = subDomain.id;
         if (subDomains.has(subDomainId)) {
-          console.trace(`WARNING: Domain has more then one SubDomain with the ID ${subDomainId}, Overwriting old SubDomain.`);
+          console.warn(`${this.serverType} has more then one SubDomain with the ID ${subDomainId}, Overwriting old SubDomain.`);
         }
         subDomains.set(subDomainId, subDomain);
       });
@@ -64,7 +64,7 @@ class Domain {
           const task = new Task(this);
           const taskId = task.id;
           if (backgroundTasks.has(taskId)) {
-            console.trace(`WARNING: Domain has more then one background task with the ID ${taskId}, Overwriting old task.`);
+            console.warn(`${this.serverType} has more then one background task with the ID ${taskId}, Overwriting old task.`);
           }
           backgroundTasks.set(taskId, task);
         }
@@ -109,7 +109,7 @@ class Domain {
 
 
     if (!this.server.isReady) {
-      this.server.on("connect", () => {
+      this.server.once("connect", () => {
         console.log('Connected');
         this.startBackgroundTasks();
         this.ready();
@@ -122,7 +122,7 @@ class Domain {
 
     this.server.on("disconnect", () => {
       this.disconnect()
-      .then(this.cleanup)
+      .then(this.cleanupBackgroundTasks.apply(this));
     });
 
     this.server.on("message", (message) => {
@@ -134,8 +134,17 @@ class Domain {
    * Cleans up the domain
    */
   cleanup() {
+  //  return new Promise((resolve, reject) => {
+  //    resolve(this.cleanupBackgroundTasks());
+  //  });
     this.cleanupBackgroundTasks();
-    this.emit('cleaned');
+  }
+
+  /**
+   * "Restarts" a domain
+   */
+  restart() {
+
   }
 
   /**
@@ -153,7 +162,11 @@ class Domain {
    */
   cleanupBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
-      task.cleanup();
+      if (task.cleanup) {
+        task.cleanup();
+      } else {
+        console.warn(`${task.id} does not have a cleanup function in the domain ${self.serverType}`);
+      }
     });
   }
 }

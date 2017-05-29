@@ -55,18 +55,44 @@ module.exports = class extends Task {
     channel.startTyping();
     fs.readdir(images, (err, files) => {
       if (err) {
-        console.trace(err);
-      } else {
-        const name = this.domain.modules.random.pick(files);
-
-        channel.send({file: images+name})
+        channel.send('Doesn\'t seem that there are any pictures for this command yet')
         .then(() => {
           channel.stopTyping();
         })
         .catch((err) => {
           channel.stopTyping();
           console.log(err);
-        })
+        });
+        console.trace(err);
+      } else {
+        files = files.filter((file) => {
+          if(file !== 'desktop.ini')
+            return true;
+          return false;
+        });
+
+        if (files.length > 0) {
+
+          const name = this.domain.modules.random.pick(files);
+
+          channel.send({file: images+name})
+          .then(() => {
+            channel.stopTyping();
+          })
+          .catch((err) => {
+            channel.stopTyping();
+            console.log(err);
+          });
+        } else {
+          channel.send('Doesn\'t seem that there are any pictures for this command yet')
+          .then(() => {
+            channel.stopTyping();
+          })
+          .catch((err) => {
+            channel.stopTyping();
+            console.log(err);
+          });
+        }
       }
     });
   }

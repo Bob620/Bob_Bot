@@ -12,8 +12,10 @@ module.exports = class extends Task {
   execute() {
     console.log('Discord - Welcome');
     this.domain.server.connection.on("guildMemberAdd", (guildMember) => {
-//      const guild = guildMember.guild;
-//      guild.defaultChannel.sendMessage(`Welcome to ${guild.name}, <@${guildMember.id}>`);
+      const guild = guildMember.guild;
+      guild.defaultChannel.send(`Welcome to ${guild.name}, <@${guildMember.id}>`);
+
+      //this.domain.subDomains.text.tasks.welcome.execute({channel: guild.defaultChannel});
     });
   }
 

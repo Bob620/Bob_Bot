@@ -1,9 +1,9 @@
 const Task = require('./../../../util/task.js');
 const fs = require('fs');
 
-const images = "./images/kanan/";
+const images = "./images/guri/";
 const options = {
-  "id": "kanan",
+  "id": "guri",
 }
 
 module.exports = class extends Task {
