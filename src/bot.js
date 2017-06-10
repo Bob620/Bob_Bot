@@ -1,5 +1,7 @@
-// Servers and General Modules
+// General Modules
 const fs = require('fs');
+
+// Servers
 //const Garner = require('./garner.js');
 const Discord = require('discord.js');
 const Chata = require('chata-client');
@@ -38,7 +40,7 @@ class Bot {
     this.modules.webserver = new WebServer(webserverOptions, express());
 
     if (discordToken) {
-      this.servers["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "burst"}));
+      this.servers["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "sequential"}));
       this.servers.discord.connection.login(discordToken);
     }
     if (chataToken) {

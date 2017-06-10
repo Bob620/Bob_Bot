@@ -152,7 +152,6 @@ class Domain {
    */
   startBackgroundTasks() {
     this.backgroundTasks.forEach((task) => {
-      console.log(task.id);
       task.execute();
     });
   }

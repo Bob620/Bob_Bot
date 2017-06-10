@@ -23,6 +23,7 @@ class Text extends SubDomain {
       const task = tasks.next().value;
       if (task.supports(message)) {
         task.execute(message);
+//        this.domain.backgroundTasks.counter.update(message.id, task.id);
         break;
       }
     }

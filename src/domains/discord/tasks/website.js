@@ -1,8 +1,8 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
 
 const options = {
-  "id": "help",
+  "id": "website",
+  "url": "http://bobco.moe/waifu"
 }
 
 module.exports = class extends Task {
@@ -20,15 +20,10 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-    let helpMessage = "**Temporary Server Command Help**\n";
+    const channel = message.channel;
 
-    this.domain.subDomains.get('text').tasks.forEach((task, id) => {
-      if (id !== "placeholder") {
-        helpMessage += `!${id}\n`;
-      }
-    });
-
-    message.author.send(helpMessage);
+//    channel.send(`Please visit ${options.url} for all your Waifu Needs!`)
+//    .then(() => {}).catch(() => {});
   }
 
   help(text) {

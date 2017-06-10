@@ -1,9 +1,9 @@
 const Task = require('./../../../util/task.js');
 const fs = require('fs');
 
-const images = "./images/lucoa/";
+const images = "./images/miia/";
 const options = {
-  "id": "lucoa",
+  "id": "miia",
 }
 
 module.exports = class extends Task {
@@ -43,27 +43,17 @@ module.exports = class extends Task {
         });
 
         if (files.length > 0) {
-          if (message.author.id === "98863753897971712") {
-            channel.send({file: images+"e3869a06fe83c80447afa87c69da47e0.png"})
-            .then(() => {
-              channel.stopTyping();
-            })
-            .catch((err) => {
-              channel.stopTyping();
-              console.log(err);
-            });
-          } else {
-            const name = this.domain.modules.random.pick(files);
 
-            channel.send({file: images+name})
-            .then(() => {
-              channel.stopTyping();
-            })
-            .catch((err) => {
-              channel.stopTyping();
-              console.log(err);
-            });
-          }
+          const name = this.domain.modules.random.pick(files);
+
+          channel.send({file: images+name})
+          .then(() => {
+            channel.stopTyping();
+          })
+          .catch((err) => {
+            channel.stopTyping();
+            console.log(err);
+          });
         } else {
           channel.send('Doesn\'t seem that there are any pictures for this command yet')
           .then(() => {

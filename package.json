@@ -4,32 +4,32 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "node test.js",
+    "test": "node test.js --pending-deprecation",
     "start": "node app.js"
   },
   "author": "Bob620",
   "license": "ISC",
   "engines": {
-    "node": ">=7.0.0"
+    "node": ">=8.0.0"
   },
   "enginesStrict": true,
   "dependencies": {
-    "aws-sdk": "^2.9.0",
+    "aws-sdk": "^2.62.0",
     "bakajax": "0.0.3",
     "biguint-format": "^1.0.0",
-    "bufferutil": "^3.0.0",
     "chata-client": "^1.0.0",
-    "discord.js": "^11.0.0",
+    "discord.js": "^11.1.0",
     "erlpack": "github:hammerandchisel/erlpack",
+    "express": "^4.15.3",
     "flake-idgen": "^1.1.0",
     "libsodium-wrappers": "^0.5.1",
     "node-kitsu": "^1.0.0",
-    "node-opus": "^0.2.4",
+    "node-opus": "^0.2.6",
     "random-js": "^1.0.8",
     "request": "^2.81.0",
     "s3-stream-upload": "^2.0.1",
     "sodium": "^2.0.1",
     "uws": "^0.14.5",
-    "ytdl-core": "^0.7.19"
+    "ytdl-core": "^0.14.2"
   }
 }

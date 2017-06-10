@@ -4,12 +4,18 @@ const types = {
   "discord": {
     "connect": "ready",
     "disconnect": "disconnect",
-    "message": "message"
+    "message": "message",
+    "error": "error",
+    "debug": "debug",
+    "warn": "warn"
   },
   "chata": {
     "connect": "connect",
     "disconnect": "disconnect",
-    "message": "message"
+    "message": "message",
+    "error": "error",
+    "debug": "debug",
+    "warn": "warn"
   }
 }
 
@@ -48,6 +54,18 @@ class Server extends EventEmitter {
     connection.on(events.message, (message) => {
       this.emit("message", message);
     });
+
+    connection.on(events.error, (err) => {
+      console.log(err);
+    });
+
+    connection.on(events.warn, (err) => {
+      console.log(err);
+    });
+
+//    connection.on(events.debug, (info) => {
+//      console.log(info);
+//    });
   }
 
   get status() {

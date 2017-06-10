@@ -2,7 +2,7 @@ const Task = require('./../../../util/task.js');
 const fs = require('fs');
 
 const options = {
-  "id": "help",
+  "id": "lewd",
 }
 
 module.exports = class extends Task {
@@ -20,15 +20,12 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-    let helpMessage = "**Temporary Server Command Help**\n";
-
-    this.domain.subDomains.get('text').tasks.forEach((task, id) => {
-      if (id !== "placeholder") {
-        helpMessage += `!${id}\n`;
-      }
-    });
-
-    message.author.send(helpMessage);
+    message.channel.send("Rub it all over me")
+    .then(() => {
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   help(text) {
