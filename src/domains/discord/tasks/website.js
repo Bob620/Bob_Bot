@@ -22,8 +22,8 @@ module.exports = class extends Task {
   execute(message) {
     const channel = message.channel;
 
-//    channel.send(`Please visit ${options.url} for all your Waifu Needs!`)
-//    .then(() => {}).catch(() => {});
+    channel.send(`Please visit ${options.url} for all your Waifu Needs!`)
+    .then(() => {}).catch(() => {});
   }
 
   help(text) {

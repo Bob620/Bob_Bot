@@ -110,12 +110,10 @@ class Domain {
 
     if (!this.server.isReady) {
       this.server.once("connect", () => {
-        console.log('Connected');
         this.startBackgroundTasks();
         this.ready();
       });
     } else {
-      console.log('Connected');
       this.startBackgroundTasks();
       this.ready();
     }

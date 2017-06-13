@@ -65,7 +65,7 @@ class WaifuGuild {
 
     this.welcome = {
       active: discordGuild.welcome ? discordGuild.welcome.M.active.BOOL : false,
-      message: discordGuild.welcome ? discordGuild.welcome.M.message.S : "Welcome to $guild"
+      message: discordGuild.welcome ? discordGuild.welcome.M.message.S : "&newUser, Welcome to &serverName!"
     }
   }
 
