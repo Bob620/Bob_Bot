@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "node test.js --pending-deprecation",
-    "start": "node app.js"
+    "test": "echo Tests not available",
+    "start": "node app.js --pending-deprecation"
   },
   "author": "Bob620",
   "license": "ISC",

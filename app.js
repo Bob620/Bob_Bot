@@ -1,10 +1,3 @@
-"use strict"
+const Bot = require('./src/bot.js');
 
-const Bobbot = require('./index.js');
-let login;
-try {
-  login = require('./login.json');
-} catch(err) {
-  throw err;
-}
-const  bobbot = new Bobbot(login);
+const waifu = new Bot(require('./login.json'));
