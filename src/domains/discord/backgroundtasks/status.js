@@ -25,7 +25,15 @@ module.exports = class extends Task {
         return {
           "status": "online",
           "game": {
-            "name": "2.0.0 bby"
+            "name": "Version 2.1.0"
+          }
+        }
+      },
+      () => {
+        return {
+          "status": "online",
+          "game": {
+            "name": "Now in Purple"
           }
         }
       },

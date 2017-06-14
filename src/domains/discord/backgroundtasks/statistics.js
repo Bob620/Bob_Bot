@@ -55,6 +55,7 @@ module.exports = class extends Task {
     const statistics = this;
 
     // Define Statistics based API
+/*
     this.domain.modules.webserver.addGet('/api/stats', (req, res, next) => {
       res.json({
         totalGuilds: statistics.guilds.length,
@@ -65,6 +66,7 @@ module.exports = class extends Task {
     this.domain.modules.webserver.addGet('/api/guilds', (req, res, next) => {
       res.json(statistics.guilds);
     });
+*/
   }
 
   cleanup() {
