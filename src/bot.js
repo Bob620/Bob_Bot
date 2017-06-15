@@ -1,13 +1,12 @@
 // General Modules
 const fs = require('fs');
+const Server = require('./util/server.js');
 
 // Servers
-//const Garner = require('./garner.js');
 const Discord = require('discord.js');
 const Chata = require('chata-client');
 
-// Modules for Server Use
-//const log = require('./util/log.js');
+// Modules for Domain Use
 const Random = require('random-js');
 const kitsu = require('node-kitsu');
 const FlakeId = require('flake-idgen');
@@ -17,7 +16,6 @@ const s3 = new aws.S3({apiVersion: '2006-03-01'});
 const UploadStream = require('s3-stream-upload');
 const request = require('request');
 const zlib = require('zlib');
-const Server = require('./util/server.js');
 
 // Waifu Storage
 const dynamodbWestTwo = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
@@ -28,47 +26,61 @@ const dynamodbEastOne = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'u
 const WebServer = require('./util/webserver.js');
 const express = require('express');
 
+// Bot options
 const options = {
-  "domains": `${__dirname}/domains`
+  domains: `${__dirname}/domains`
 }
 
+// Main bot class
 class Bot {
   constructor({webserver: webserverOptions = {active: false, port: 3063}, discordToken: discordToken = false, chataToken: chataToken = false}) {
+    // Create the modules and servers lists
     this.modules = {};
     this.servers = {};
 
+    // Creates the webserver using a new express instance
     this.modules.webserver = new WebServer(webserverOptions, express());
 
+    // If there is a login token, login to the service
+    // Supports discord and chata(1.0)
     if (discordToken) {
-      this.servers["discord"] = new Server("discord", new Discord.Client({apiRequestMethod: "sequential"}));
-      this.servers.discord.connection.login(discordToken);
+      // Use sequential(default) and create a discord server in the server list
+      this.servers['discord'] = new Server('discord', new Discord.Client({apiRequestMethod: 'sequential'}));
+      this.servers.discord.login(discordToken);
     }
     if (chataToken) {
-      this.servers["toka"] = new Server("chata", new Chata());
-      this.servers.toka.connection.login(chataToken);
+      // Creates a new chata server in the server list for toka
+      this.servers['toka'] = new Server('chata', new Chata());
+      this.servers.toka.login(chataToken);
     }
 
+    // If there are servers, start the bot, else throw an error
     if (Object.keys(this.servers).length > 0) {
+      // Require in all modules and put them in a centeral accessible area
+      // UUID and Random modules
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
-      this.modules.kitsu = kitsu;
-//      this.modules.log = log;
       this.modules.flakeId = new FlakeId();
       this.modules.intformat = intformat;
+      // Internet API Modules
+      this.modules.kitsu = kitsu;
+      this.modules.request = request;
+      // AWS modules
       this.modules.s3 = s3;
       this.modules.dynamodbEastOne = dynamodbEastOne;
       this.modules.dynamodbWestTwo = dynamodbWestTwo;
       this.modules.uploadStream = UploadStream;
-      this.modules.request = request;
       this.modules.gzip = zlib.createGzip();
 
+      // Creates a new list of the avalible domains, creates the domains, then starts them
       this.domains = [];
       this.createDomains();
       this.startDomains();
 
+      // Opens the webserver if able
       this.openWebserver();
 
     } else {
-      throw "A Bot Token is required.";
+      throw 'A Bot Token is required.';
     }
   }
 
@@ -80,7 +92,6 @@ class Bot {
     const files = fs.readdirSync(options.domains);
     files.forEach((file) => {
       const Domain = require(`${options.domains}/${file}/${file}.js`);
-
       this.domains.push(new Domain());
     });
   }
@@ -90,20 +101,27 @@ class Bot {
    */
   startDomains() {
     this.domains.forEach((domain) => {
-      let info = {"server": false, modules: this.modules};
+      // Creates a new server with modules refrence
+      let info = {server: false, modules: this.modules};
       const serverType = domain.serverType;
 
+      // Checks for the existing server type and sets the corresponding server
+      // Throws error if unable to create the new domain
       if (this.servers.hasOwnProperty(serverType)) {
         info.server = this.servers[serverType];
       } else {
-        throw `Couldn't find the requested domain server ${serverType}`;
+        console.warn(`Couldn't find the requested domain server: ${serverType}`);
       }
 
-      domain.start(info);
+      // Starts the new domain
+      if (info.server) {
+        domain.start(info);
+      }
     });
   }
 
   openWebserver() {
+    // Checks for an avalible webserver and opens it
     if (this.modules.webserver) {
       this.modules.webserver.open();
     }

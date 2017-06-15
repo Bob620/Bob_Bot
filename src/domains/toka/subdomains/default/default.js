@@ -1,13 +1,12 @@
 const SubDomain = require('./../../../../util/subdomain.js');
 
 const options = {
-  "id": "default",
-  "taskDirectory": `${__dirname}/tasks`
+  "id": "default"
 }
 
 class Default extends SubDomain {
-  constructor(domain) {
-    super(domain, options);
+  constructor(domain, directory) {
+    super(domain, directory, options);
   }
 
   supports(message) {

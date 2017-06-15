@@ -2,8 +2,7 @@ const Domain = require(`${__dirname}/../../util/domain.js`);
 
 const serverType = "toka";
 const options = {
-  "subDomainDirectory": `${__dirname}/subdomains`,
-  "backgroundTaskDirectory": `${__dirname}/backgroundtasks`
+  "domainDirectory": `${__dirname}`,
 }
 
 class Toka extends Domain {

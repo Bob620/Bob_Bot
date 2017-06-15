@@ -1,21 +1,25 @@
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 
+// All avalible server events
 const types = {
-  "discord": {
-    "connect": "ready",
-    "disconnect": "disconnect",
-    "message": "message",
-    "error": "error",
-    "debug": "debug",
-    "warn": "warn"
+  discord: {
+    login: "login",
+    connect: "ready",
+    disconnect: "disconnect",
+    message: "message",
+    errors: [
+      "error",
+      "warn"
+    ]
   },
-  "chata": {
-    "connect": "connect",
-    "disconnect": "disconnect",
-    "message": "message",
-    "error": "error",
-    "debug": "debug",
-    "warn": "warn"
+  chata: {
+    login: "login",
+    connect: "connect",
+    disconnect: "disconnect",
+    message: "message",
+    errors: [
+      "error"
+    ]
   }
 }
 
@@ -30,46 +34,58 @@ class Server extends EventEmitter {
   constructor(type, connection) {
     super();
 
+    // Initalization
     this.connection = connection;
     this.type = type;
     this.currentStatus = "disconnected";
-    this.isReady = false;
+    this.ready = false;
+    // Select events and provides them for refrence on this
+    const triggers = types[type];
+    this.triggers = triggers;
 
-    const events = types[type];
-
-    this.events = events;
-
-    connection.on(events.connect, () => {
-      this.currentStatus = "connected";
-      this.isReady = true;
-      this.emit("connect");
+    // Log all error outputting
+    triggers.errors.forEach((errorTrigger) => {
+      connection.on(errorTrigger, (err) => {
+        console.log(err);
+      });
     });
 
-    connection.on(events.disconnect, () => {
-      this.currentStatus = "disconnected";
-      this.isReady = false;
-      this.emit("disconnect");
+    // Create a connect listener
+    connection.on(triggers.connect, () => {
+      this.connected = true;
     });
 
-    connection.on(events.message, (message) => {
+    // Create a disconnect listener
+    connection.on(triggers.disconnect, () => {
+      this.connected = false;
+    });
+
+    // Create a message listener
+    connection.on(triggers.message, (message) => {
       this.emit("message", message);
     });
-
-    connection.on(events.error, (err) => {
-      console.log(err);
-    });
-
-    connection.on(events.warn, (err) => {
-      console.log(err);
-    });
-
-//    connection.on(events.debug, (info) => {
-//      console.log(info);
-//    });
   }
 
-  get status() {
-    return this.currentStatus;
+  login(token) {
+    if (this.connection && this.connected === false) {
+      this.connection[this.triggers.login](token);
+    }
+  }
+
+  // Updates server correctly
+  set connected(value) {
+    if (value) {
+      this.ready = true;
+      this.emit("connect");
+    } else {
+      this.ready = true;
+      this.emit("disconnect");
+    }
+  }
+
+  // Provides the ready status
+  get connected() {
+    return this.ready;
   }
 }
 

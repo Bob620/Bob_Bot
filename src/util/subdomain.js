@@ -1,5 +1,4 @@
 const fs = require('fs');
-
 const homeDirectory = `${__dirname}/../`;
 
 /**
@@ -7,7 +6,7 @@ const homeDirectory = `${__dirname}/../`;
  * @param {array} [options] The subdomain options
  */
 class SubDomain {
-  constructor(domain, {id: id="", taskDirectory: taskDirectory=""}) {
+  constructor(domain, domainDirectory, {id: id=""}) {
     if (id === "") {
       throw "All subdomains must have an id";
     }
@@ -21,6 +20,7 @@ class SubDomain {
       value: domain,
       enumerable: true
     });
+
     /**
      * The identifier of this subdomain
      * @type {string}
@@ -30,70 +30,49 @@ class SubDomain {
       value: id,
       enumerable: true
     });
-    /**
-     * The subdomains's task directory
-     * @type {string}
-     * @readonly
-     */
-    Object.defineProperty(this, "taskDirectory", {
-      value: taskDirectory
-    });
-    /**
-     * The subdomains's uniTask directory
-     * @type {string}
-     * @readonly
-     */
-    Object.defineProperty(this, "uniTaskDirectory", {
-      value: `${homeDirectory}/domains/${domain.serverType}/tasks`
-    });
-
 
     this.tasks = new Map();
+    const tasks = this.tasks;
 
-    const uniTaskDirectory = this.uniTaskDirectory;
+    const taskURI = `${domainDirectory}/tasks`;
+    const uniTaskURI = `${domainDirectory}/subdomains/${id}/tasks`;
 
-    if (uniTaskDirectory !== "") {
-      fs.readdir(uniTaskDirectory, (err, files) => {
-        if (err) {
-          console.log(err);
-          throw "Unable to load Uni tasks";
-        }
-        const tasks = this.tasks;
+    fs.readdir(taskURI, (err, files) => {
+      if (err) {
+        console.log(err);
+        throw "Unable to load Uni tasks";
+      }
 
-        files.forEach((filename) => {
-          if (filename.endsWith('.js')) {
-            const Task = require(`${uniTaskDirectory}/${filename}`);
-            const task = new Task(this.domain);
-            const taskId = task.id;
-            if (tasks.has(taskId)) {
-              console.warn(`${this.domain.serverType}.${this.id} has more than one task with the ID ${taskId}, Overwriting old task.`);
-            }
-            tasks.set(taskId, task);
+      files.forEach((filename) => {
+        if (filename.endsWith('.js')) {
+          const Task = require(`${taskURI}/${filename}`);
+          const task = new Task(domain);
+          const taskId = task.id;
+          if (tasks.has(taskId)) {
+            console.warn(`${domain.serverType}.${id} has more than one task with the ID ${taskId}, Overwriting old task.`);
           }
-        });
-      });
-    }
-
-    if (taskDirectory !== "") {
-      fs.readdir(taskDirectory, (err, files) => {
-        if (err) {
-          throw "Unable to load tasks";
+          tasks.set(taskId, task);
         }
-        const tasks = this.tasks;
-
-        files.forEach((filename) => {
-          if (filename.endsWith('.js')) {
-            const Task = require(`${taskDirectory}/${filename}`);
-            const task = new Task(this.domain);
-            const taskId = task.id;
-            if (tasks.has(taskId)) {
-              console.warn(`${this.domain.serverType}.${this.id} has more than one task with the ID ${taskId}, Overwriting old task.`);
-            }
-            tasks.set(taskId, task);
-          }
-        });
       });
-    }
+    });
+
+    fs.readdir(uniTaskURI, (err, files) => {
+      if (err) {
+        throw "Unable to load tasks";
+      }
+
+      files.forEach((filename) => {
+        if (filename.endsWith('.js')) {
+          const Task = require(`${uniTaskURI}/${filename}`);
+          const task = new Task(domain);
+          const taskId = task.id;
+          if (tasks.has(taskId)) {
+            console.warn(`${domain.serverType}.${id} has more than one task with the ID ${taskId}, Overwriting old task.`);
+          }
+          tasks.set(taskId, task);
+        }
+      });
+    });
   }
 }
 
