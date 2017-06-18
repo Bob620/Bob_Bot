@@ -1,18 +1,22 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
+const util = require('util');
+let scan;
 
-const images = "./images/nii/";
+const baseURL = 'http://i.bobco.moe/';
 const options = {
-  "id": "nii",
+  id: 'nii',
 }
 
 module.exports = class extends Task {
   constructor(domain) {
     super(domain, options);
+
+    const dynamodbWestTwo = this.domain.modules.dynamodbWestTwo;
+    scan = util.promisify(dynamodbWestTwo.scan.bind(dynamodbWestTwo));
   }
 
   supports(message) {
-    const content = message.content.toLowerCase().split(" ");
+    const content = message.content.toLowerCase().split(' ');
 
     if (content[0] === `!${this.id}`) {
       return true;
@@ -20,52 +24,58 @@ module.exports = class extends Task {
     return false;
   }
 
-  execute(message) {
+  async execute(message) {
     const channel = message.channel;
 
-    channel.startTyping();
-    fs.readdir(images, (err, files) => {
-      if (err) {
-        channel.send('Doesn\'t seem that there are any pictures for this command yet')
-        .then(() => {
-          channel.stopTyping();
-        })
-        .catch((err) => {
-          channel.stopTyping();
-          console.log(err);
-        });
-        console.trace(err);
-      } else {
-        files = files.filter((file) => {
-          if(file !== 'desktop.ini')
-            return true;
-          return false;
-        });
+    let params = {
+      ExpressionAttributeNames: {
+        '#URL': 'url',
+        '#TAGS': 'tags'
+      },
+      ExpressionAttributeValues: {
+        ':tag': {S: options.id}
+      },
+      FilterExpression: 'contains(#TAGS, :tag)',
+      ProjectionExpression: '#URL',
+      TableName: 'picturebase'
+    }
+    let pictures = [];
+    let newMessage = false;
+    let baseData = false;
 
-        if (files.length > 0) {
+    // On failure log things and send a message
+    try {
+      // Promise newMessage and scan for the first set of images
+      [newMessage, baseData] = await Promise.all([channel.send({embed: {text: ''}}), scan(params)]);
+      params.ExclusiveStartKey = baseData.LastEvaluatedKey;
+      pictures = pictures.concat(baseData.Items);
 
-          const name = this.domain.modules.random.pick(files);
-
-          channel.send({file: images+name})
-          .then(() => {
-            channel.stopTyping();
-          })
-          .catch((err) => {
-            channel.stopTyping();
-            console.log(err);
-          });
-        } else {
-          channel.send('Doesn\'t seem that there are any pictures for this command yet')
-          .then(() => {
-            channel.stopTyping();
-          })
-          .catch((err) => {
-            channel.stopTyping();
-            console.log(err);
-          });
-        }
+      // Loop over any more images
+      while (params.LastEvaluatedKey !== undefined) {
+        const data = await scan(params);
+        params.ExclusiveStartKey = data.LastEvaluatedKey;
+        pictures = pictures.concat(data.Items);
       }
-    });
+
+      // Get a random image from the ones retrived
+      const picture = this.domain.modules.random.pick(pictures);
+      if (picture !== undefined) {
+        // Edit the new message with the selected image
+        await newMessage.edit({embed: {image: {url: `${baseURL}${picture.url.S}`}}});
+      } else {
+        // Send an error message on failure
+        newMessage.edit({embed: {description: 'Doesn\'t seem that there are any pictures for this command yet'}});
+      }
+    } catch(err) {
+      // Send an error message on failure
+      if (newMessage) {
+        newMessage.edit({embed: {description: 'Doesn\'t seem that there are any pictures for this command yet'}});
+      } else {
+        channel.send('Doesn\'t seem that there are any pictures for this command yet');
+      }
+      // Log the actual error
+      console.log(err);
+    }
   }
 
   help(text) {

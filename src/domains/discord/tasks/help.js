@@ -1,8 +1,7 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
 
 const options = {
-  "id": "help",
+  id: 'help',
 }
 
 module.exports = class extends Task {
@@ -11,7 +10,7 @@ module.exports = class extends Task {
   }
 
   supports(message) {
-    const content = message.content.toLowerCase().split(" ");
+    const content = message.content.toLowerCase().split(' ');
 
     if (content[0] === `!${this.id}`) {
       return true;
@@ -20,10 +19,10 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-    let helpMessage = "**Temporary Server Command Help**\n";
+    let helpMessage = '**Temporary Server Command Help**\n';
 
     this.domain.subDomains.get('text').tasks.forEach((task, id) => {
-      if (id !== "placeholder") {
+      if (id !== 'placeholder') {
         helpMessage += `!${id}\n`;
       }
     });

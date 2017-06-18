@@ -1,8 +1,7 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
 
 const options = {
-  "id": "ping",
+  id: 'ping',
 }
 
 module.exports = class extends Task {
@@ -20,7 +19,7 @@ module.exports = class extends Task {
   }
 
   execute(message, garnerInfo) {
-    message.channel.send("Pong!")
+    message.channel.send('Pong!')
     .then((pongMessage) => {
       pongMessage.edit(`Pong! - Total Round Trip Time: **${pongMessage.createdTimestamp - message.createdTimestamp} ms**`);
     })

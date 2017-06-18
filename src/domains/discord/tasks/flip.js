@@ -1,9 +1,8 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
 
 const results = [
-  "I flipped a catgirl and she landed ***ears*** up",
-  "I flipped a catgirl and she landed ***tail*** up"
+  'I flipped a catgirl and she landed ***ears*** up',
+  'I flipped a catgirl and she landed ***tail*** up'
 ]
 const options = {
   "id": "flip",
@@ -15,7 +14,7 @@ module.exports = class extends Task {
   }
 
   supports(message) {
-    const content = message.content.toLowerCase().split(" ");
+    const content = message.content.toLowerCase().split(' ');
 
     if (content[0] === `!${this.id}`) {
       return true;

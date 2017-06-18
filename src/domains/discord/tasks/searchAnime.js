@@ -2,7 +2,7 @@ const Task = require('./../../../util/task.js');
 const Anime = require('./../../../util/anime.js');
 
 const options = {
-  "id": "searchanime",
+  id: 'searchanime',
 }
 
 module.exports = class extends Task {
@@ -21,8 +21,8 @@ module.exports = class extends Task {
 
   execute(message) {
     const channel = message.channel;
-    const content = message.content.toLowerCase().split(" ");
-    const animeTitle = content.slice(1).join("+");
+    const content = message.content.toLowerCase().split(' ');
+    const animeTitle = content.slice(1).join('+');
 
     channel.send('Searching Kitsu...').then((chatMessage) => {
       this.domain.modules.kitsu.searchAnime(animeTitle, 0).then((result) => {

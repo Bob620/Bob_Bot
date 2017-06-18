@@ -1,8 +1,7 @@
 const Task = require('./../../../util/task.js');
-const fs = require('fs');
 
 const options = {
-  "id": "lewd",
+  id: 'lewd',
 }
 
 module.exports = class extends Task {
@@ -20,7 +19,7 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-    message.channel.send("Rub it all over me")
+    message.channel.send('Rub it all over me')
     .then(() => {
     })
     .catch((err) => {
