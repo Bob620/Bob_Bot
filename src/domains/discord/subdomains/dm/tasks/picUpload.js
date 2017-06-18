@@ -2,7 +2,7 @@ const Task = require('./../../../../../util/task.js');
 const fs = require('fs');
 
 const options = {
-  "id": "picupload",
+  id: 'picupload',
 }
 
 module.exports = class extends Task {
@@ -34,12 +34,17 @@ module.exports = class extends Task {
               const uid = modules.intformat(modules.flakeId.next(), 'dec');
 
               modules.request(content[2].trim())
-              .pipe(modules.gzip)
-              .pipe(modules.uploadStream(modules.s3, {Bucket:"i.bobco.moe", Key: `${uid}.${ext}`, ACL: "public-read"}))
-              .on("error", (err) => {
+              .on('error', (err) => {
                 console.log(err);
+                message.reply('I wasn\'t able to download that image.');
               })
-              .on("finish", () => {
+              .on('response', (response) => {
+                console.log(response);
+                if (response.statusCode !== 200)
+                  response.destroy(response.statusCode);
+              })
+              .pipe(modules.uploadStream(modules.s3, {Bucket: 'i.bobco.moe', Key: `${uid}.${ext}`, ACL: 'public-read'}))
+              .on('finish', () => {
                 message.reply('I found the image, uploading with your tags now...')
                 .then(() => {
                   let tagList = [];
@@ -50,20 +55,20 @@ module.exports = class extends Task {
                   }
 
                   const item = {
-                    "uid": {S: uid},
-                    "tags": {SS: tagList},
-                    "url": {S: `${uid}.${ext}`}
+                    uid: {S: uid},
+                    tags: {SS: tagList},
+                    url: {S: `${uid}.${ext}`}
                   }
 
                   modules.dynamodbWestTwo.putItem({
                     Item: item,
-                    TableName: "picturebase"
+                    TableName: 'picturebase'
                   }, (err, data) => {
                     if (err) {
                       console.log(err);
                       message.reply('An error occured! Abort!');
                     } else {
-                      message.reply('The image was uploaded successfully.');
+                      message.reply(`The image was uploaded successfully. UID: ${uid}`);
                     }
                   });
                 })

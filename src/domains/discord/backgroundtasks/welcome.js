@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "welcome"
+  id: 'welcome'
 }
 
 module.exports = class extends Task {
@@ -11,10 +11,10 @@ module.exports = class extends Task {
 
   execute() {
     console.log('Discord - Welcome');
-    this.domain.server.connection.on("guildMemberAdd", (guildMember) => {
+    this.domain.server.connection.on('guildMemberAdd', (guildMember) => {
       const guild = guildMember.guild;
 
-      this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: guild.id}, type: {S: 'discord'}}}, (err, data) => {
+      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: guild.id}, type: {S: 'discord'}}}, (err, data) => {
         if (err) {
           console.log(err);
           //guild.defaultChannel.send(`Welcome to ${guild.name}, <@${guildMember.id}>`);

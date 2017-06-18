@@ -4,9 +4,9 @@
  * @param {object} [options] The optional information (id is required)
  */
 class Task {
-  constructor(domain, {id: id=""}) {
-    if (id === "") {
-      throw "All tasks must have an id";
+  constructor(domain, {id: id=''}) {
+    if (id === '') {
+      throw 'All tasks must have an id';
     }
 
     /**
@@ -14,7 +14,7 @@ class Task {
      * @type {Domain}
      * @readonly
      */
-    Object.defineProperty(this, "domain", {
+    Object.defineProperty(this, 'domain', {
       value: domain,
       enumerable: true
     });
@@ -24,7 +24,7 @@ class Task {
      * @type {string}
      * @readonly
      */
-    Object.defineProperty(this, "id", {
+    Object.defineProperty(this, 'id', {
       value: id,
       enumerable: true
     });

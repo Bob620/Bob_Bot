@@ -13,7 +13,7 @@ class DynamoDB {
      * @type {AWS.DynamoDB}
      * @readonly
      */
-    Object.defineProperty(this, "dynamodb", {
+    Object.defineProperty(this, 'dynamodb', {
       value: new AWS.DynamoDB()
     });
 
@@ -34,7 +34,7 @@ class DynamoDB {
       this.dynamodb.putItem({
         Item: item,
         TableName: this.tableName,
-        ReturnValues: "NONE"
+        ReturnValues: 'NONE'
       }, (err, data) => {
         if (err) {
           reject(err);
@@ -107,12 +107,12 @@ class DynamoDB {
       ExpressionAttributeValues: expressionAttributeValues,
       KeyConditionExpression: keyConditionExpression,
       TableName: this.tableName,
-      Select: "ALL_ATTRIBUTES",
-      ComparisonOperator: "EQ"
+      Select: 'ALL_ATTRIBUTES',
+      ComparisonOperator: 'EQ'
     }
 
     if (attributeToGet !== []) {
-      params.Select = "SPECIFIC_ATTRIBUTES"
+      params.Select = 'SPECIFIC_ATTRIBUTES'
       params.AttributesToGet = attributesToGet;
     }
 

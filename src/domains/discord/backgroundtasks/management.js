@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "management"
+  id: 'management'
 }
 
 const delay = 60000;
@@ -19,14 +19,14 @@ module.exports = class extends Task {
     const guilds = this.domain.server.connection.guilds;
 
     guilds.forEach((discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
+      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
         if (err) {
           console.log(err);
         } else {
           const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
           const attributify = waifuGuild.attributify();
 
-          this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbot", Item: attributify}, (err, data) => {
+          this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}, (err, data) => {
             if (err) {
               console.log(err);
             }
@@ -36,14 +36,14 @@ module.exports = class extends Task {
     });
 
     this.domain.server.connection.on('guildCreate', (discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
+      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
         if (err) {
           console.log(err);
         } else {
           const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
           const attributify = waifuGuild.attributify();
 
-          this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbot", Item: attributify}, (err, data) => {
+          this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}, (err, data) => {
             if (err) {
               console.log(err);
             }
@@ -61,11 +61,11 @@ module.exports = class extends Task {
 class WaifuGuild {
   constructor(guildId, discordGuild = {}) {
     this.id = guildId;
-    this.type = "discord";
+    this.type = 'discord';
 
     this.welcome = {
       active: discordGuild.welcome ? discordGuild.welcome.M.active.BOOL : false,
-      message: discordGuild.welcome ? discordGuild.welcome.M.message.S : "&newUser, Welcome to &serverName!"
+      message: discordGuild.welcome ? discordGuild.welcome.M.message.S : '&newUser, Welcome to &serverName!'
     }
   }
 

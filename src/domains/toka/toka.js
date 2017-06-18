@@ -1,8 +1,8 @@
 const Domain = require(`${__dirname}/../../util/domain.js`);
 
-const serverType = "toka";
+const serverType = 'toka';
 const options = {
-  "domainDirectory": `${__dirname}`,
+  domainDirectory: __dirname,
 }
 
 class Toka extends Domain {

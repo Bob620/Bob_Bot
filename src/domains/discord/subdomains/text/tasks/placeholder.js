@@ -1,7 +1,7 @@
 const Task = require('./../../../../../util/task.js');
 
 const options = {
-  "id": "placeholder",
+  id: 'placeholder'
 }
 
 module.exports = class extends Task {
@@ -10,7 +10,7 @@ module.exports = class extends Task {
   }
 
   supports(message) {
-    const content = message.content.toLowerCase().split(" ");
+    const content = message.content.toLowerCase().split(' ');
 
     if (content[0] === `!${this.id}`) {
       return true;

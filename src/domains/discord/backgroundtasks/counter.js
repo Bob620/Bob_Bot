@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "counter"
+  id: 'counter'
 }
 
 const delay = 60000;
@@ -104,7 +104,7 @@ module.exports = class extends Task {
 class WaifuGuild {
   constructor(guildId, discordGuild = {}) {
     this.id = guildId;
-    this.type = "discord";
+    this.type = 'discord';
 
     this.counter = [];
   }

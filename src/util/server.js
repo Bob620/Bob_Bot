@@ -1,24 +1,24 @@
-const EventEmitter = require("events");
+const EventEmitter = require('events');
 
 // All avalible server events
 const types = {
   discord: {
-    login: "login",
-    connect: "ready",
-    disconnect: "disconnect",
-    message: "message",
+    login: 'login',
+    connect: 'ready',
+    disconnect: 'disconnect',
+    message: 'message',
     errors: [
-      "error",
-      "warn"
+      'error',
+      'warn'
     ]
   },
   chata: {
-    login: "login",
-    connect: "connect",
-    disconnect: "disconnect",
-    message: "message",
+    login: 'login',
+    connect: 'connect',
+    disconnect: 'disconnect',
+    message: 'message',
     errors: [
-      "error"
+      'error'
     ]
   }
 }
@@ -37,7 +37,7 @@ class Server extends EventEmitter {
     // Initalization
     this.connection = connection;
     this.type = type;
-    this.currentStatus = "disconnected";
+    this.currentStatus = 'disconnected';
     this.ready = false;
     // Select events and provides them for refrence on this
     const triggers = types[type];
@@ -62,7 +62,7 @@ class Server extends EventEmitter {
 
     // Create a message listener
     connection.on(triggers.message, (message) => {
-      this.emit("message", message);
+      this.emit('message', message);
     });
   }
 
@@ -76,10 +76,10 @@ class Server extends EventEmitter {
   set connected(value) {
     if (value) {
       this.ready = true;
-      this.emit("connect");
+      this.emit('connect');
     } else {
       this.ready = true;
-      this.emit("disconnect");
+      this.emit('disconnect');
     }
   }
 

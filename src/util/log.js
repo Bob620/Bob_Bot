@@ -1,12 +1,12 @@
-const chalk = require("chalk");
+const chalk = require('chalk');
 
 /**
  * Simple logging class to provide easy creation of domain logging
  */
 class Log {
   constructor() {
-    this.bar = chalk.bold("|");
-    this.domains = {"general": chalk.blue, "error": chalk.red.bold};
+    this.bar = chalk.bold('|');
+    this.domains = {general: chalk.blue, error: chalk.red.bold};
     this.color = (function* () {
       while (true) {
         yield chalk.green;
@@ -34,8 +34,8 @@ class Log {
    * @param {Error} err The error to trace
    * @param {string} message The message to log with the error, optional
    */
-  error(err, message="An error occured.") {
-    this.log("error", message);
+  error(err, message='An error occured.') {
+    this.log('error', message);
     console.trace(err);
   }
 
@@ -47,7 +47,7 @@ class Log {
   log(domain, message) {
     let domainColor = this.domains[domain.toLowerCase()];
     if (domainColor === undefined) {
-        domainColor = this.domains["general"];
+        domainColor = this.domains['general'];
     }
     this.print(`${domainColor(domain.toUpperCase())}${this.bar}${message}`);
   }

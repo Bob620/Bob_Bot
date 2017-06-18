@@ -1,7 +1,7 @@
 const Task = require('./../../../../../util/task.js');
 
 const options = {
-  "id": "nlpds",
+  id: 'nlpds',
 }
 
 module.exports = class extends Task {
@@ -18,12 +18,12 @@ module.exports = class extends Task {
     const uid = modules.intformat(modules.flakeId.next(), 'dec');
     this.domain.modules.dynamodbEastOne.putItem({
       Item: {
-        "snowflake_id": {S: uid},
-        "message": {S: message.text},
-        "timestamp": {S: message.timestamp},
-        "user": {S: message.username}
+        snowflake_id: {S: uid},
+        message: {S: message.text},
+        timestamp: {S: message.timestamp},
+        user: {S: message.username}
       },
-      TableName: "nlp-ds"
+      TableName: 'nlp-ds'
     }, (err, data) => {
       if (err) {
         console.log(err);

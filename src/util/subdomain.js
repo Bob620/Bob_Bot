@@ -6,9 +6,9 @@ const homeDirectory = `${__dirname}/../`;
  * @param {array} [options] The subdomain options
  */
 class SubDomain {
-  constructor(domain, domainDirectory, {id: id=""}) {
-    if (id === "") {
-      throw "All subdomains must have an id";
+  constructor(domain, domainDirectory, {id: id=''}) {
+    if (id === '') {
+      throw 'All subdomains must have an id';
     }
 
     /**
@@ -16,7 +16,7 @@ class SubDomain {
      * @type {Domain}
      * @readonly
      */
-    Object.defineProperty(this, "domain", {
+    Object.defineProperty(this, 'domain', {
       value: domain,
       enumerable: true
     });
@@ -26,7 +26,7 @@ class SubDomain {
      * @type {string}
      * @readonly
      */
-    Object.defineProperty(this, "id", {
+    Object.defineProperty(this, 'id', {
       value: id,
       enumerable: true
     });
@@ -40,7 +40,7 @@ class SubDomain {
     fs.readdir(taskURI, (err, files) => {
       if (err) {
         console.log(err);
-        throw "Unable to load Uni tasks";
+        throw 'Unable to load Uni tasks';
       }
 
       files.forEach((filename) => {
@@ -58,7 +58,7 @@ class SubDomain {
 
     fs.readdir(uniTaskURI, (err, files) => {
       if (err) {
-        throw "Unable to load tasks";
+        throw 'Unable to load tasks';
       }
 
       files.forEach((filename) => {

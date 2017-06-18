@@ -9,7 +9,7 @@ module.exports = class WebServer {
     if (url && callback) {
       this.webserver.get(url, callback);
     } else {
-      throw "webserver GETs require url and callback";
+      throw 'webserver GETs require url and callback';
     }
   }
 
@@ -17,7 +17,7 @@ module.exports = class WebServer {
     if (url && callback) {
       this.webserver.post(url, callback);
     } else {
-      throw "webserver POSTs require url and callback";
+      throw 'webserver POSTs require url and callback';
     }
   }
 

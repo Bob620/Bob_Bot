@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "statistics"
+  id: 'statistics'
 }
 
 const delay = 60000;
@@ -29,7 +29,7 @@ module.exports = class extends Task {
       this.guilds.push(guild.id);
 
       guild.presences.forEach((presence) => {
-        if (presence.status !== "offline") {
+        if (presence.status !== 'offline') {
           this.totalOnlineMembers++;
         }
       });
@@ -44,7 +44,7 @@ module.exports = class extends Task {
         this.guilds.push(guild.id);
 
         guild.presences.forEach((presence) => {
-          if (presence.status !== "offline") {
+          if (presence.status !== 'offline') {
             this.totalOnlineMembers++;
           }
         });

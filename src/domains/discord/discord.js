@@ -1,8 +1,8 @@
 const Domain = require(`${__dirname}/../../util/domain.js`);
 
-const serverType = "discord";
+const serverType = 'discord';
 const options = {
-  "domainDirectory": `${__dirname}`,
+  domainDirectory: __dirname,
 }
 
 class Discord extends Domain {
@@ -15,7 +15,7 @@ class Discord extends Domain {
     //this.modules.log("discord", "Disconnected -> Connected");
   }
 
-  async disconnect() {
+  disconnect() {
     console.log('Discord | Connected -> Disconnected');
     //this.modules.log("discord", "Connected -> Disconnected");
     return true;

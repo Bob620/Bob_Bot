@@ -1,7 +1,7 @@
 const SubDomain = require('./../../../../util/subdomain.js');
 
 const options = {
-  "id": "dm"
+  id: 'dm'
 }
 
 class Dm extends SubDomain {

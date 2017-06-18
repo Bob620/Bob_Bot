@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "statistics"
+  id: 'statistics'
 }
 
 module.exports = class extends Task {

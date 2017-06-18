@@ -1,7 +1,7 @@
 const Task = require(`${__dirname}/../../../util/task.js`);
 
 const options = {
-  "id": "status"
+  id: 'status'
 }
 
 const delay = 15000;
@@ -15,33 +15,33 @@ module.exports = class extends Task {
     this.rotation = [
       () => {
         return {
-          "status": "online",
-          "game": {
-            "name": this.statistics.totalOnlineMembers+" people online"
+          status: 'online',
+          game: {
+            name: `${this.statistics.totalOnlineMembers} people online`
           }
         }
       },
       () => {
         return {
-          "status": "online",
-          "game": {
-            "name": "Version 2.1.0"
+          status: 'online',
+          game: {
+            name: 'Version 2.1.0'
           }
         }
       },
       () => {
         return {
-          "status": "online",
-          "game": {
-            "name": "Now in Purple"
+          status: 'online',
+          game: {
+            name: 'Now in Purple'
           }
         }
       },
       () => {
         return {
-          "status": "online",
-          "game": {
-            "name": "Markchi baka baka~~"
+          status: 'online',
+          game: {
+            name: 'Markchi baka baka~~'
           }
         }
       }
@@ -65,7 +65,7 @@ module.exports = class extends Task {
   }
 
   cleanup() {
-    this.domain.server.connection.user.setStatus("idle").then(() => {}).catch(() => {});
+    this.domain.server.connection.user.setStatus('idle').then(() => {}).catch(() => {});
 
     if (this.interval) {
       clearTimeout(this.interval);
