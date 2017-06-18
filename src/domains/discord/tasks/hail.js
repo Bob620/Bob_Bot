@@ -4,7 +4,7 @@ let scan;
 
 const baseURL = 'http://i.bobco.moe/';
 const options = {
-  id: 'guri',
+  id: 'hail',
 }
 
 module.exports = class extends Task {
