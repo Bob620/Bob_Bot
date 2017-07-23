@@ -9,15 +9,6 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(" ");
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message) {
     message.channel.send('Rub it all over me')
     .then(() => {
@@ -25,9 +16,5 @@ module.exports = class extends Task {
     .catch((err) => {
       console.log(err);
     })
-  }
-
-  help(text) {
-
   }
 }

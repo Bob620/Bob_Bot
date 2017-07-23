@@ -24,30 +24,36 @@ module.exports = class extends Task {
     this.guilds = [];
     this.totalOnlineMembers = 0;
 
-    // Set Variables
-    guilds.forEach((guild) => {
-      this.guilds.push(guild.id);
+    let userIds = [];
 
-      guild.presences.forEach((presence) => {
-        if (presence.status !== 'offline') {
-          this.totalOnlineMembers++;
-        }
-      });
+    guilds.forEach((guild) => {
+      if (guild.id !== '110373943822540800') {
+        this.guilds.push(guild.id);
+        guild.presences.forEach((presence, userId) => {
+          if (!userIds.includes(userId)) {
+            userIds.push(userId);
+            this.totalOnlineMembers++;
+          }
+        });
+      }
     });
 
     // Set Interval for Further Updates
     this.interval = setInterval(() => {
       this.guilds = [];
       this.totalOnlineMembers = 0;
+      let userIds = [];
 
       guilds.forEach((guild) => {
-        this.guilds.push(guild.id);
-
-        guild.presences.forEach((presence) => {
-          if (presence.status !== 'offline') {
-            this.totalOnlineMembers++;
-          }
-        });
+        if (guild.id !== '110373943822540800') {
+          this.guilds.push(guild.id);
+          guild.presences.forEach((presence, userId) => {
+            if (!userIds.includes(userId)) {
+              userIds.push(userId);
+              this.totalOnlineMembers++;
+            }
+          });
+        }
       });
     }, delay);
 

@@ -98,7 +98,9 @@ class Domain {
     });
 
     this.server.on('message', (message) => {
-      this.message(message);
+      new Promise(() => {
+        this.message(message);
+      });
     });
   }
 

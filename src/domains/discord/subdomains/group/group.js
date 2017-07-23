@@ -10,21 +10,26 @@ class Group extends SubDomain {
   }
 
   supports(message) {
-    if (message.channel.type === this.id) {
-      return true;
-    }
-    return false;
+    return new Promise((resolve, reject) => {
+      if (message.channel.type === this.id) {
+        reject(this);
+      } else {
+        resolve(this);
+      }
+    });
   }
 
-  execute(message) {
-    const tasks = this.tasks.values();
-    for (let i = 0; i < this.tasks.size; i++) {
-      const task = tasks.next().value;
-      if (task.supports(message)) {
-        task.execute(message);
-        break;
-      }
-    }
+  async execute(message) {
+    let tasks = [];
+    this.tasks.forEach((task) => {
+      tasks.push(task.supports(message));
+    });
+
+    Promise.all(tasks)
+    .then(() => {})
+    .catch((command) => {
+      command.execute(message);
+    });
   }
 }
 

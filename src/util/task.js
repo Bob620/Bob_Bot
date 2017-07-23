@@ -20,6 +20,16 @@ class Task {
     });
 
     /**
+     * Shortcut to the domain's Modules
+     * @type {object}
+     * @readonly
+     */
+    Object.defineProperty(this, 'modules', {
+      value: domain.modules,
+      enumerable: false
+    });
+
+    /**
      * The identifier of this task
      * @type {string}
      * @readonly
@@ -28,6 +38,30 @@ class Task {
       value: id,
       enumerable: true
     });
+
+    /**
+     * The identifier of this task
+     * @type {string}
+     * @readonly
+     */
+    Object.defineProperty(this, "regex", {
+      value: new RegExp(`^(?:!${id}).*`, 'i'),
+      enumerable: true
+    });
+  }
+
+  supports(message) {
+    return new Promise((resolve, reject) => {
+      if (this.regex.exec(message.cleanContent)) {
+        reject(this);
+      } else {
+        resolve(this);
+      }
+    });
+  }
+
+  help(text) {
+    return '';
   }
 }
 

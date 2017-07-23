@@ -9,15 +9,6 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(" ");
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message, garnerInfo) {
     message.channel.send('Pong!')
     .then((pongMessage) => {
@@ -26,9 +17,5 @@ module.exports = class extends Task {
     .catch(() => {
 
     });
-  }
-
-  help(text) {
-
   }
 }

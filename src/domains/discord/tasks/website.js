@@ -10,23 +10,9 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(' ');
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
-  execute(message) {
+  async execute(message) {
     const channel = message.channel;
 
-    channel.send(`Please visit ${options.url} for all your Waifu Needs!`)
-    .then(() => {}).catch(() => {});
-  }
-
-  help(text) {
-
+    await channel.send(`Please visit ${options.url} for all your Waifu Needs!`);
   }
 }

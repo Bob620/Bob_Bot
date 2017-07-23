@@ -4,120 +4,169 @@ const options = {
   id: 'counter'
 }
 
-const delay = 60000;
+const delay = 6000;
 
 module.exports = class extends Task {
   constructor(domain) {
     super(domain, options);
+
+    this.guilds = new Map();
+    this.interval = null;
   }
 
   execute() {
-/*    console.log('Discord - Counter');
-    const guilds = this.domain.server.connection.guilds;
-    let test = 0;
-
-    guilds.forEach((discordGuild) => {
-      if (test != 1) {
-        test = 1;
-        this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
-          if (err) {
-            console.log(err);
-          } else {
-            let guild = new WaifuGuild(data.Item);
-
-            this.domain.subDomains.get("text").tasks.forEach((value, taskId) => {
-              if (guild.counter.find((counterTask) => {
-                return counterTask.id === taskId;
-              }) === undefined) {
-                guild.counter.push({id: taskId, total: 0});
+    console.log('Discord - Counter');
+    setInterval(() => {
+      this.guilds.forEach((guild, guildId) => {
+        if (guild.updated) {
+          this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbotstats", Key: {id: {S: guildId}}}, (err, data) => {
+            if (err) {
+              console.log(err);
+            } else {
+              let updatedGuild;
+              if (data.Item !== undefined) {
+                updatedGuild = new Guild(guildId, data.Item.totals.L, guild.totals, data.Item.history.L);
+              } else {
+                updatedGuild = new Guild(guildId, [], guild.totals);
               }
-            });
-
-            const counter = guild.attributify().counter;
-
-            for (let i = 0; i < counter.L.length; i++) {
-              console.log(counter.L[i].M);
-            }
-
-//            this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbot", Item: guild}, (err, data) => {
-//              if (err) {
-//                console.log(err);
-//              }
-//            });
-          }
-        });
-      }
-    });
-
-    this.domain.server.connection.on('guildCreate', (discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
-        if (err) {
-          console.log(err);
-        } else {
-          let guild = new WaifuGuild(data.Item);
-
-          this.domain.subDomains.get("text").tasks.forEach((value, taskId) => {
-            if (guild.counter.find((counterTask) => {
-              return counterTask.id === taskId;
-            }) === undefined) {
-              guild.counter.push({id: taskId, total: 0});
+              guild.updated = false;
+              this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbotstats", Item: updatedGuild.attributify()}, (err, data) => {
+                if (err) {
+                  console.log(err);
+                }
+              });
             }
           });
-
-//          this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbot", Item: guild}, (err, data) => {
-//            if (err) {
-//              console.log(err);
-//            }
-//          });
         }
       });
-    });
+    }, delay);
   }
 
   update(guildId, taskId) {
-    this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbot", Key: {id: {S: guildId}, type: {S: 'discord'}}}, (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        let guild = new WaifuGuild(data.Item);
-
-        let task = guild.counter.find((task) => {
-          return task.id === taskId;
-        });
-
+    let guild = this.guilds.get(guildId)
+    if (guild !== undefined) {
+      guild.updated = true;
+      const task = guild.totals.get(taskId);
+      if (task !== undefined) {
         task.total++;
-
-//        this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbot", Item: guild}, (err, data) => {
-//          if (err) {
-//            console.log(err);
-//          }
-//        });
+      } else {
+        guild.totals.set(taskId, new TaskStats(taskId, 1));
       }
-    });*/
+    } else {
+      this.guilds.set(guildId, new Guild(guildId));
+      guild = this.guilds.get(guildId);
+
+      guild.updated = true;
+      guild.totals.set(taskId, new TaskStats(taskId, 1));
+    }
   }
 
   cleanup() {
-
+    // Remove Interval
+    if (this.interval) {
+      clearTimeout(this.interval);
+    }
   }
 }
 
-class WaifuGuild {
-  constructor(guildId, discordGuild = {}) {
+class Guild {
+  constructor(guildId, totals=[], mergeTasks=new Map(), histories=[]) {
     this.id = guildId;
-    this.type = 'discord';
+    this.totals = new Map();
+    this.history = new Map();
 
-    this.counter = [];
+    histories.forEach((historyItem) => {
+      this.history.set(Number.parseInt(historyItem.M.time.N), new History(historyItem.M.time.N, historyItem.M.guildId.S, historyItem.M.data.L));
+    })
+
+    const history = this.history;
+    const currentTime = Date.now();
+
+    if (!history.has(currentTime)) {
+      history.set(currentTime, new History(currentTime, guildId));
+    }
+
+    let historyData = history.get(currentTime).data;
+
+    totals.forEach((task) => {
+      const taskId = task.M.id.S;
+      let increase = 0;
+      let mergeTask = mergeTasks.get(taskId);
+
+      if (mergeTask !== undefined) {
+        increase = mergeTask.total;
+        mergeTask.total = 0;
+      }
+      this.totals.set(taskId, new TaskStats(taskId, Number.parseInt(task.M.total.N)+increase));
+      if (increase !== 0) {
+        historyData.set(taskId, new TaskStats(taskId, increase));
+      }
+    });
+
+    mergeTasks.forEach((task, taskId) => {
+      const increase = task.total;
+
+      if (increase !== 0) {
+        this.totals.set(taskId, new TaskStats(taskId, increase));
+        historyData.set(taskId, new TaskStats(taskId, increase));
+        task.total = 0;
+      }
+    });
   }
 
   attributify() {
     let attributes = {
       id: {S: this.id},
-      type: {S: this.type},
-      counter: {L: []}
+      totals: {L: []},
+      history: {L: []}
     }
 
-    this.counter.forEach((item) => {
-      attributes.counter.L.push({M: {id: {S: item.id}, total: {N: item.total}}});
+    this.totals.forEach((task) => {
+      attributes.totals.L.push(task.attributify());
+    });
+
+//    this.history.forEach((history) => {
+//      attributes.history.L.push(history.attributify());
+//    });
+
+    return attributes;
+  }
+}
+
+class TaskStats {
+  constructor(id, total=0) {
+    this.id = id;
+    this.total = Number.parseInt(total);
+  }
+
+  attributify() {
+    return {M: {
+      id: {S: this.id},
+      total: {N: this.total.toString()}
+    }}
+  }
+}
+
+class History {
+  constructor(time, guildId, data=[]) {
+    this.guildId = guildId;
+    this.time = Number.parseInt(time);
+    this.data = new Map();
+
+    data.forEach((task) => {
+      this.data.set(task.M.id.S, new TaskStats(task.M.id.S, task.M.total.N));
+    })
+  }
+
+  attributify() {
+    let attributes = {M: {
+      guildId: {S: this.guildId},
+      time: {N: this.time.toString()},
+      data: {L: []}
+    }}
+
+    this.data.forEach((task) => {
+      attributes.M.data.L.push(task.attributify());
     });
 
     return attributes;

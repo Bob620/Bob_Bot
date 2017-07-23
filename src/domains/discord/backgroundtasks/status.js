@@ -12,7 +12,7 @@ module.exports = class extends Task {
     this.interval = null;
     this.currentStatus = 0;
     this.statistics = this.domain.backgroundTasks.get('statistics');
-    this.rotation = [
+    this.messages = [
       () => {
         return {
           status: 'online',
@@ -52,15 +52,15 @@ module.exports = class extends Task {
     console.log('Discord - Status');
     const user = this.domain.server.connection.user;
 
-    user.setPresence(this.rotation[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
+    user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
 
     this.interval = setInterval(() => {
       this.currentStatus++;
-      if (this.currentStatus >= this.rotation.length) {
+      if (this.currentStatus >= this.messages.length) {
         this.currentStatus = 0;
       }
 
-      user.setPresence(this.rotation[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
+      user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
     }, delay);
   }
 

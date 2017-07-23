@@ -10,15 +10,6 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(" ");
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message) {
     if (message.author.id == '69096215068811264') { // My userID, change later
       const content = message.content.toLowerCase().split("|");
@@ -39,7 +30,6 @@ module.exports = class extends Task {
                 message.reply('I wasn\'t able to download that image.');
               })
               .on('response', (response) => {
-                console.log(response);
                 if (response.statusCode !== 200)
                   response.destroy(response.statusCode);
               })
@@ -87,9 +77,5 @@ module.exports = class extends Task {
         }
       }
     }
-  }
-
-  help(text) {
-
   }
 }

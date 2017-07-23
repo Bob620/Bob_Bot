@@ -15,21 +15,23 @@ class Discord extends Domain {
     //this.modules.log("discord", "Disconnected -> Connected");
   }
 
-  disconnect() {
+  async disconnect() {
     console.log('Discord | Connected -> Disconnected');
     //this.modules.log("discord", "Connected -> Disconnected");
     return true;
   }
 
-  message(message) {
-    const subdomains = this.subDomains.values();
-    for (let i = 0; i < this.subDomains.size; i++) {
-      const subdomain = subdomains.next().value;
-      if (subdomain.supports(message)) {
-        subdomain.execute(message);
-        break;
-      }
-    }
+  async message(message) {
+    let subdomains = [];
+    this.subDomains.forEach((subdomain) => {
+      subdomains.push(subdomain.supports(message));
+    });
+
+    Promise.all(subdomains)
+    .then(() => {})
+    .catch((subdomain) => {
+      subdomain.execute(message);
+    });
   }
 }
 

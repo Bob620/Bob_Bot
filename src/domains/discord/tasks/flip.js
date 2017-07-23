@@ -13,15 +13,6 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(' ');
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message) {
     const textToSend = this.domain.modules.random.pick(results);
     message.channel.send(textToSend)
@@ -30,9 +21,5 @@ module.exports = class extends Task {
     .catch((err) => {
       console.log(err);
     })
-  }
-
-  help(text) {
-
   }
 }

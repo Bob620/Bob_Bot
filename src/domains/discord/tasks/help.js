@@ -9,15 +9,6 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(' ');
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message) {
     let helpMessage = '**Temporary Server Command Help**\n';
 

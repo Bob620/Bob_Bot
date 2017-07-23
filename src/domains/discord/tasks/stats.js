@@ -9,24 +9,10 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(' ');
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
-  execute(message) {
+  async execute(message) {
     const channel = message.channel;
     const statistics = this.domain.backgroundTasks.get('statistics');
 
-    channel.send(`I'm currenting in ${statistics.guilds.length} guilds.\nThere are currently ${statistics.totalOnlineMembers} people online.`)
-    .then(() => {}).catch(() => {});
-  }
-
-  help(text) {
-
+    await channel.send(`I'm currenting in ${statistics.guilds.length} guilds.\nThere are currently ${statistics.totalOnlineMembers} people online.`);
   }
 }

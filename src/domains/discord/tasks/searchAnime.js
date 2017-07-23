@@ -10,22 +10,13 @@ module.exports = class extends Task {
     super(domain, options);
   }
 
-  supports(message) {
-    const content = message.content.toLowerCase().split(" ");
-
-    if (content[0] === `!${this.id}`) {
-      return true;
-    }
-    return false;
-  }
-
   execute(message) {
     const channel = message.channel;
     const content = message.content.toLowerCase().split(' ');
     const animeTitle = content.slice(1).join('+');
 
     channel.send('Searching Kitsu...').then((chatMessage) => {
-      this.domain.modules.kitsu.searchAnime(animeTitle, 0).then((result) => {
+      this.modules.kitsu.searchAnime(animeTitle, 0).then((result) => {
         if (result.length !== 0) {
           const anime = new Anime(result[0]);
 
@@ -42,9 +33,5 @@ module.exports = class extends Task {
     .catch((err) => {
       console.log(err);
     });
-  }
-
-  help(text) {
-
   }
 }
