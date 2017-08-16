@@ -13,6 +13,6 @@ module.exports = class extends Task {
     const channel = message.channel;
     const statistics = this.domain.backgroundTasks.get('statistics');
 
-    await channel.send(`I'm currenting in ${statistics.guilds.length} guilds.\nThere are currently ${statistics.totalOnlineMembers} people online.`);
+    await channel.send(`I'm currenting in ${statistics.guilds.size} guilds.\nThere are currently ${statistics.totalOnlineMembers} people online.`);
   }
 }
