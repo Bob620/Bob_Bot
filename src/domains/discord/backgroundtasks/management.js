@@ -19,36 +19,29 @@ module.exports = class extends Task {
     const guilds = this.domain.server.connection.guilds;
 
     guilds.forEach((discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
-        if (err) {
+      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
+        const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
+        const attributify = waifuGuild.attributify();
+        this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
+        }).catch((err) => {
           console.log(err);
-        } else {
-          const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
-          const attributify = waifuGuild.attributify();
-
-          this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}, (err, data) => {
-            if (err) {
-              console.log(err);
-            }
-          });
-        }
+        });
+      }).catch((err) => {
+        console.log(err);
       });
     });
 
     this.domain.server.connection.on('guildCreate', (discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}, (err, data) => {
-        if (err) {
-          console.log(err);
-        } else {
-          const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
-          const attributify = waifuGuild.attributify();
+      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
+        const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
+        const attributify = waifuGuild.attributify();
 
-          this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}, (err, data) => {
-            if (err) {
-              console.log(err);
-            }
-          });
-        }
+        this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
+        }).catch((err) => {
+          console.log(err);
+        })
+      }).catch((err) => {
+        console.log(err);
       });
     });
   }

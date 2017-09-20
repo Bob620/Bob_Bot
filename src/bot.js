@@ -1,26 +1,20 @@
 // General Modules
-const fs = require('fs');
-const Server = require('./util/server.js');
+const fs = require('fs'),
+      Server = require('./util/server.js');
 
 // Servers
-const Discord = require('discord.js');
-const Chata = require('chata-client');
+const Discord = require('discord.js'),
+      Chata = require('chata-client');
 
 // Modules for Domain Use
-const Random = require('random-js');
-const kitsu = require('node-kitsu');
-const FlakeId = require('flake-idgen');
-const intformat = require('biguint-format')
-const aws = require('aws-sdk');
-const s3 = new aws.S3({apiVersion: '2006-03-01'});
-const UploadStream = require('s3-stream-upload');
-const request = require('request');
-const zlib = require('zlib');
+const Random = require('random-js'),
+      kagi = require('kagi'),
+      DynamoDB = require('./util/DynamoDB.js');
 
 // Waifu Storage
-const dynamodbWestTwo = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-west-2'});
+const dynamodbWestTwo = new DynamoDB({'region': 'us-west-2'});
 // nlp Storage
-const dynamodbEastOne = new aws.DynamoDB({apiVersion: '2012-08-10', 'region': 'us-east-1'});
+const dynamodbEastOne = new DynamoDB({'region': 'us-east-1'});
 
 // Webserver Imports
 const WebServer = require('./util/webserver.js');
@@ -33,7 +27,7 @@ const options = {
 
 // Main bot class
 class Bot {
-  constructor({webserver: webserverOptions = {active: false, port: 3063}, discordToken: discordToken = false, chataToken: chataToken = false}) {
+  constructor({webserver: webserverOptions = {active: false, port: 3063}, chataToken: chataToken = false}) {
     // Create the modules and servers lists
     this.modules = {};
     this.servers = {};
@@ -43,11 +37,10 @@ class Bot {
 
     // If there is a login token, login to the service
     // Supports discord and chata(1.0)
-    if (discordToken) {
-      // Use sequential(default) and create a discord server in the server list
-      this.servers['discord'] = new Server('discord', new Discord.Client({apiRequestMethod: 'sequential'}));
-      this.servers.discord.login(discordToken);
-    }
+    // Use sequential(default) and create a discord server in the server list
+    this.servers['discord'] = new Server('discord', new Discord.Client({apiRequestMethod: 'sequential'}));
+    this.servers.discord.login(kagi.getChain('waifutest.chn').getLink('waifutest').data.token);
+
     if (chataToken) {
       // Creates a new chata server in the server list for toka
       this.servers['toka'] = new Server('chata', new Chata());
@@ -57,19 +50,11 @@ class Bot {
     // If there are servers, start the bot, else throw an error
     if (Object.keys(this.servers).length > 0) {
       // Require in all modules and put them in a centeral accessible area
-      // UUID and Random modules
+      // Random module
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
-      this.modules.flakeId = new FlakeId();
-      this.modules.intformat = intformat;
-      // Internet API Modules
-      this.modules.kitsu = kitsu;
-      this.modules.request = request;
       // AWS modules
-      this.modules.s3 = s3;
       this.modules.dynamodbEastOne = dynamodbEastOne;
       this.modules.dynamodbWestTwo = dynamodbWestTwo;
-      this.modules.uploadStream = UploadStream;
-      this.modules.gzip = zlib.createGzip();
 
       // Creates a new list of the avalible domains, creates the domains, then starts them
       this.domains = [];

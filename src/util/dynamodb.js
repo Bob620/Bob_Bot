@@ -1,207 +1,101 @@
-const AWS = require('aws-sdk');
-const unmarshalItem = require('dynamodb-marshaler').unmarshalItem;
+const aws = require('aws-sdk');
+const kagi = require('kagi');
 
-AWS.config.update({
-  region: 'us-west-2',
-  endpoint: 'dynamodb.us-west-2.amazonaws.com'
-});
+aws.config.update(kagi.getChain('kagi.chn').getLink('credentials'));
 
 class DynamoDB {
-  constructor(tableName = "") {
-    /**
-     * The DynamoDB connection
-     * @type {AWS.DynamoDB}
-     * @readonly
-     */
-    Object.defineProperty(this, 'dynamodb', {
-      value: new AWS.DynamoDB()
-    });
+  constructor({maxUploadSec=5, maxDownloadSec=5, region='us-west-2', apiVersion='2012-08-10'}) {
+    this.dynamodb = new aws.DynamoDB({apiVersion, region});
+    this.maxUploadSec = maxUploadSec;
+    this.maxDownloadSec = maxDownloadSec;
+    this.uploadedThisSec = 0;
+    this.downloadedThisSec = 0;
+    this.toUpload = [];
+    this.toDownload = [];
 
-    /**
-     * The name of the table to connect to
-     * @type {string}
-     */
-    this.tableName = tableName;
+    this.resetTimeout = setTimeout(() => {
+      this.uploadedThisSec = 0;
+      this.downloadedThisSec = 0;
+      this.upload();
+      this.download();
+    }, 1000);
   }
 
-  /**
-   * Puts an item into dynamodb
-   * @param {map<map>} item
-   * @returns {Promise}
-   */
+  upload() {
+    while (this.uploadedThisSec < this.maxUploadSec && this.toUpload.length !== 0) {
+      this.uploadedThisSec++;
+
+      const request = this.toUpload.shift();
+      request[0](request[1], request[2]);
+    }
+    if (this.toUpload.length > 0) {
+      if (this.resetTimeout) {
+        clearTimeout(this.resetTimeout);
+      }
+      this.resetTimeout = setTimeout(() => {
+        this.uploadedThisSec = 0;
+        this.downloadedThisSec = 0;
+        this.upload();
+        this.download();
+      }, 1000);
+    }
+  }
+
+  download() {
+    while (this.downloadedThisSec < this.maxDownloadSec && this.toDownload.length !== 0) {
+      this.downloadedThisSec++;
+
+      const request = this.toDownload.shift();
+      request[0](request[1], request[2]);
+    }
+    if (this.toDownload.length > 0) {
+      if (this.resetTimeout) {
+        clearTimeout(this.resetTimeout);
+      }
+      this.resetTimeout = setTimeout(() => {
+        this.uploadedThisSec = 0;
+        this.downloadedThisSec = 0;
+        this.upload();
+        this.download();
+      }, 1000);
+    }
+  }
+
+  callback({resolve, reject}, err, data) {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(data);
+    }
+  }
+
+  updateItem(item) {
+    return new Promise((resolve, reject) => {
+      this.toUpload.push([this.dynamodb.updateItem.bind(this.dynamodb), item, this.callback.bind(this, {resolve, reject})]);
+      this.upload();
+    });
+  }
+
+  getItem(item) {
+    return new Promise((resolve, reject) => {
+      this.toDownload.push([this.dynamodb.getItem.bind(this.dynamodb), item, this.callback.bind(this, {resolve, reject})]);
+      this.download();
+    });
+  }
+
   putItem(item) {
-    return Promise((resolve, reject) => {
-      this.dynamodb.putItem({
-        Item: item,
-        TableName: this.tableName,
-        ReturnValues: 'NONE'
-      }, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      })
+    return new Promise((resolve, reject) => {
+      this.toDownload.push([this.dynamodb.putItem.bind(this.dynamodb), item, this.callback.bind(this, {resolve, reject})]);
+      this.download();
     });
   }
 
-  /**
-   * Deletes an item from dynamodb
-   * @param {map<map>} key Map of partitionKey [and if needed the sortKey]
-   * @returns {Promise<map>}
-   * @example
-   * dynamodb.getItem({
-   *   {
-   *     "id": { S: "guildId" },
-   *     "type": { S: "guild" }
-   *   }
-   * })
-   * .then(() => {
-   *   console.log("Item Deleted")
-   * })
-   * .catch((err) => {
-   *   console.trace(err)
-   * });
-   */
-  deleteItem(key) {
-    return Promise((resolve, reject) => {
-      this.dynamodb.deleteItem({
-        Key: key,
-        TableName: this.tableName
-      }, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      })
-    });
-  }
-
-  /**
-   * Queries for an item in dynamodb
-   * @param {map<map>} expressionAttributeValues A map of the expression values to compare in dynamodb
-   * @param {string} keyConditionExpression A string of expressions to compare expressionAttributeValues against dynamodb
-   * @param {boolean} [cache=true] Whether to cache the return data for 10 seconds
-   * @param {array<string>} [attributesToGet=array] Denote what attributes are wanted from dynamodb
-   * @returns {Promise<map>}
-   * @example
-   * dynamodb.query({
-   *   {
-   *     ":id": { S: "guildId" },
-   *     ":type": { S: "guild" }
-   *   },
-   *   "id = :id AND type = :type",
-   *   true,
-   *   ["id", "giveme"]
-   * })
-   * .then((data) => {
-   *   console.log(data);
-   * })
-   * .catch((err) => {
-   *   console.trace(err);
-   * });
-   */
-  query(expressionAttributeValues, keyConditionExpression, cache = true, attributesToGet = []) {
-    let params = {
-      ExpressionAttributeValues: expressionAttributeValues,
-      KeyConditionExpression: keyConditionExpression,
-      TableName: this.tableName,
-      Select: 'ALL_ATTRIBUTES',
-      ComparisonOperator: 'EQ'
-    }
-
-    if (attributeToGet !== []) {
-      params.Select = 'SPECIFIC_ATTRIBUTES'
-      params.AttributesToGet = attributesToGet;
-    }
-
-    return Promise((resolve, reject) => {
-      this.dynamodb.query(params, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data.Items.map(unmarshalItem));
-        }
-      })
-    });
-  }
-
-  /**
-   * Retrieves an item from dynamodb
-   * @param {map<map>} key Map of partitionKey [and if needed the sortKey]
-   * @param {boolean} [cache=true] Whether to cache the return data for 10 seconds
-   * @returns {Promise<map>}
-   * @example
-   * dynamodb.getItem({
-   *   {
-   *     "id": { S: "guildId" },
-   *     "type": { S: "guild" }
-   *   },
-   *   true
-   * })
-   * .then((item) => {
-   *   console.log(item)
-   * })
-   * .catch((err) => {
-   *   console.trace(err)
-   * });
-   */
-  getItem(key, cache) {
-    return Promise((resolve, reject) => {
-      this.dynamodb.getItem({
-        Key: key,
-        TableName: this.tableName
-      }, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data.Item.map(unmarshalItem));
-        }
-      })
-    });
-  }
-
-  /**
-   * Updates an item in dynamodb
-   * @param {object<string>} expressionAttributeNames A map of the expression names to replace or create in dynamodb
-   * @param {map<map>} expressionAttributeValues A map of the expression values to use
-   * @param {string} updateExpression A string of expressions to update expressionAttributeNames for expressionAttributeValues
-   * @returns {Promise<map>}
-   * @example
-   * dynamodb.query({
-   *   {
-   *     "#ID": "id",
-   *     "#TYPE": "type"
-   *   },
-   *   {
-   *     ":id": { S: "newGuildId" },
-   *     ":type": { S: "newType" }
-   *   },
-   *   "SET #ID = :id, #TYPE = :type"
-   * })
-   * .then((data) => {
-   *   console.log(data);
-   * })
-   * .catch((err) => {
-   *   console.trace(err);
-   * });
-   */
-  updateItem(expressionAttributeNames, expressionAttributeValues, updateExpression) {
-    return Promise((resolve, reject) => {
-      this.dynamodb.updateItem({
-        ExpressionAttributeNames: expressionAttributeNames,
-        ExpressionAttributeValues: expressionAttributeValues,
-        UpdateExpression: updateExpression,
-        TableName: this.tableName
-      }, (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      })
+  scan(params) {
+    return new Promise((resolve, reject) => {
+      this.toDownload.push([this.dynamodb.scan.bind(this.dynamodb), params, this.callback.bind(this, {resolve, reject})]);
+      this.download();
     });
   }
 }
+
 module.exports = DynamoDB;

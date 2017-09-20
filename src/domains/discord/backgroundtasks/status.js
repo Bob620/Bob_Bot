@@ -44,6 +44,14 @@ module.exports = class extends Task {
             name: 'Markchi baka baka~~'
           }
         }
+      },
+      () => {
+        return {
+          status: 'online',
+          game: {
+            name: 'Astolfo best Waifu'
+          }
+        }
       }
     ];
   }
@@ -52,15 +60,19 @@ module.exports = class extends Task {
     console.log('Discord - Status');
     const user = this.domain.server.connection.user;
 
-    user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
-
+    if (this.domain.server.connected) {
+      user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
+    }
+    
     this.interval = setInterval(() => {
       this.currentStatus++;
       if (this.currentStatus >= this.messages.length) {
         this.currentStatus = 0;
       }
 
-      user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
+      if (this.domain.server.connected) {
+        user.setPresence(this.messages[this.currentStatus]()).then(() => {}).catch((err) => {throw err});
+      }
     }, delay);
   }
 

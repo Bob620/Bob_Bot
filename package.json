@@ -22,6 +22,7 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "express": "^4.15.3",
     "flake-idgen": "^1.1.0",
+    "kagi": "github:toka-io/kagi",
     "libsodium-wrappers": "^0.5.1",
     "node-kitsu": "^1.0.0",
     "node-opus": "^0.2.6",

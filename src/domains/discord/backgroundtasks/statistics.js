@@ -55,6 +55,7 @@ module.exports = class extends Task {
       fs.appendFile('statistics.csv', CSV.get('overall'), (err) => {
         err !== null ? console.log(err) : '';
       });
+
       this.createInterval();
     }, this.getNextDelay());
   }
@@ -132,6 +133,7 @@ module.exports = class extends Task {
       });
     });
 */
+
     CSV.set('overall', `\n${Object.values(overallJson).join(',')}`);
 
     return CSV;

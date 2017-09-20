@@ -19,23 +19,20 @@ module.exports = class extends Task {
     setInterval(() => {
       this.guilds.forEach((guild, guildId) => {
         if (guild.updated) {
-          this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbotstats", Key: {id: {S: guildId}}}, (err, data) => {
-            if (err) {
-              console.log(err);
+          this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbotstats", Key: {id: {S: guildId}}}).then((data) => {
+            let updatedGuild;
+            if (data.Item !== undefined) {
+              updatedGuild = new Guild(guildId, data.Item.totals.L, guild.totals, data.Item.history.L);
             } else {
-              let updatedGuild;
-              if (data.Item !== undefined) {
-                updatedGuild = new Guild(guildId, data.Item.totals.L, guild.totals, data.Item.history.L);
-              } else {
-                updatedGuild = new Guild(guildId, [], guild.totals);
-              }
-              guild.updated = false;
-              this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbotstats", Item: updatedGuild.attributify()}, (err, data) => {
-                if (err) {
-                  console.log(err);
-                }
-              });
+              updatedGuild = new Guild(guildId, [], guild.totals);
             }
+            guild.updated = false;
+            this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbotstats", Item: updatedGuild.attributify()}).then((data) => {
+            }).catch((err) => {
+              console.log(err);
+            });
+          }).catch((err) => {
+            console.log(err);
           });
         }
       });

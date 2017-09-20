@@ -11,7 +11,7 @@ module.exports = class extends Task {
   }
 
   execute(message) {
-    if (message.author.id == '69096215068811264') { // My userID, change later
+/*    if (message.author.id == '69096215068811264') { // My userID, change later
       const content = message.content.toLowerCase().split("|");
       if (content[1]) {
         const tags = content[1].split(',');
@@ -77,5 +77,5 @@ module.exports = class extends Task {
         }
       }
     }
-  }
+  */  }
 }
