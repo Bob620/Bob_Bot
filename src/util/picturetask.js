@@ -27,7 +27,8 @@ module.exports = class extends Task {
         },
         FilterExpression: 'contains(#TAGS, :tag)',
         ProjectionExpression: '#URL',
-        TableName: 'picturebase'
+        TableName: 'picturebase',
+        ReturnConsumedCapacity: 'TOTAL'
       }
       let baseData = false;
       let newMessage;
