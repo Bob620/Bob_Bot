@@ -50,7 +50,7 @@ module.exports = class extends Task {
           setTimeout(() => {
             this.pictures = [];
           }, 3600000);
-      } else {
+        } else {
           newMessage.edit({embed: {description: 'Doesn\'t seem that there are any pictures for this command yet'}});
         }
       } catch(err) {

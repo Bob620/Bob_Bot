@@ -34,7 +34,7 @@ module.exports = class extends Task {
 //    const statistics = this;
 
     // Define Statistics based API
-/*
+
     this.domain.modules.webserver.addGet('/api/stats', (req, res, next) => {
       res.json({
         totalGuilds: this.guilds.size,
@@ -45,7 +45,7 @@ module.exports = class extends Task {
     this.domain.modules.webserver.addGet('/api/guilds', (req, res, next) => {
       res.json(Array.from(this.guilds.keys()));
     });
-*/
+
   }
 
   createInterval() {
@@ -55,7 +55,6 @@ module.exports = class extends Task {
       fs.appendFile('statistics.csv', CSV.get('overall'), (err) => {
         err !== null ? console.log(err) : '';
       });
-
       this.createInterval();
     }, this.getNextDelay());
   }
@@ -133,7 +132,6 @@ module.exports = class extends Task {
       });
     });
 */
-
     CSV.set('overall', `\n${Object.values(overallJson).join(',')}`);
 
     return CSV;
