@@ -15,22 +15,15 @@
   "enginesStrict": true,
   "dependencies": {
     "aws-sdk": "^2.62.0",
-    "bakajax": "0.0.3",
-    "biguint-format": "^1.0.0",
     "chata-client": "^1.0.0",
     "discord.js": "^11.2.1",
     "erlpack": "github:hammerandchisel/erlpack",
     "express": "^4.15.3",
-    "flake-idgen": "^1.1.0",
     "kagi": "github:toka-io/kagi",
     "libsodium-wrappers": "^0.5.1",
-    "node-kitsu": "^1.0.0",
     "node-opus": "^0.2.6",
     "random-js": "^1.0.8",
-    "request": "^2.81.0",
-    "s3-stream-upload": "^2.0.1",
     "sodium": "^2.0.1",
-    "uws": "^0.14.5",
-    "ytdl-core": "^0.14.2"
+    "uws": "^0.14.5"
   }
 }
