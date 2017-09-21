@@ -19,7 +19,7 @@ module.exports = class extends Task {
     setInterval(() => {
       this.guilds.forEach((guild, guildId) => {
         if (guild.updated) {
-          this.domain.modules.dynamodbWestTwo.getItem({TableName:"bobbotstats", Key: {id: {S: guildId}}}).then((data) => {
+          this.domain.modules.dynamodbWestTwoBot.getItem({TableName:"bobbotstats", Key: {id: {S: guildId}}}).then((data) => {
             let updatedGuild;
             if (data.Item !== undefined) {
               updatedGuild = new Guild(guildId, data.Item.totals.L, guild.totals, data.Item.history.L);
@@ -27,7 +27,7 @@ module.exports = class extends Task {
               updatedGuild = new Guild(guildId, [], guild.totals);
             }
             guild.updated = false;
-            this.domain.modules.dynamodbWestTwo.putItem({TableName:"bobbotstats", Item: updatedGuild.attributify()}).then((data) => {
+            this.domain.modules.dynamodbWestTwoBot.putItem({TableName:"bobbotstats", Item: updatedGuild.attributify()}).then((data) => {
             }).catch((err) => {
               console.log(err);
             });

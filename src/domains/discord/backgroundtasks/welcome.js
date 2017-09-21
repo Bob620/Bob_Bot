@@ -14,7 +14,7 @@ module.exports = class extends Task {
     this.domain.server.connection.on('guildMemberAdd', (guildMember) => {
       const guild = guildMember.guild;
 
-      this.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: guild.id}, type: {S: 'discord'}}}, (err, data) => {
+      this.domain.modules.dynamodbWestTwoPic.getItem({TableName: 'bobbot', Key: {id: {S: guild.id}, type: {S: 'discord'}}}, (err, data) => {
         if (err) {
           console.log(err);
         } else {

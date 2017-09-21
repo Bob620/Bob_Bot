@@ -1,3 +1,3 @@
 const Bot = require('./src/bot.js');
 
-const waifu = new Bot({webserver: {active: true}, chataToken: 'waifuTest'});
+const waifu = new Bot({webserver: {active: false}, chataToken: 'waifuTest'});

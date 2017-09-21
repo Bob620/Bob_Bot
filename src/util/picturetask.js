@@ -30,13 +30,13 @@ module.exports = class extends Task {
       // On failure log things and send a message
       try {
         // Promise newMessage and scan for the first set of images
-        [newMessage, baseData] = await Promise.all([channel.send({embed: {text: ''}}), this.modules.dynamodbWestTwo.scan(params)]);
+        [newMessage, baseData] = await Promise.all([channel.send({embed: {text: ''}}), this.modules.dynamodbWestTwoPic.scan(params)]);
         params.ExclusiveStartKey = baseData.LastEvaluatedKey;
         this.pictures = this.pictures.concat(baseData.Items);
 
         // Loop over any more images
         while (params.LastEvaluatedKey !== undefined) {
-          const data = await this.modules.dynamodbWestTwo.scan(params);
+          const data = await this.modules.dynamodbWestTwoPic.scan(params);
           params.ExclusiveStartKey = data.LastEvaluatedKey;
           this.pictures = this.pictures.concat(data.Items);
         }

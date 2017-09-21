@@ -19,10 +19,10 @@ module.exports = class extends Task {
     const guilds = this.domain.server.connection.guilds;
 
     guilds.forEach((discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
+      this.domain.modules.dynamodbWestTwoBot.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
         const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
         const attributify = waifuGuild.attributify();
-        this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
+        this.domain.modules.dynamodbWestTwoBot.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
         }).catch((err) => {
           console.log(err);
         });
@@ -32,11 +32,11 @@ module.exports = class extends Task {
     });
 
     this.domain.server.connection.on('guildCreate', (discordGuild) => {
-      this.domain.modules.dynamodbWestTwo.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
+      this.domain.modules.dynamodbWestTwoBot.getItem({TableName: 'bobbot', Key: {id: {S: discordGuild.id}, type: {S: 'discord'}}}).then((data) => {
         const waifuGuild = new WaifuGuild(discordGuild.id, data.Item);
         const attributify = waifuGuild.attributify();
 
-        this.domain.modules.dynamodbWestTwo.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
+        this.domain.modules.dynamodbWestTwoBot.putItem({TableName: 'bobbot', Item: attributify}).then((data) => {
         }).catch((err) => {
           console.log(err);
         })

@@ -12,7 +12,8 @@ const Random = require('random-js'),
       DynamoDB = require('./util/DynamoDB.js');
 
 // Waifu Storage
-const dynamodbWestTwo = new DynamoDB({'region': 'us-west-2'});
+const dynamodbWestTwoBot = new DynamoDB({'region': 'us-west-2'});
+const dynamodbWestTwoPic = new DynamoDB({'region': 'us-west-2'});
 // nlp Storage
 const dynamodbEastOne = new DynamoDB({'region': 'us-east-1'});
 
@@ -39,7 +40,7 @@ class Bot {
     // Supports discord and chata(1.0)
     // Use sequential(default) and create a discord server in the server list
     this.servers['discord'] = new Server('discord', new Discord.Client({apiRequestMethod: 'sequential'}));
-    this.servers.discord.login(kagi.getChain('waifutest.chn').getLink('waifutest').data.token);
+    this.servers.discord.login(kagi.getChain('waifu.chn').getLink('waifutest').data.token);
 
     if (chataToken) {
       // Creates a new chata server in the server list for toka
@@ -54,7 +55,8 @@ class Bot {
       this.modules.random = new Random(Random.engines.mt19937().autoSeed());
       // AWS modules
       this.modules.dynamodbEastOne = dynamodbEastOne;
-      this.modules.dynamodbWestTwo = dynamodbWestTwo;
+      this.modules.dynamodbWestTwoBot = dynamodbWestTwoBot;
+      this.modules.dynamodbWestTwoPic = dynamodbWestTwoPic;
 
       // Creates a new list of the avalible domains, creates the domains, then starts them
       this.domains = [];
