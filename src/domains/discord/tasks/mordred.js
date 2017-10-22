@@ -1,7 +1,7 @@
 const Task = require('./../../../util/picturetask.js');
 
 const options = {
-  id: 'momoiji',
+  id: 'mordred',
 }
 
 module.exports = class extends Task {

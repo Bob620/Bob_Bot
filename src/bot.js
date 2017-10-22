@@ -9,11 +9,12 @@ const Discord = require('discord.js'),
 // Modules for Domain Use
 const Random = require('random-js'),
       kagi = require('kagi'),
-      DynamoDB = require('./util/DynamoDB.js');
+      DynamoDB = require('./util/dynamodb.js');
 
 // Waifu Storage
 const dynamodbWestTwoBot = new DynamoDB({'region': 'us-west-2'});
 const dynamodbWestTwoPic = new DynamoDB({'region': 'us-west-2'});
+
 // nlp Storage
 const dynamodbEastOne = new DynamoDB({'region': 'us-east-1'});
 
@@ -57,7 +58,6 @@ class Bot {
       this.modules.dynamodbEastOne = dynamodbEastOne;
       this.modules.dynamodbWestTwoBot = dynamodbWestTwoBot;
       this.modules.dynamodbWestTwoPic = dynamodbWestTwoPic;
-
       // Creates a new list of the avalible domains, creates the domains, then starts them
       this.domains = [];
       this.createDomains();

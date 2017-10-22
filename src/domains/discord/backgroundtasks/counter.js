@@ -40,7 +40,7 @@ module.exports = class extends Task {
   }
 
   update(guildId, taskId) {
-    let guild = this.guilds.get(guildId)
+    let guild = this.guilds.get(guildId);
     if (guild !== undefined) {
       guild.updated = true;
       const task = guild.totals.get(taskId);
