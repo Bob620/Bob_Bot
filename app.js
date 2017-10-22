@@ -1,9 +1,3 @@
-"use strict"
+const Bot = require('./src/bot.js');
 
-var Bobbot = require('./index.js');
-try {
-    var login = require('./login.json');
-    var bobbot = new Bobbot(login);
-} catch(err) {
-    console.log(err);
-}
+const waifu = new Bot({webserver: {active: false}, chataToken: 'waifuTest'});
