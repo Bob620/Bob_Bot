@@ -1,25 +1,28 @@
+# General Info
+Please use offical Waifu server or Github Issues to request changes and submit issues.
 
-# Discord Server for Requesting and Updates
+To add Waifu to your server use either the discord.pw or the offical waifu website.
 
-[Waifu Discord Group](https://discord.gg/Tj4wmer)
+### Offical Links:
+[Offical Waifu Discord](https://discord.gg/Tj4wmer)
 
-Bob_Bot will be a public bot in the future, however since it is still under heavy development I'm not willing to give it to a potentially volatile situation yet.
+[Offical Waifu Website](http://bobco.moe/waifu)
+
+[Discord.pw Listing and info](https://bots.discord.pw/bots/259932651417370624)
+
+### Disclaimer
+
+Bob_Bot has now been officaly renamed to "Waifu" and all Twitch support removed.
 
 If you would like to help develop the bot or run it on your own server go ahead.
 
-# Connecting to services
+This project is licensed under the MIT License
 
-### Discord and Chata
-Create a new file named "login.json", in it:
-``` json
-{
-  "discordToken": "DiscordToken",
-  "chataToken": "ChataToken"
-}
+---
 
-```
+# Development
 
-### AWS
-It runs off the normal AWS modules, and thus you need to create the files properly
+### Connecting to services
+All login information and AWS interaction uses toka-io/Kagi.
 
 ###### Currently it's required to have AWS access
