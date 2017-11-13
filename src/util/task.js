@@ -52,7 +52,7 @@ class Task {
 
   supports(message) {
     return new Promise((resolve, reject) => {
-      if (this.regex.exec(message.cleanContent)) {
+      if (this.regex.exec(message.cleanContent) && !message.author.bot) {
         reject(this);
       } else {
         resolve(this);
