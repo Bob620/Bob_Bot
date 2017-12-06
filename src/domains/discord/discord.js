@@ -2,7 +2,7 @@ const Domain = require(`${__dirname}/../../util/domain.js`);
 
 const serverType = 'discord';
 const options = {
-  domainDirectory: __dirname,
+  domainDirectory: __dirname
 }
 
 class Discord extends Domain {
