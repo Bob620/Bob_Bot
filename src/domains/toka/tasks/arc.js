@@ -10,6 +10,6 @@ module.exports = class extends Task {
   }
 
   async execute(message) {
-    this.domain.server.connection.sendMessage('toka', 'Dang it arc!');
+//    this.domain.server.connection.sendMessage('toka', 'Dang it arc!');
   }
 }
