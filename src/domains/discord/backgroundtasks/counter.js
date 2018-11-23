@@ -4,7 +4,7 @@ const options = {
   id: 'counter'
 }
 
-const delay = 6000;
+const delay = 60000;
 
 module.exports = class extends Task {
   constructor(domain) {
