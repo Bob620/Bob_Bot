@@ -82,6 +82,15 @@ class Domain {
       enumerable: true
     });
 
+    this.server.typeActions.errors.forEach(errorTrigger => {
+        this.server.on(errorTrigger, err => {
+            if (this[`on${errorTrigger}`])
+                this[`on${errorTrigger}`](err);
+            else
+              this.defaultErrorHandle(err);
+        });
+    });
+
     if (!this.server.connected) {
       this.server.once('connect', () => {
         this.startBackgroundTasks();
@@ -102,6 +111,10 @@ class Domain {
         this.message(message);
       });
     });
+  }
+
+  defaultErrorHandle(err) {
+    console.log(err);
   }
 
   /**

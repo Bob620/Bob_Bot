@@ -25,7 +25,7 @@ const express = require('express');
 // Bot options
 const options = {
   domains: `${__dirname}/domains`
-}
+};
 
 // Main bot class
 class Bot {

@@ -38,6 +38,7 @@ class Server extends EventEmitter {
     // Initalization
     this.connection = connection;
     this.type = type;
+    this.typeActions = types[type];
     this.currentStatus = 'disconnected';
     this.ready = false;
     // Select events and provides them for refrence on this
@@ -45,9 +46,9 @@ class Server extends EventEmitter {
     this.triggers = triggers;
 
     // Log all error outputting
-    triggers.errors.forEach((errorTrigger) => {
-      connection.on(errorTrigger, (err) => {
-        console.log(err);
+    triggers.errors.forEach(errorTrigger => {
+      connection.on(errorTrigger, err => {
+        this.emit(errorTrigger, err);
       });
     });
 
@@ -62,7 +63,7 @@ class Server extends EventEmitter {
     });
 
     // Create a message listener
-    connection.on(triggers.message, (message) => {
+    connection.on(triggers.message, message => {
       this.emit('message', message);
     });
   }
