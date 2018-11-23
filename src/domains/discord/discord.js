@@ -24,7 +24,8 @@ class Discord extends Domain {
         if (message[4] === 'heartbeat' && message[7]) {
             this.debug.heartbeat = Number.parseInt(message[7].substring(0, message[7].length-2));
             this.debug.timeout = setTimeout(() => {
-              process.exitCode = 5;
+              process.exitCode = 1;
+              process.exit(1);
             }, this.debug.heartbeat + 10000);
         }
 
