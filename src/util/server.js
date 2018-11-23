@@ -9,7 +9,8 @@ const types = {
     message: 'message',
     errors: [
       'error',
-      'warn'
+      'warn',
+      'debug'
     ]
   },
   chata: {

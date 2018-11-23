@@ -5,25 +5,22 @@
   "main": "app.js",
   "scripts": {
     "test": "echo Tests not available",
-    "start": "node app.js --pending-deprecation"
+    "start": "node app.js"
   },
   "author": "Bob620",
   "license": "ISC",
   "engines": {
     "node": ">=8.0.0"
   },
-  "enginesStrict": true,
   "dependencies": {
-    "aws-sdk": "^2.62.0",
-    "chata-client": "^1.0.0",
+    "aws-sdk": "^2.356.0",
+    "bufferutil": "^4.0.0",
+    "chata-client": "^1.0.1",
     "discord.js": "^11.4.2",
-    "erlpack": "github:hammerandchisel/erlpack",
-    "express": "^4.15.3",
+    "express": "^4.16.4",
     "kagi": "github:toka-io/kagi",
     "libsodium-wrappers": "^0.5.1",
-    "node-opus": "^0.2.6",
     "random-js": "^1.0.8",
-    "sodium": "^2.0.1",
-    "bufferutil": "^4.0.0"
+    "sodium": "^2.0.1"
   }
 }
