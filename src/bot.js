@@ -19,8 +19,8 @@ const dynamodbWestTwoPic = new DynamoDB({'region': 'us-west-2'});
 const dynamodbEastOne = new DynamoDB({'region': 'us-east-1'});
 
 // Webserver Imports
-const WebServer = require('./util/webserver.js');
-const express = require('express');
+//const WebServer = require('./util/webserver.js');
+//const express = require('express');
 
 // Bot options
 const options = {
@@ -35,7 +35,7 @@ class Bot {
     this.servers = {};
 
     // Creates the webserver using a new express instance
-    this.modules.webserver = new WebServer(webserverOptions, express());
+//    this.modules.webserver = new WebServer(webserverOptions, express());
 
     // If there is a login token, login to the service
     // Supports discord and chata(1.0)

@@ -35,17 +35,18 @@ module.exports = class extends Task {
 
     // Define Statistics based API
 
-    this.domain.modules.webserver.addGet('/api/stats', (req, res, next) => {
-      res.json({
-        totalGuilds: this.guilds.size,
-        totalOnlineMembers: this.totalOnlineMembers
+    if (this.domain.modules.webserver) {
+      this.domain.modules.webserver.addGet('/api/stats', (req, res, next) => {
+        res.json({
+          totalGuilds: this.guilds.size,
+          totalOnlineMembers: this.totalOnlineMembers
+        });
       });
-    });
 
-    this.domain.modules.webserver.addGet('/api/guilds', (req, res, next) => {
-      res.json(Array.from(this.guilds.keys()));
-    });
-
+      this.domain.modules.webserver.addGet('/api/guilds', (req, res, next) => {
+        res.json(Array.from(this.guilds.keys()));
+      });
+    }
   }
 
   createInterval() {
